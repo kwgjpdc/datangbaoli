@@ -1,0 +1,51 @@
+{
+  "id": "4335554",
+  "name": "factoring-ui-v3",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "18223182",
+      "name": "金额",
+      "font_class": "tubiaozhizuomoban",
+      "unicode": "e647",
+      "unicode_decimal": 58951
+    },
+    {
+      "icon_id": "34978307",
+      "name": "Icon_金额",
+      "font_class": "Icon_jine",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "1761531",
+      "name": "金额",
+      "font_class": "jine",
+      "unicode": "e64f",
+      "unicode_decimal": 58959
+    },
+    {
+      "icon_id": "21732453",
+      "name": "百分比",
+      "font_class": "baifenbi",
+      "unicode": "e73b",
+      "unicode_decimal": 59195
+    },
+    {
+      "icon_id": "25133973",
+      "name": "金额",
+      "font_class": "jine1",
+      "unicode": "e6c3",
+      "unicode_decimal": 59075
+    },
+    {
+      "icon_id": "5387638",
+      "name": "人民币",
+      "font_class": "renminbi",
+      "unicode": "eb1e",
+      "unicode_decimal": 60190
+    }
+  ]
+}
