@@ -1,16 +1,19 @@
 {
-  "bracketSpacing": true,
-  "singleQuote": false,
-  "arrowParens": "avoid",
-  "trailingComma": "none",
-  "endOfLine": "auto",
-  "quoteProps": "consistent",
-  "overrides": [
-    {
-      "files": "*.html",
-      "options": {
-        "parser": "html"
-      }
-    }
-  ]
+	"bracketSpacing": true,
+	"singleQuote": false,
+	"arrowParens": "avoid",
+	"trailingComma": "none",
+	"endOfLine": "auto",
+	"quoteProps": "consistent",
+	"jsxBracketSameLine": true,
+	"useTabs": true,
+	"tabWidth": 2,
+	"overrides": [
+		{
+			"files": "*.html",
+			"options": {
+				"parser": "html"
+			}
+		}
+	]
 }
