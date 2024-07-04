@@ -31,11 +31,11 @@
             <el-form-item label="客户编号" prop="customerNo">
               <el-input class="fixed-width-input" v-model="formData.customerNo" placeholder="系统自动生成" clearable disabled></el-input>
             </el-form-item></el-col>
-            <el-col :xl="6" :lg="8" :sm="12" :xs="24">
+            <!-- <el-col :xl="6" :lg="8" :sm="12" :xs="24">
             <el-form-item label="手机号" prop="phone">
               <el-input class="fixed-width-input" v-model="formData.phone" placeholder="请输入手机号"
                 oninput="value=value.replace(/[^0-9]/g,'')" clearable maxlength="11"></el-input>
-            </el-form-item></el-col>
+            </el-form-item></el-col> -->
           <el-col :xs="24">
             <el-form-item label="营业范围" prop="companyInfo.businessScope">
               <el-input class="fixed-width-input" type="textarea" v-model="formData.companyInfo.businessScope" placeholder="请输入营业范围" clearable

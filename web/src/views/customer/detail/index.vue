@@ -34,15 +34,16 @@
 					:routerQueryObj="routerQueryObj"
 				></basic-information>
 
-				<!-- 新增纳税信息 -->
-				<tax-info
-					id="taxInfo"
-					ref="taxInfoRef"
+				<!-- 移动端登录认证 -->
+				<mobile-login-info
+					id="mobileLoginInfo"
+					:infoData="customerDetailInfo"
+					ref="mobileLoginInfoRef"
 					:customerId="customerId"
-					:infoData="customerDetailInfo.custInvoiceInfoList"
 					:routerQueryObj="routerQueryObj"
-				></tax-info>
+				></mobile-login-info>
 
+				<!-- 授信评级信息 -->
 				<credit-rating-info
 					id="creditRatingInfo"
 					:infoData="customerDetailInfo"
@@ -51,6 +52,7 @@
 					:routerQueryObj="routerQueryObj"
 				></credit-rating-info>
 
+				<!-- 法人信息 -->
 				<companyInfo
 					id="companyInfo"
 					:infoData="customerDetailInfo.companyInfo"
@@ -84,6 +86,15 @@
 					:customerId="customerId"
 					:routerQueryObj="routerQueryObj"
 				></bank-info>
+
+				<!-- 客户纳税信息 -->
+				<tax-info
+					id="taxInfo"
+					ref="taxInfoRef"
+					:customerId="customerId"
+					:infoData="customerDetailInfo.custInvoiceInfoList"
+					:routerQueryObj="routerQueryObj"
+				></tax-info>
 			</div>
 		</div>
 	</div>
@@ -106,6 +117,7 @@ import companyInfo from "./companyInfo";
 import customerInfo from "./customerInfo";
 import bankInfo from "./bankInfo";
 import taxInfo from "./taxInfo";
+import mobileLoginInfo from "./mobileLoginInfo";
 
 const { proxy } = getCurrentInstance();
 const route = useRoute();
@@ -181,6 +193,8 @@ const data = reactive({
 			worth: "",
 			remark: ""
 		},
+		loginName: "",
+		phone: "",
 		flowld: "1",
 		userIds: "2",
 		bankInfoList: [],
@@ -278,7 +292,8 @@ function submitForm(statusFlag) {
 				"customerInfoRef",
 				"clientFileRef",
 				"bankInfoRef",
-				"taxInfoRef" // 纳税信息
+				"taxInfoRef", // 纳税信息
+				"mobileLoginInfoRef" // 移动端登录认证
 			];
 			let custCustomerlnfoSave = customerDetailInfo;
 			let companyInfo = {};
