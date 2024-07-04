@@ -39,7 +39,7 @@
 					id="taxInfo"
 					ref="taxInfoRef"
 					:customerId="customerId"
-					:infoData="customerDetailInfo.taxInfoList"
+					:infoData="customerDetailInfo.custInvoiceInfoList"
 					:routerQueryObj="routerQueryObj"
 				></tax-info>
 
@@ -186,7 +186,7 @@ const data = reactive({
 		bankInfoList: [],
 		commonFileList: [],
 		commonFileList2: [],
-		taxInfoList: []
+		custInvoiceInfoList: []
 	} //客户信息
 });
 
@@ -238,30 +238,29 @@ function getInfoPage() {
 }
 
 function submitForm(statusFlag) {
-	debugger;
 	// handleSave();
 	// return;
 	loading.value = true;
-	// const basicInformationForm = new Promise((resolve, reject) => {
-	// 	proxy.$refs["basicInformationRef"].$refs["elForm"].validate(valid => {
-	// 		valid ? resolve(valid) : reject(valid);
-	// 	});
-	// });
-	// const creditRatingInfoForm = new Promise((resolve, reject) => {
-	// 	proxy.$refs["creditRatingInfoRef"].$refs["elForm"].validate(valid => {
-	// 		valid ? resolve(valid) : reject(valid);
-	// 	});
-	// });
-	// const companyInfoForm = new Promise((resolve, reject) => {
-	// 	proxy.$refs["companyInfoRef"].$refs["elForm"].validate(valid => {
-	// 		valid ? resolve(valid) : reject(valid);
-	// 	});
-	// });
-	// const customerInfoForm = new Promise((resolve, reject) => {
-	// 	proxy.$refs["customerInfoRef"].$refs["elForm"].validate(valid => {
-	// 		valid ? resolve(valid) : reject(valid);
-	// 	});
-	// });
+	const basicInformationForm = new Promise((resolve, reject) => {
+		proxy.$refs["basicInformationRef"].$refs["elForm"].validate(valid => {
+			valid ? resolve(valid) : reject(valid);
+		});
+	});
+	const creditRatingInfoForm = new Promise((resolve, reject) => {
+		proxy.$refs["creditRatingInfoRef"].$refs["elForm"].validate(valid => {
+			valid ? resolve(valid) : reject(valid);
+		});
+	});
+	const companyInfoForm = new Promise((resolve, reject) => {
+		proxy.$refs["companyInfoRef"].$refs["elForm"].validate(valid => {
+			valid ? resolve(valid) : reject(valid);
+		});
+	});
+	const customerInfoForm = new Promise((resolve, reject) => {
+		proxy.$refs["customerInfoRef"].$refs["elForm"].validate(valid => {
+			valid ? resolve(valid) : reject(valid);
+		});
+	});
 
 	// const clientFileForm = new Promise((resolve, reject) => {
 	//   proxy.$refs['clientFileRef'].$refs['elForm'].validate(valid => {
@@ -270,8 +269,7 @@ function submitForm(statusFlag) {
 	// })
 
 	// 账户管理不需要在外层校验；
-	// Promise.all([basicInformationForm, companyInfoForm, customerInfoForm])
-	Promise.all([])
+	Promise.all([basicInformationForm, companyInfoForm, customerInfoForm])
 		.then(() => {
 			const formKeys = [
 				"basicInformationRef",
@@ -286,7 +284,6 @@ function submitForm(statusFlag) {
 			let companyInfo = {};
 			formKeys.map(formKey => {
 				const partFormData = proxy.$refs[formKey].formData;
-				debugger;
 				if (formKey === "basicInformationRef" || formKey === "companyInfoRef") {
 					Object.assign(companyInfo, partFormData.companyInfo);
 				}

@@ -39,19 +39,30 @@
 					<!-- 纳税人识别号 -->
 					<el-table-column
 						label="纳税人识别号"
-						prop="taxpayerIdentificationNumber"
+						prop="taxpayerIdNo"
 						align="center"
 					/>
 					<!-- 类型 -->
-					<el-table-column label="类型" prop="taxType" align="center">
+					<el-table-column label="类型" prop="taxpayerType" align="center">
 						<template #default="scope">
-							<dict-tag :options="cont_tax_type" :value="scope.row.taxType" />
+							<dict-tag
+								:options="cont_tax_type"
+								:value="scope.row.taxpayerType"
+							/>
 						</template>
 					</el-table-column>
 					<!-- 开户行 -->
-					<el-table-column label="开户行" prop="taxBank" align="center" />
+					<el-table-column label="开户行" prop="bankName" align="center" />
 					<!-- 账号 -->
-					<el-table-column label="账号" prop="taxAccount" align="center" />
+					<el-table-column label="账号" prop="bankAccountNo" align="center" />
+					<!-- 发票抬头 -->
+					<el-table-column
+						label="发票抬头"
+						prop="invoiceTitle"
+						align="center"
+					/>
+					<!-- 邮箱 -->
+					<el-table-column label="邮箱" prop="taxpayerEmail" align="center" />
 					<!-- 操作 -->
 					<el-table-column
 						label="操作"
@@ -101,12 +112,9 @@
 					>
 						<el-row>
 							<el-col :span="11">
-								<el-form-item
-									label="纳税人识别号"
-									prop="taxpayerIdentificationNumber"
-								>
+								<el-form-item label="纳税人识别号" prop="taxpayerIdNo">
 									<el-input
-										v-model="dialogFormData.taxpayerIdentificationNumber"
+										v-model="dialogFormData.taxpayerIdNo"
 										:placeholder="showPlaceholder('请输入纳税人识别号')"
 										:style="formItemContentStyle"
 										maxlength="32"
@@ -115,9 +123,9 @@
 								</el-form-item>
 							</el-col>
 							<el-col :span="11" :offset="2">
-								<el-form-item label="类型" prop="taxType">
+								<el-form-item label="类型" prop="taxpayerType">
 									<el-select
-										v-model="dialogFormData.taxType"
+										v-model="dialogFormData.taxpayerType"
 										:placeholder="showPlaceholder('请选择')"
 										filterable
 										clearable
@@ -135,20 +143,20 @@
 						</el-row>
 						<el-row>
 							<el-col :span="11">
-								<el-form-item label="电话" prop="taxPhone">
+								<el-form-item label="电话" prop="taxpayerPhoneNo">
 									<el-input
-										v-model="dialogFormData.taxPhone"
+										v-model="dialogFormData.taxpayerPhoneNo"
 										:placeholder="showPlaceholder('请输入电话')"
 										:style="formItemContentStyle"
 										maxlength="32"
-										oninput="value=value.replace(/[^0-9]/g,'')"
+										oninput="value=value.replace(/[^0-9-+]/,'')"
 									/>
 								</el-form-item>
 							</el-col>
 							<el-col :span="11" :offset="2">
-								<el-form-item label="地址" prop="taxAddress">
+								<el-form-item label="地址" prop="taxpayerAddr">
 									<el-input
-										v-model="dialogFormData.taxAddress"
+										v-model="dialogFormData.taxpayerAddr"
 										maxlength="64"
 										:placeholder="showPlaceholder('请输入地址')"
 										:style="formItemContentStyle"
@@ -158,9 +166,9 @@
 						</el-row>
 						<el-row>
 							<el-col :span="11">
-								<el-form-item label="开户行" prop="taxBank">
+								<el-form-item label="开户行" prop="bankName">
 									<el-input
-										v-model="dialogFormData.taxBank"
+										v-model="dialogFormData.bankName"
 										maxlength="32"
 										:placeholder="showPlaceholder('请输入开户行')"
 										:style="formItemContentStyle"
@@ -168,10 +176,10 @@
 								</el-form-item>
 							</el-col>
 							<el-col :span="11" :offset="2">
-								<el-form-item label="账号" prop="taxAccount">
+								<el-form-item label="开户行账号" prop="bankAccountNo">
 									<el-input
-										v-model="dialogFormData.taxAccount"
-										:placeholder="showPlaceholder('请输入账号')"
+										v-model="dialogFormData.bankAccountNo"
+										:placeholder="showPlaceholder('请输入开户行账号')"
 										:style="formItemContentStyle"
 										maxlength="32"
 										oninput="value=value.replace(/[^0-9A-Za-z]/g,'')"
@@ -179,11 +187,36 @@
 								</el-form-item>
 							</el-col>
 						</el-row>
+
+						<el-row>
+							<el-col :span="11">
+								<el-form-item label="发票抬头" prop="invoiceTitle">
+									<el-input
+										v-model="dialogFormData.invoiceTitle"
+										maxlength="64"
+										:placeholder="showPlaceholder('请输入发票抬头')"
+										:style="formItemContentStyle"
+									/>
+								</el-form-item>
+							</el-col>
+							<el-col :span="11" :offset="2">
+								<el-form-item label="邮箱" prop="taxpayerEmail">
+									<el-input
+										v-model="dialogFormData.taxpayerEmail"
+										:placeholder="showPlaceholder('请输入纳税人邮箱')"
+										:style="formItemContentStyle"
+										maxlength="64"
+										oninput="value=value.replace(/[^0-9A-Za-z.@]/g,'')"
+									/>
+								</el-form-item>
+							</el-col>
+						</el-row>
+
 						<el-row>
 							<el-col :span="24">
-								<el-form-item label="备注" prop="taxRemark">
+								<el-form-item label="备注" prop="remark">
 									<el-input
-										v-model="dialogFormData.taxRemark"
+										v-model="dialogFormData.remark"
 										type="textarea"
 										maxlength="255"
 										:placeholder="showPlaceholder('请输入内容')"
@@ -234,7 +267,7 @@ const { proxy } = getCurrentInstance();
 const { cont_tax_type } = proxy.useDict("cont_tax_type");
 
 // 表格数据集合
-const formData = reactive(props.infoData);
+let formData = ref([]);
 
 // 表格删除按钮状态
 const deleteIsDisabled = ref(true);
@@ -247,22 +280,78 @@ const elFormRef = ref(null);
 
 // Dialog表单数据
 const dialogFormData = ref({
-	taxpayerIdentificationNumber: null,
-	taxType: null,
-	taxPhone: null,
-	taxAddress: null,
-	taxBank: null,
-	taxAccount: null,
-	taxRemark: null
+	taxpayerIdNo: null,
+	taxpayerType: null,
+	taxpayerPhoneNo: null,
+	taxpayerAddr: null,
+	bankName: null,
+	bankAccountNo: null,
+	invoiceTitle: null,
+	taxpayerEmail: null,
+	remark: null
 });
 
 // Dialog表单验证规则
 const rules = ref({
-	taxpayerIdentificationNumber: [
+	taxpayerIdNo: [
 		{
 			required: true,
 			pattern: "[^\x20]+",
 			message: "纳税人识别号不能为空",
+			trigger: "blur"
+		}
+	],
+	taxpayerType: [
+		{
+			required: true,
+			message: "纳税人类型不能为空",
+			trigger: "blur"
+		}
+	],
+	taxpayerEmail: [
+		{
+			required: true,
+			message: "纳税人邮箱不能为空",
+			trigger: "blur"
+		},
+		{
+			pattern: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/,
+			message: " 请输入正确的客户邮箱",
+			trigger: "blur"
+		}
+	],
+	bankName: [
+		{
+			required: true,
+			message: "开户行名称不能为空",
+			trigger: "blur"
+		}
+	],
+	invoiceTitle: [
+		{
+			required: true,
+			message: "发票抬头不能为空",
+			trigger: "blur"
+		}
+	],
+	taxpayerAddr: [
+		{
+			required: true,
+			message: "纳税人地址不能为空",
+			trigger: "blur"
+		}
+	],
+	taxpayerPhoneNo: [
+		{
+			required: true,
+			message: "纳税人电话不能为空",
+			trigger: "blur"
+		}
+	],
+	bankAccountNo: [
+		{
+			required: true,
+			message: "开户行账号不能为空",
 			trigger: "blur"
 		}
 	]
@@ -307,32 +396,25 @@ const isView = computed(() => {
 
 // 分页数据总数
 const total = computed(() => {
-	return formData.length;
+	return formData.value.custInvoiceInfoList.length;
 });
 
 // 显示数据集合
 const showInfoList = computed(() => {
 	const start = queryParams.pageSize * (queryParams.pageNum - 1);
 	const end = queryParams.pageNum * queryParams.pageSize;
-	return formData.slice(start, end);
+	return formData.value.custInvoiceInfoList.slice(start, end);
 });
 
-// let formData = ref({
-// 	taxInfoList: []
-// });
-
-//不能修改const 定义的数据
-// watch(
-// 	() => props.infoData,
-// 	(newValue, oldValue) => {
-// 		console.log(newValue);
-// 		if (newValue) {
-// 			formData.value.taxInfoList = deepClone(newValue);
-// 		}
-// 		console.log(formData);
-// 	},
-// 	{ immediate: true, deep: true }
-// );
+watch(
+	props.infoData,
+	(newValue, oldValue) => {
+		if (newValue) {
+			formData.value.custInvoiceInfoList = deepClone(newValue);
+		}
+	},
+	{ immediate: true }
+);
 
 // 表格选择器触发事件
 function handleSelectionChange(selection) {
@@ -346,9 +428,9 @@ function handleBatchDelete() {
 		.confirm("是否确认删除选择的数据项？")
 		.then(() => {
 			tableSelection.forEach(data => {
-				const index = formData.indexOf(data);
+				const index = formData.value.custInvoiceInfoList.indexOf(data);
 				if (index !== -1) {
-					formData.splice(index, 1);
+					formData.value.custInvoiceInfoList.splice(index, 1);
 				}
 			});
 		})
@@ -362,9 +444,9 @@ function handleDelete(data) {
 	proxy.$modal
 		.confirm("是否确认删除选择的数据项？")
 		.then(function () {
-			const index = formData.indexOf(data);
+			const index = formData.value.custInvoiceInfoList.indexOf(data);
 			if (index !== -1) {
-				formData.splice(index, 1);
+				formData.value.custInvoiceInfoList.splice(index, 1);
 			}
 		})
 		.catch(e => {
@@ -391,13 +473,13 @@ async function validate(callback) {
 // 打开Dialog
 function openAddDialog() {
 	dialogFormData.value = {
-		taxpayerIdentificationNumber: null,
-		taxType: null,
-		taxPhone: null,
-		taxAddress: null,
-		taxBank: null,
-		taxAccount: null,
-		taxRemark: null
+		taxpayerIdNo: null,
+		taxpayerType: null,
+		taxpayerPhoneNo: null,
+		taxpayerAddr: null,
+		bankName: null,
+		bankAccountNo: null,
+		remark: null
 	};
 	dialogStatus.type = "create";
 	dialogTitle.value = "新增客户税务信息";
@@ -415,10 +497,18 @@ function handleSave() {
 	validate(valid => {
 		if (valid) {
 			if (dialogStatus.type === "create") {
-				formData.unshift(deepClone(dialogFormData.value));
+				formData.value.custInvoiceInfoList.unshift(
+					deepClone(dialogFormData.value)
+				);
 			} else if (dialogStatus.type === "edit") {
-				const index = formData.indexOf(dialogStatus.row);
-				formData.splice(index, 1, deepClone(dialogFormData.value));
+				const index = formData.value.custInvoiceInfoList.indexOf(
+					dialogStatus.row
+				);
+				formData.value.custInvoiceInfoList.splice(
+					index,
+					1,
+					deepClone(dialogFormData.value)
+				);
 			}
 			dialogVisible.value = false;
 		}
