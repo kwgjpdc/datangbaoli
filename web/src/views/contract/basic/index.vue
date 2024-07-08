@@ -448,6 +448,10 @@ function resetQuery() {
 
 // 补录合同按钮操作
 function handleSupp() {
+	// if (tableSelectedRows.value.some(item => item.status !== "3")) {
+	// 	return proxy.$message.warning("请检查所选合同是否【已通过审批】！");
+	// }
+
 	resetQuery();
 	dialogSuppIsOpen.value = true;
 }
