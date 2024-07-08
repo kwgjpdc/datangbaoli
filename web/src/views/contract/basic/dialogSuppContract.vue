@@ -54,6 +54,12 @@
 				</template>
 			</el-table-column>
 		</el-table>
+		<template #footer>
+			<div class="dialog-footer">
+				<el-button @click="handleClose">取消</el-button>
+				<el-button type="primary" @click="handleOk">确定</el-button>
+			</div>
+		</template>
 	</el-dialog>
 </template>
 <script setup>
@@ -87,5 +93,10 @@ watch(
 
 function handleClose() {
 	emit("update:open", false);
+}
+
+function handleOk() {
+	console.log("confirm", tableList);
+	handleClose();
 }
 </script>
