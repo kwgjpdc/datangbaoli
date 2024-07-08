@@ -260,7 +260,7 @@
 			@selectRow="selectRowMulti"
 			@pageChange="pageChangeMulti"
 		/>
-
+		<!-- dialog：补录合同信息 -->
 		<DialogSuppContract
 			v-model:open="dialogSuppIsOpen"
 			:tableSelectedRows="tableSelectedRows"
