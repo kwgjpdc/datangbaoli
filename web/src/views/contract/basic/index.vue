@@ -129,13 +129,14 @@
 
 			<el-col :span="1.5">
 				<el-button
+					:disabled="!tableSelectedRows.length"
 					type="primary"
 					plain
 					icon="Plus"
 					@click="handleSupp"
 					v-hasPermi="['contract:info:add']"
 				>
-					补录合同信息
+					补录合同
 				</el-button>
 			</el-col>
 			<right-toolbar v-model:showSearch="showSearch" @queryTable="getList" />
@@ -143,12 +144,12 @@
 		<!-- 表格 -->
 		<el-table :data="contractList" @selection-change="handleTableSelectedRows">
 			<el-table-column type="selection" width="40" align="center" />
-			<el-table-column width="55" align="center">
+			<el-table-column fixed label="序号" width="55" align="center">
 				<template #default="scope">
 					{{ scope.$index + 1 }}
 				</template>
 			</el-table-column>
-			<el-table-column label="合同编号" align="center">
+			<el-table-column fixed label="合同编号" width="200" align="center">
 				<template #default="scope">
 					<el-button link type="primary" @click="handleView(scope.row)">{{
 						scope.row.contractNo
@@ -156,27 +157,40 @@
 				</template>
 			</el-table-column>
 			<el-table-column
+				fixed
 				label="合同名称"
+				width="200"
 				align="center"
 				prop="otherContractName"
 			/>
 			<el-table-column
 				label="保理申请人名称"
+				width="200"
 				align="center"
 				prop="factoringApplicantName"
 			/>
 			<el-table-column
 				label="核心企业名称"
+				width="200"
 				align="center"
 				prop="coreEnterpriseName"
 			/>
 			<el-table-column
 				label="首次审批时间"
+				width="200"
 				align="center"
 				prop="firstApproveDate"
 			/>
-			<el-table-column label="上会时间" align="center" prop="" />
-			<el-table-column label="审批状态" align="center" prop="status">
+			<el-table-column label="用印时间" width="200" align="center" prop="" />
+			<el-table-column label="签约状态" width="200" align="center" prop="" />
+			<el-table-column label="签约意见" width="200" align="center" prop="" />
+			<el-table-column label="上会时间" width="200" align="center" prop="" />
+			<el-table-column
+				label="审批状态"
+				width="200"
+				align="center"
+				prop="status"
+			>
 				<template #default="scope">
 					<dict-tag :options="contract_status" :value="scope.row.status" />
 				</template>
@@ -186,7 +200,7 @@
 				align="center"
 				class-name="small-padding fixed-width"
 				fixed="right"
-				width="200"
+				width="150"
 			>
 				<template #default="scope">
 					<div class="button-display">
