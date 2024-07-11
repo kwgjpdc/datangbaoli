@@ -76,9 +76,9 @@
 					</el-col>
 					<!-- 新增：注册地址 -->
 					<el-col :xl="6" :lg="8" :sm="12" :xs="24">
-						<el-form-item label="注册地址" prop="address">
+						<el-form-item label="注册地址" prop="registAddress">
 							<el-input
-								v-model="formData.legalRepresentative"
+								v-model="formData.registAddress"
 								type="textarea"
 								placeholder="请输入注册地址"
 								clearable
