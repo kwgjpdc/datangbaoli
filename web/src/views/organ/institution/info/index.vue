@@ -92,7 +92,7 @@
 				align="center"
 				class-name="small-padding"
 				fixed="right"
-				width="260"
+				width="200"
 			>
 				<template #default="scope">
 					<div class="button-display">
