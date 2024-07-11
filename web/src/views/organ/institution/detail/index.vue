@@ -123,7 +123,7 @@ function submitForm(statusFlag) {
 }
 function closePage() {
 	const obj = {
-		path: "/customer/cust/institution/info/index",
+		path: "/organ/institution/info",
 		query: { t: Date.now(), pageNum: routerQueryObj.value.pageNum }
 	};
 	proxy.$tab.closeOpenPage(obj);

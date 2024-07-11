@@ -11,7 +11,7 @@
 			<el-collapse-item title="基本信息" name="1">
 				<el-row :gutter="15" style="margin-right: 30px">
 					<el-col :xl="6" :lg="8" :sm="12" :xs="24">
-						<el-form-item label="机构名称" prop="institutionName">
+						<el-form-item label="机构名称/保理人" prop="institutionName">
 							<el-input
 								v-model="formData.institutionName"
 								placeholder="请输入机构名称或保理人名称"
