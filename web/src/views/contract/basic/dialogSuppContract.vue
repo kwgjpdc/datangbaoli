@@ -111,7 +111,7 @@ function handleOk() {
 	}));
 
 	insertContractInfo({ contractInfoList: handleParams })
-	// insertContractInfo(handleParams)
+	//insertContractInfo(handleParams)
 		.then(response => {
 			console.log("confirm", tableList);
 			handleClose();
