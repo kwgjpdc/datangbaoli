@@ -12,18 +12,19 @@
 			<el-collapse-item title="基本信息" name="1">
 				<el-row :gutter="15" style="margin-right: 30px">
 					<el-col :xl="6" :lg="8" :sm="12" :xs="24">
-						<el-form-item label="客户名称" prop="name">
-							<el-input
-								class="fixed-width-input"
-								v-model="formData.customerManager"
-								placeholder="请输入客户经理"
-								clearable
-								maxlength="64"
-							></el-input>
+						<el-form-item label="客户名称" prop="formData.customerName">
+							<CustomerSelect
+								:showValue="formData.customerName"
+								:option="customerAttr.option"
+								:queryPropList="customerAttr.queryPropList"
+								:tablePropList="customerAttr.tablePropList"
+								@selectRow="customerSelectRow"
+							></CustomerSelect>
 						</el-form-item>
 					</el-col>
+
 					<el-col :xl="6" :lg="8" :sm="12" :xs="24">
-						<el-form-item label="客户种类" prop="type">
+						<el-form-item label="客户种类" prop="formData.type">
 							<el-input
 								class="fixed-width-input"
 								v-model="formData.customerName"
@@ -34,18 +35,18 @@
 						</el-form-item>
 					</el-col>
 					<el-col :xl="6" :lg="8" :sm="12" :xs="24">
-						<el-form-item label="债务人名称" prop="otherName">
-							<el-input
-								class="fixed-width-input"
-								v-model="formData.name"
-								placeholder="请输入简称"
-								clearable
-								maxlength="32"
-							></el-input>
+						<el-form-item label="债务人名称" prop="formData.obligorName">
+							<CustomerSelect
+								:showValue="formData.obligorName"
+								:option="obligorAttr.option"
+								:queryPropList="obligorAttr.queryPropList"
+								:tablePropList="obligorAttr.tablePropList"
+								@selectRow="obligorSelectRow"
+							></CustomerSelect>
 						</el-form-item>
 					</el-col>
 					<el-col :xs="24">
-						<el-form-item label="备注" prop="companyInfo.businessScope">
+						<el-form-item label="备注" prop="formData.remark">
 							<el-input
 								class="fixed-width-input"
 								type="textarea"
@@ -64,10 +65,7 @@
 </template>
 
 <script setup>
-import { listInfo } from "@/api/customer/index";
-import { pcaTextArr } from "element-china-area-data";
 import CustomerSelect from "@/components/CustomerSelect";
-import ElPriceInput from "@/components/ElPriceInput";
 import { deepClone } from "@/utils/index";
 const { proxy } = getCurrentInstance();
 const props = defineProps({
@@ -89,12 +87,18 @@ const loading = ref(false);
 const businessTermDate = ref([]);
 const registerArea = ref([]);
 
+let formData = ref({
+	customerName: null,
+	customerType: null,
+	obligorName: null,
+	remark: null
+}); //不能修改const 定义的数据
+
 const dataScope = reactive({
-	parentCustomer: {
-		showValue: "",
+	customerAttr: {
 		option: {
 			inputW: "100%",
-			placeholder: "请选择上级公司",
+			placeholder: "请选择客户信息",
 			dialogTitle: "客户信息",
 			queryUrl: "/cust/customer/list"
 		},
@@ -118,7 +122,35 @@ const dataScope = reactive({
 				label: "客户名称"
 			}
 		]
-	},
+	}, // 客户
+	obligorAttr: {
+		option: {
+			inputW: "100%",
+			placeholder: "请选择债务人",
+			dialogTitle: "债务人信息",
+			queryUrl: "/cust/customer/list"
+		},
+		queryPropList: [
+			{
+				prop: "customerNo",
+				label: "债务人编号"
+			},
+			{
+				prop: "customerName",
+				label: "债务人名称"
+			}
+		],
+		tablePropList: [
+			{
+				prop: "customerNo",
+				label: "债务人编号"
+			},
+			{
+				prop: "customerName",
+				label: "债务人名称"
+			}
+		]
+	}, // 债务人
 	rules: {
 		"customerManager": [
 			{ required: true, message: "客户经理不能为空", trigger: "blur" }
@@ -173,80 +205,34 @@ const dataScope = reactive({
 		"companyInfo.nationalIndustryClassify": [
 			{ required: true, message: "国标行业分类不能为空", trigger: "change" }
 		]
-	} //验证规律
+	}
 });
 
-const { parentCustomer, rules } = toRefs(dataScope);
-
-const {
-	cust_economy_type,
-	cust_enterprise_size,
-	cust_manage_features,
-	cust_listed_mark,
-	sys_true_or_false,
-	cust_industry_type,
-	cust_business_status
-} = proxy.useDict(
-	"cust_economy_type",
-	"cust_enterprise_size",
-	"cust_manage_features",
-	"cust_listed_mark",
-	"sys_true_or_false",
-	"cust_industry_type",
-	"cust_business_status"
-); //下拉框字典
-
-let formData = ref({}); //不能修改const 定义的数据
+const { customerAttr, obligorAttr, rules } = toRefs(dataScope);
 
 watch(
 	() => props.infoData,
 	(newValue, oldValue) => {
 		console.log(newValue);
 		formData.value = deepClone(newValue);
-		// 注册地址组件初始化
-		if (
-			formData.value.companyInfo.registerCountry &&
-			formData.value.companyInfo.registerCountry !== "" &&
-			formData.value.companyInfo.registerProvince &&
-			formData.value.companyInfo.registerProvince !== "" &&
-			formData.value.companyInfo.registerCity &&
-			formData.value.companyInfo.registerCity !== ""
-		) {
-			registerArea.value = [
-				formData.value.companyInfo.registerCountry,
-				formData.value.companyInfo.registerProvince,
-				formData.value.companyInfo.registerCity
-			];
-		}
-		// 营业期限初始化
-		if (
-			formData.value.companyInfo.businessTermStartDate &&
-			formData.value.companyInfo.businessTermStartDate !== "" &&
-			formData.value.companyInfo.businessTermEndDate &&
-			formData.value.companyInfo.businessTermEndDate !== ""
-		) {
-			businessTermDate.value = [
-				formData.value.companyInfo.businessTermStartDate,
-				formData.value.companyInfo.businessTermEndDate
-			];
-		}
-		// 上级公司的名称获取
-		const parentCustomerId = formData.value.companyInfo.parentCustomerId;
-		if (parentCustomerId && parentCustomerId !== "") {
-			let param = { customerId: parentCustomerId };
-			listInfo(param).then(response => {
-				if (response.rows && response.rows.length > 0) {
-					formData.value.companyInfo.parentCustomerName =
-						response.rows[0].customerName;
-					parentCustomer.value.showValue = response.rows[0].customerName;
-				}
-			});
-		} else {
-			formData.value.companyInfo.parentCustomerName = "";
-		}
-		delete formData.value.commonFileList;
-		delete formData.value.bankInfoList;
-		console.log("基本信息", formData.value);
+
+		// // 上级公司的名称获取
+		// const parentCustomerId = formData.value.companyInfo.parentCustomerId;
+		// if (parentCustomerId && parentCustomerId !== "") {
+		// 	let param = { customerId: parentCustomerId };
+		// 	listInfo(param).then(response => {
+		// 		if (response.rows && response.rows.length > 0) {
+		// 			formData.value.companyInfo.parentCustomerName =
+		// 				response.rows[0].customerName;
+		// 			customerAttr.value.showValue = response.rows[0].customerName;
+		// 		}
+		// 	});
+		// } else {
+		// 	formData.value.companyInfo.parentCustomerName = "";
+		// }
+		// delete formData.value.commonFileList;
+		// delete formData.value.bankInfoList;
+		// console.log("基本信息", formData.value);
 	},
 	{ immediate: true, deep: true }
 );
@@ -272,17 +258,18 @@ watch(
 	{ deep: true }
 );
 
-function handleChange(val) {
-	console.log(val);
+// 客户名称选择
+function customerSelectRow(row) {
+	formData.value.customerNameId = row.customerId;
+	formData.value.customerName = row.customerName;
 }
 
-// 上级公司选择
-function parentCustomerSelect(row) {
-	// console.log(row)
-	parentCustomer.value.showValue = row.customerName;
-	formData.value.companyInfo.parentCustomerId = row.customerId;
-	formData.value.companyInfo.parentCustomerName = row.customerName;
+// 债务人名称选择
+function obligorSelectRow(row) {
+	formData.value.obligorNameId = row.customerId;
+	formData.value.obligorName = row.customerName;
 }
+
 // 表单验证
 function validForm() {
 	let result = false;
@@ -307,8 +294,7 @@ defineExpose({
 .page {
 	margin-top: 10px;
 }
-</style>
-<style>
+
 .fixed-width-input .el-input__inner {
 	width: 230px;
 }
