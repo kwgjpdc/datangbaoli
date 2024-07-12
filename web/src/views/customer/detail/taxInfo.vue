@@ -267,7 +267,7 @@ const { proxy } = getCurrentInstance();
 const { cont_tax_type } = proxy.useDict("cont_tax_type");
 
 // 表格数据集合
-let formData = ref([]);
+let formData = ref({});
 
 // 表格删除按钮状态
 const deleteIsDisabled = ref(true);
@@ -315,9 +315,10 @@ const rules = ref({
 			trigger: "blur"
 		},
 		{
-			pattern: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/,
+			// pattern: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/,
+			pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
 			message: " 请输入正确的客户邮箱",
-			trigger: "blur"
+			trigger: "change"
 		}
 	],
 	bankName: [

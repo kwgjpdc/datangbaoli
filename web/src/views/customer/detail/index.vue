@@ -70,6 +70,7 @@
 					:routerQueryObj="routerQueryObj"
 				></client-file>
 
+				<!-- 客户财报信息 -->
 				<customer-info
 					id="customerInfo"
 					ref="customerInfoRef"
@@ -78,6 +79,7 @@
 					:routerQueryObj="routerQueryObj"
 				></customer-info>
 
+				<!-- 客户账号管理 -->
 				<bank-info
 					id="bankInfo"
 					ref="bankInfoRef"
@@ -91,6 +93,7 @@
 				<tax-info
 					id="taxInfo"
 					ref="taxInfoRef"
+					v-if="infoMsg"
 					:customerId="customerId"
 					:infoData="customerDetailInfo.custInvoiceInfoList"
 					:routerQueryObj="routerQueryObj"
@@ -239,13 +242,11 @@ function getInfoPage() {
 		customerDetailInfo.value.deptName = useUserStore().dept.deptName;
 		return;
 	}
-	// console.log(customerDetailInfo)
 	loading.value = true;
 	infoMsg.value = false;
 	getInfo(customerId.value).then(response => {
 		console.log(response);
 		customerDetailInfo.value = response.data;
-		console.log(customerDetailInfo.value.bankInfoList);
 		loading.value = false;
 		infoMsg.value = true;
 	});
@@ -306,7 +307,7 @@ function submitForm(statusFlag) {
 			});
 
 			custCustomerlnfoSave.companyInfo = companyInfo;
-			// console.log('客户信息2',custCustomerlnfoSave);
+
 			custCustomerlnfoSave.status = statusFlag;
 			if (!custCustomerlnfoSave.customerId) {
 				//新增
