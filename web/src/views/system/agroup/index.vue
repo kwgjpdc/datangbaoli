@@ -226,6 +226,7 @@ function resetQuery() {
 function handleUpdate(row){
   form.value.agroupId = row.agroupId;
   form.value.agroupName = row.agroupName;
+  form.value.areas = row.agroupAreas.split(",");
   form.value.agroupAreas = row.agroupAreas;
   form.value.mainUserId = row.mainUserId;
   form.value.mainUserName = row.mainUserName;
@@ -265,6 +266,7 @@ function reset() {
   form.value = {
     agroupId: undefined,
     agroupName: undefined,
+    areas: undefined,
     agroupAreas: undefined,
     mainUserId: undefined,
     mainUserName: undefined,
