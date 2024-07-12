@@ -57,7 +57,9 @@
 		<template #footer>
 			<div class="dialog-footer">
 				<el-button @click="handleClose">取消</el-button>
-				<el-button type="primary" @click="handleOk">确定</el-button>
+				<el-button :loading="loading" type="primary" @click="handleOk"
+					>确定</el-button
+				>
 			</div>
 		</template>
 	</el-dialog>
@@ -65,6 +67,7 @@
 <script setup>
 import { ref, reactive, watch } from "vue";
 import { deepClone } from "@/utils/index";
+import { insertContractInfo } from "@/api/contract";
 
 const props = defineProps({
 	open: {
@@ -80,6 +83,7 @@ const props = defineProps({
 const emit = defineEmits();
 
 let tableList = ref([]);
+const loading = ref(false);
 
 watch(
 	[() => props.open, () => props.tableSelectedRows],
@@ -96,7 +100,25 @@ function handleClose() {
 }
 
 function handleOk() {
-	console.log("confirm", tableList);
-	handleClose();
+	loading.value = true;
+
+	// 传参处理
+	const handleParams = tableList.value.map(item => ({
+		contractId: item.contractId,
+		baseSealTime: item.baseSealTime,
+		baseSignStatus: item.baseSignStatus,
+		baseSignOpinion: item.baseSignOpinion
+	}));
+
+	insertContractInfo({ contractInfoList: handleParams })
+	// insertContractInfo(handleParams)
+		.then(response => {
+			console.log("confirm", tableList);
+			handleClose();
+		})
+		.catch(() => {})
+		.finally(() => {
+			loading.value = false;
+		});
 }
 </script>
