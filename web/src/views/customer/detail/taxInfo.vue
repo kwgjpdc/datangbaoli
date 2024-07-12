@@ -64,7 +64,9 @@
 					<!-- 邮箱 -->
 					<el-table-column label="邮箱" prop="taxpayerEmail" align="center" />
 					<!-- 操作 -->
+
 					<el-table-column
+						v-if="!routerQueryObj.viewFlag"
 						label="操作"
 						align="center"
 						class-name="small-padding fixed-width"
