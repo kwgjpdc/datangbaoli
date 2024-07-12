@@ -87,3 +87,12 @@ export function diligenceExportWord(data,id){
 		responseType: "blob"
 	})
 }
+
+// 查询业务组列表
+export function listAgroup(query) {
+  return request({
+    url: '/system/agroup/list',
+    method: 'get',
+    params: query
+  })
+}

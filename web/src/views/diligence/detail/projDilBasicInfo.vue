@@ -62,15 +62,17 @@
                             </el-form-item>
 
                             <el-form-item label="主办人" prop="sponsor">
-                                <el-input v-model="formData.sponsor" placeholder="请输入主办人" :style="{ width: '240px' }" maxlength="32" />
+                                <div @click="openAddDialog()">
+                                    <el-input v-model="formData.sponsorName" placeholder="请输入主办人" readonly
+                                        suffix-icon="el-icon-search" :style="{ width: '240px' }"></el-input>
+                                </div>
+                                <el-input v-model="formData.sponsor" v-show="false" ></el-input>
                             </el-form-item>
 
 
                             <attach-info id="attachInfo" ref="attachInfoRef" :commonFileList="formData.commonFileList"
                                 :routerQueryObj="routerQueryObj" :dilligenceId="dilligenceId"></attach-info>
                         </el-collapse-item>
-
-
 
                         <el-collapse-item title="保理项目方案要素" name="1">
 
@@ -382,6 +384,18 @@
 
         <DialogTableMulti v-model:multiQuery="multiQuery" v-model:open="multiQuery.open" v-model:tableData="tableDataMulti"
             v-model:prop="propMulti" @selectRow="selectRowMulti" @pageChange="pageChangeMulti" />
+
+        
+        <!-- Dialog -->
+        <DialogTableMulti 
+            v-model:multiQuery="zhubanQuery" 
+            v-model:open="zhubanQuery.open" 
+            v-model:tableData="tableDataZhuban"
+            v-model:prop="propZhuban" 
+            @selectRow="selectRowZhuban" 
+            @pageChange="pageChangeZhuban"
+        />
+
     </div>
 </template>
 <script setup>
@@ -391,7 +405,8 @@ import { deepClone } from "@/utils/index"
 const { proxy } = getCurrentInstance();
 import { listUser } from "@/api/system/user";
 import { listInfo as getUserList } from "@/api/customer/index"
-import useUserStore from '@/store/modules/user'
+import { listAgroup } from "@/api/project/diligence.js"
+
 const props = defineProps({
     diligenceInfo: {
         type: Object,
@@ -846,6 +861,77 @@ defineExpose({
     formData,
     validForm,
 });
+
+// Dialog配置
+let zhubanQuery = reactive({
+    title: "应收账款",
+    open: false,
+    currentPage: 1,
+    total: 1,
+    pageSize: 10
+});
+
+// Dialog表格数据
+const tableDataZhuban = ref([]);
+
+// Dialog表格列头
+const propZhuban = reactive([
+    {
+        label: "业务分组名称",
+        value: "agroupName"
+    }, 
+    {
+        label: "业务主办",
+        value: "mainUserName"
+    },
+    {
+        label: "业务辅办",
+        value: "minorUserName"
+    },
+    {
+        label: "分组区域",
+        value: "agroupAreas"
+    }
+]);
+
+// Dialog查询参数
+const paramsZhuban = reactive({
+    pageNum: 1,
+    pageSize: 10,
+});
+
+// Dialog表格选中方法
+function selectRowZhuban(rows) {
+    formData.value.sponsorName = rows.mainUserName + "," + rows.minorUserName;
+    formData.value.sponsor = rows.mainUserId + "," + rows.minorUserId;
+}
+
+// Dialog表格分页方法
+function pageChangeZhuban(pageNum) {
+    loading.value = true;
+    paramsZhuban.pageNum = pageNum;
+    listAgroup(paramsZhuban).then((response) => {
+        tableDataZhuban.value = response.rows;
+        zhubanQuery.total = response.total;
+        zhubanQuery.open = true;
+        loading.value = false;
+    });
+}
+
+// 打开Dialog
+function openAddDialog() {
+    if (!tableDataZhuban.value.length) {
+        loading.value = true;
+        listAgroup(paramsZhuban).then((response) => {
+            tableDataZhuban.value = response.rows;
+            zhubanQuery.total = response.total;
+            zhubanQuery.open = true;
+            loading.value = false;
+        });
+    } else {
+        zhubanQuery.open = true;
+    }
+}
 
 </script>
 <style lang="scss">
