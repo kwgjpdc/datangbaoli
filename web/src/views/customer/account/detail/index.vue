@@ -152,7 +152,7 @@ function submitForm() {
 			const remark = custCustomerlnfoSave.remark;
 			const commonFileList = custCustomerlnfoSave.commonFileList;
 
-			const addList = custCustomerlnfoSave.bankInfoList.map(item => {
+			const customerAccountManageList = custCustomerlnfoSave.bankInfoList.map(item => {
 				return {
 					...item,
 					customerId,
@@ -165,7 +165,7 @@ function submitForm() {
 				};
 			});
 
-			addCustomerAcont({ addList })
+			addCustomerAcont({ customerAccountManageList })
 				.then(response => {
 					proxy.$modal.msgSuccess("新增成功");
 					loading.value = false;

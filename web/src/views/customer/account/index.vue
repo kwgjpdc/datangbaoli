@@ -40,9 +40,9 @@
 
 			<el-table-column label="客户名称" align="center" prop="customerName" />
 
-			<el-table-column label="客户种类" align="center" prop="orgName" />
+			<el-table-column label="客户种类" align="center" prop="customerType" />
 
-			<el-table-column label="债务人名称" align="center" prop="creditCode" />
+			<el-table-column label="债务人名称" align="center" prop="obligorName" />
 
 			<el-table-column label="操作" align="center" class-name="small-padding">
 				<template #default="scope">
