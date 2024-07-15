@@ -24,11 +24,11 @@
 					</el-col>
 
 					<el-col :xl="6" :lg="8" :sm="12" :xs="24">
-						<el-form-item label="客户种类" prop="formData.type">
+						<el-form-item label="客户种类" prop="formData.customerType">
 							<el-input
 								class="fixed-width-input"
-								v-model="formData.customerName"
-								placeholder="请输入客户名称"
+								v-model="formData.customerType"
+								placeholder="请输入客户种类"
 								clearable
 								maxlength="32"
 							></el-input>
@@ -50,7 +50,7 @@
 							<el-input
 								class="fixed-width-input"
 								type="textarea"
-								v-model="formData.companyInfo.businessScope"
+								v-model="formData.remark"
 								placeholder="请输入备注"
 								clearable
 								maxlength="255"
@@ -152,58 +152,15 @@ const dataScope = reactive({
 		]
 	}, // 债务人
 	rules: {
-		"customerManager": [
-			{ required: true, message: "客户经理不能为空", trigger: "blur" }
-		],
-		"customerName": [
+		customerName: [
 			{ required: true, message: "客户名称不能为空", trigger: "blur" }
 		],
-		"name": [{ required: true, message: "简称不能为空", trigger: "blur" }],
-		"phone": [
-			{
-				pattern: /^1[3456789]\d{9}$/,
-				message: " 请输入正确的手机号",
-				trigger: "blur"
-			}
+		customerType: [
+			{ required: true, message: "客户种类不能为空", trigger: "blur" }
 		],
-		"companyInfo.businessScope": [
+
+		obligorName: [
 			{ required: true, message: "营业范围不能为空", trigger: "blur" }
-		],
-		"companyInfo.foundDate": [
-			{ required: true, message: "公司成立日不能为空", trigger: "change" }
-		],
-		"companyInfo.blocCustomer": [
-			{ required: true, message: "集团内客户不能为空", trigger: "change" }
-		],
-		"companyInfo.companyMail": [
-			{
-				pattern: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/,
-				message: " 请输入正确的客户邮箱",
-				trigger: "blur"
-			}
-		],
-		"companyInfo.registerCapital": [
-			{
-				pattern: /^([0-9]\d{0,8}|1000000000)(\.\d{0,2})?$/,
-				message: " 请输入 0-10亿 的正数，可保留两位小数",
-				trigger: "blur"
-			}
-		],
-		"companyInfo.realIncomeCapital": [
-			{
-				pattern: /^([0-9]\d{0,8}|1000000000)(\.\d{0,2})?$/,
-				message: " 请输入 0-10亿 的正数，可保留两位小数",
-				trigger: "blur"
-			}
-		],
-		"companyInfo.businessScale": [
-			{ required: true, message: "经营规模不能为空", trigger: "change" }
-		],
-		"companyInfo.economicType": [
-			{ required: true, message: "经济类型不能为空", trigger: "change" }
-		],
-		"companyInfo.nationalIndustryClassify": [
-			{ required: true, message: "国标行业分类不能为空", trigger: "change" }
 		]
 	}
 });

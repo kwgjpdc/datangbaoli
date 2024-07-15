@@ -28,10 +28,6 @@
 									>上传文件</el-button
 								>
 							</el-upload>
-							<!-- <el-button type="primary" link @click="handleDelete()"
-                    :disabled="single || props.routerQueryObj.viewFlag">删除</el-button>
-                  <el-button type="text" @click="handleExport" v-hasPermi="['sys:file:export']"
-                    :disabled="single || multiple || props.routerQueryObj.viewFlag">批量下载</el-button> -->
 						</div>
 					</template>
 					<el-table
@@ -152,62 +148,6 @@
 				</el-card>
 			</el-collapse-item>
 		</el-collapse>
-
-		<!-- 添加或修改文件信息对话框 -->
-		<!-- <el-dialog
-			:title="title"
-			v-model="open"
-			width="500px"
-			append-to-body
-			@closed="selececlientRow(false)"
-		>
-			<el-row :gutter="15">
-				<el-col :span="24" :xs="24">
-					<el-form ref="fileRef" :model="form" label-width="140px">
-						<el-form-item label="附件类型名称" prop="bizTypeName">
-							<el-input
-								v-model="form.bizTypeName"
-								placeholder="请输入附件类型名称"
-								clearable
-							/>
-						</el-form-item>
-						<el-form-item>
-							<el-button type="primary" @click="searchBiztypeName"
-								>查询</el-button
-							>
-						</el-form-item>
-					</el-form>
-				</el-col>
-			</el-row>
-			<div class="table-content">
-				<el-row justify="center">
-					<el-col :span="24">
-						<el-table
-							ref="multipleTable"
-							:data="tableData"
-							tooltip-effect="dark"
-							style="width: 300px; margin: 0"
-							@row-click="selececlientRow"
-							height="350"
-						>
-							<el-table-column prop="value" label="序号" width="120">
-							</el-table-column>
-							<el-table-column prop="label" label="附件类型名称">
-							</el-table-column>
-						</el-table>
-					</el-col>
-				</el-row>
-			</div>
-			<div class="page">
-				<el-pagination
-					:current-page="currentPage1"
-					:page-size="100"
-					layout="total, prev, pager, next"
-					:total="total"
-				>
-				</el-pagination>
-			</div>
-		</el-dialog> -->
 	</div>
 </template>
 

@@ -53,16 +53,16 @@
 									/>
 								</template>
 							</el-table-column>
-							<el-table-column label="开户行" align="center" prop="bankBranch">
+							<el-table-column label="开户行" align="center" prop="accountBankInfo">
 							</el-table-column>
-							<el-table-column label="账号" align="center" prop="bankAccount">
+							<el-table-column label="账号" align="center" prop="accountInfo">
 							</el-table-column>
 							<el-table-column label="户名" align="center" prop="accountName">
 							</el-table-column>
 							<el-table-column
 								label="流水余额"
 								align="center"
-								prop="flowBalance"
+								prop="accountCapitalInfo"
 							>
 							</el-table-column>
 
@@ -149,21 +149,21 @@
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
-						<el-form-item label="开户行" prop="bankBranch">
+						<el-form-item label="开户行" prop="accountBankInfo">
 							<el-input
 								placeholder="请输入开户行"
 								maxlength="64"
-								v-model="accountFormInput.bankBranch"
+								v-model="accountFormInput.accountBankInfo"
 								:style="{ width: '240px' }"
 							></el-input>
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
-						<el-form-item label="账号" prop="bankAccount">
+						<el-form-item label="账号" prop="accountInfo">
 							<el-input
 								placeholder="请输入账号"
 								maxlength="64"
-								v-model="accountFormInput.bankAccount"
+								v-model="accountFormInput.accountInfo"
 								:style="{ width: '240px' }"
 							></el-input>
 						</el-form-item>
@@ -180,10 +180,10 @@
 					</el-col>
 
 					<el-col :span="12">
-						<el-form-item label="流水余额" prop="flowBalance">
+						<el-form-item label="流水余额" prop="accountCapitalInfo">
 							<ElPriceInput
 								v-model:form="accountFormInput"
-								prop="flowBalance"
+								prop="accountCapitalInfo"
 								:rules="rules"
 								:disabled="props.routerQueryObj.viewFlag"
 								:placeholder="'请输入'"
@@ -253,7 +253,9 @@ const dataScope = reactive({
 });
 
 const { accountAddrules } = toRefs(dataScope);
+
 let formData = ref({}); //不能修改const 定义的数据
+
 let accountFormInput = ref({
 	customerId:
 		props.customerId && props.customerId !== "" ? props.customerId : "",

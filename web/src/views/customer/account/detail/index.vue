@@ -27,7 +27,7 @@
 				<basic-information
 					id="basicInformation"
 					ref="basicInformationRef"
-					:infoData="customerDetailInfo"
+					:infoData="customerBankInfo"
 					:customerId="customerId"
 					:routerQueryObj="routerQueryObj"
 				></basic-information>
@@ -36,7 +36,7 @@
 				<bank-info
 					id="bankInfo"
 					ref="bankInfoRef"
-					:infoData="customerDetailInfo.bankInfoList"
+					:infoData="customerBankInfo.bankInfoList"
 					:customerId="customerId"
 					:routerQueryObj="routerQueryObj"
 				></bank-info>
@@ -45,7 +45,7 @@
 				<client-file
 					id="clientFile"
 					ref="clientFileRef"
-					:infoData="customerDetailInfo.commonFileList2"
+					:infoData="customerBankInfo.commonFileList2"
 					:customerId="customerId"
 					:routerQueryObj="routerQueryObj"
 				></client-file>
@@ -79,86 +79,23 @@ const basicInformationRef = ref(null);
 const invoiceInfoRef = ref(null);
 
 const data = reactive({
-	customerDetailInfo: {
+	customerBankInfo: {
 		remark: null,
-		customerManager: "",
-		customerName: "",
-		name: "",
-		orgName: "保理公司",
-		customerNameEn: "",
-		rateScore: "",
-		rateOrg: "",
-		rateLevel: "",
-		rateEffectiveDueDate: "",
-		creditNature: "",
-		quotaTypeGroup: "",
-		currency: "1",
-		quotaCeiling: "",
-		quotaIsCycle: "",
-		quotaEffectiveDate: "",
-		quotaDueDate: "",
-		totalAmount: "",
-		usedAmount: "",
-		mayAmount: "",
-		companyInfo: {
-			businessScope: "",
-			creditCode: "",
-			foundDate: "",
-			parentCustomerId: null,
-			registerCountry: "",
-			registerProvince: "",
-			registerCity: "",
-			registerAddr: "",
-			blocCustomer: "",
-			companyPhone: "",
-			operateAddr: "",
-			companyFax: "",
-			listedCompanyMark: "",
-			companyMail: "",
-			registerCapital: "",
-			realIncomeCapital: "",
-			businessTermStartDate: "",
-			businessTermEndDate: "",
-			manageFeature: "",
-			industryClassify: "",
-			businessState: "",
-			registerApprovalDate: "",
-			employeeNumber: "",
-			businessScale: "",
-			economicType: "",
-			nationalIndustryClassify: null,
-			corporationName: "",
-			sex: "",
-			birth: "",
-			credentialDueDate: "",
-			corporationIdCard: "",
-			qualification: "",
-			mobilePhone: "",
-			fixedPhone: "",
-			email: "",
-			propertyDescription: "",
-			currencyType: "1",
-			worth: "",
-			remark: ""
-		},
-		loginName: "",
-		phone: "",
-		flowld: "1",
-		userIds: "2",
+		customerName: null,
+		customerId: null,
+		customerType: null,
+		obligorName: null,
+		obligorId: null,
 		bankInfoList: [],
-		commonFileList: [],
-		commonFileList2: [],
-		custInvoiceInfoList: []
-	} //客户信息
+		commonFileList: []
+	} //客户账号管理信息
 });
 
-const { customerDetailInfo } = toRefs(data);
-const customerList = ref([]);
+const { customerBankInfo } = toRefs(data);
 
 watch(
 	route,
 	newRoute => {
-		console.log(newRoute.query);
 		customerId.value = newRoute.query && newRoute.query.customerId; //{customerId:"queryParam0"}
 		routerQueryObj.value.viewFlag =
 			newRoute.query &&
@@ -172,73 +109,40 @@ watch(
 
 /* 修改的时候查询客户基本信息列表 */
 function getInfoPage() {
-	// 新增不需要去获取原来的数据
+	// 原代码留，不知道做什么，看上去有点重要！
 	if (!customerId.value) {
-		customerDetailInfo.value.deptId = useUserStore().dept.deptId;
-		customerDetailInfo.value.deptName = useUserStore().dept.deptName;
+		customerBankInfo.value.deptId = useUserStore().dept.deptId;
+		customerBankInfo.value.deptName = useUserStore().dept.deptName;
 		return;
 	}
-	// console.log(customerDetailInfo)
 	loading.value = true;
 	getInfo(customerId.value).then(response => {
-		console.log(response);
-		customerDetailInfo.value = response.data;
-		console.log(customerDetailInfo.value.bankInfoList);
+		customerBankInfo.value = response.data;
+
 		loading.value = false;
 	});
 }
 
 function submitForm(statusFlag) {
-	// handleSave();
-	// return;
+	debugger;
 	loading.value = true;
 	const basicInformationForm = new Promise((resolve, reject) => {
 		proxy.$refs["basicInformationRef"].$refs["elForm"].validate(valid => {
 			valid ? resolve(valid) : reject(valid);
 		});
 	});
-	const creditRatingInfoForm = new Promise((resolve, reject) => {
-		proxy.$refs["creditRatingInfoRef"].$refs["elForm"].validate(valid => {
-			valid ? resolve(valid) : reject(valid);
-		});
-	});
-	const companyInfoForm = new Promise((resolve, reject) => {
-		proxy.$refs["companyInfoRef"].$refs["elForm"].validate(valid => {
-			valid ? resolve(valid) : reject(valid);
-		});
-	});
-	const customerInfoForm = new Promise((resolve, reject) => {
-		proxy.$refs["customerInfoRef"].$refs["elForm"].validate(valid => {
-			valid ? resolve(valid) : reject(valid);
-		});
-	});
 
 	// 账户管理不需要在外层校验；
-	Promise.all([basicInformationForm, companyInfoForm, customerInfoForm])
+	Promise.all([basicInformationForm])
 		.then(() => {
-			const formKeys = [
-				"basicInformationRef",
-				"creditRatingInfoRef",
-				"companyInfoRef",
-				"customerInfoRef",
-				"clientFileRef",
-				"bankInfoRef",
-				"taxInfoRef", // 纳税信息
-				"mobileLoginInfoRef" // 移动端登录认证
-			];
-			let custCustomerlnfoSave = customerDetailInfo;
-			let companyInfo = {};
+			const formKeys = ["basicInformationRef", "bankInfoRef", "clientFileRef"];
+			let custCustomerlnfoSave = customerBankInfo;
+
 			formKeys.map(formKey => {
 				const partFormData = proxy.$refs[formKey].formData;
-				if (formKey === "basicInformationRef" || formKey === "companyInfoRef") {
-					Object.assign(companyInfo, partFormData.companyInfo);
-				}
 				Object.assign(custCustomerlnfoSave, partFormData);
 			});
 
-			custCustomerlnfoSave.companyInfo = companyInfo;
-			// console.log('客户信息2',custCustomerlnfoSave);
-			custCustomerlnfoSave.status = statusFlag;
 			if (!custCustomerlnfoSave.customerId) {
 				//新增
 				addInfo(custCustomerlnfoSave)
