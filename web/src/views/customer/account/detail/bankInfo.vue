@@ -53,7 +53,11 @@
 									/>
 								</template>
 							</el-table-column>
-							<el-table-column label="开户行" align="center" prop="accountBankInfo">
+							<el-table-column
+								label="开户行"
+								align="center"
+								prop="accountBankInfo"
+							>
 							</el-table-column>
 							<el-table-column label="账号" align="center" prop="accountInfo">
 							</el-table-column>
@@ -70,7 +74,7 @@
 								label="操作"
 								align="center"
 								fixed="right"
-                width="150"
+								width="150"
 								class-name="small-padding fixed-width"
 								v-if="!props.routerQueryObj.viewFlag"
 							>
@@ -245,10 +249,18 @@ const dataScope = reactive({
 		currencyType: [
 			{ required: true, message: "币种不能为空", trigger: "change" }
 		],
-		bankBranch: [
-			{ required: true, message: "开户行不能为空", trigger: "blur" }
+		accountBankInfo: [
+			{ required: true, message: "开户行不能为空", trigger: "change" }
 		],
-		accountName: [{ required: true, message: "户名不能为空", trigger: "blur" }]
+		accountInfo: [
+			{ required: true, message: "账号不能为空", trigger: "change" }
+		],
+		accountName: [
+			{ required: true, message: "户名不能为空", trigger: "change" }
+		],
+		accountCapitalInfo: [
+			{ required: true, message: "流水余额不能为空", trigger: "change" }
+		]
 	}
 });
 
@@ -257,15 +269,12 @@ const { accountAddrules } = toRefs(dataScope);
 let formData = ref({}); //不能修改const 定义的数据
 
 let accountFormInput = ref({
-	customerId:
-		props.customerId && props.customerId !== "" ? props.customerId : "",
-	remark: null,
-	accountType: "",
-	currencyType: "",
-	bankBranch: "",
-	bankAccount: "",
-	bankCode: "",
-	accountName: ""
+	accountType: null,
+	currencyType: null,
+	accountBankInfo: null,
+	accountName: null,
+	accountInfo: null,
+	accountCapitalInfo: null
 }); //后面要进行修改的对象用let定义
 
 const { sys_currency_type, cust_account_type } = proxy.useDict(
@@ -330,15 +339,12 @@ function saveAccount() {
 // 重置添加联系人
 function resetAccountFormInput() {
 	accountFormInput.value = {
-		customerId:
-			props.customerId && props.customerId !== "" ? props.customerId : "",
-		remark: null,
-		accountType: "",
-		currencyType: "",
-		bankBranch: "",
-		bankAccount: "",
-		bankCode: "",
-		accountName: ""
+		accountType: null,
+		currencyType: null,
+		accountBankInfo: null,
+		accountName: null,
+		accountInfo: null,
+		accountCapitalInfo: null
 	};
 	proxy.$refs["formInput"].clearValidate();
 }

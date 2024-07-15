@@ -89,8 +89,10 @@ const registerArea = ref([]);
 
 let formData = ref({
 	customerName: null,
+	customerId: null,
 	customerType: null,
 	obligorName: null,
+	obligorId: null,
 	remark: null
 }); //不能修改const 定义的数据
 
@@ -217,13 +219,13 @@ watch(
 
 // 客户名称选择
 function customerSelectRow(row) {
-	formData.value.customerNameId = row.customerId;
+	formData.value.customerId = row.customerId;
 	formData.value.customerName = row.customerName;
 }
 
 // 债务人名称选择
 function obligorSelectRow(row) {
-	formData.value.obligorNameId = row.customerId;
+	formData.value.obligorId = row.customerId;
 	formData.value.obligorName = row.customerName;
 }
 

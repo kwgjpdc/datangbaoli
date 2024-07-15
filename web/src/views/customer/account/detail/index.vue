@@ -8,7 +8,7 @@
 			<div class="operate-button">
 				<el-row :gutter="10" justify="end">
 					<el-col :span="1.5" v-if="!routerQueryObj.viewFlag">
-						<el-button type="primary" icon="List" @click="submitForm(1)"
+						<el-button type="primary" icon="List" @click="submitForm"
 							>保存</el-button
 						>
 					</el-col>
@@ -61,6 +61,8 @@ import {
 	getInfo,
 	getCustomerList
 } from "@/api/customer/index";
+
+import { addCustomerAcont } from "@/api/customer/customerAccount";
 import { onMounted, onBeforeUnmount } from "vue";
 import useUserStore from "@/store/modules/user";
 
@@ -108,22 +110,21 @@ watch(
 );
 
 /* 修改的时候查询客户基本信息列表 */
-function getInfoPage() {
-	// 原代码留，不知道做什么，看上去有点重要！
-	if (!customerId.value) {
-		customerBankInfo.value.deptId = useUserStore().dept.deptId;
-		customerBankInfo.value.deptName = useUserStore().dept.deptName;
-		return;
-	}
-	loading.value = true;
-	getInfo(customerId.value).then(response => {
-		customerBankInfo.value = response.data;
+// function getInfoPage() {
+// 	// 原代码留，不知道做什么，看上去有点重要！
+// 	if (!customerId.value) {
+// 		customerBankInfo.value.deptId = useUserStore().dept.deptId;
+// 		customerBankInfo.value.deptName = useUserStore().dept.deptName;
+// 		return;
+// 	}
+// 	loading.value = true;
+// 	getInfo(customerId.value).then(response => {
+// 		customerBankInfo.value = response.data;
+// 		loading.value = false;
+// 	});
+// }
 
-		loading.value = false;
-	});
-}
-
-function submitForm(statusFlag) {
+function submitForm() {
 	debugger;
 	loading.value = true;
 	const basicInformationForm = new Promise((resolve, reject) => {
@@ -143,29 +144,60 @@ function submitForm(statusFlag) {
 				Object.assign(custCustomerlnfoSave, partFormData);
 			});
 
-			if (!custCustomerlnfoSave.customerId) {
-				//新增
-				addInfo(custCustomerlnfoSave)
-					.then(response => {
-						proxy.$modal.msgSuccess("新增成功");
-						loading.value = false;
-						closePage();
-					})
-					.catch(() => {
-						loading.value = false;
-					});
-			} else {
-				//修改
-				updateInfo(custCustomerlnfoSave)
-					.then(response => {
-						proxy.$modal.msgSuccess("修改成功");
-						loading.value = false;
-						closePage();
-					})
-					.catch(() => {
-						loading.value = false;
-					});
-			}
+			const customerId = custCustomerlnfoSave.customerId;
+			const customerName = custCustomerlnfoSave.customerName;
+			const customerType = custCustomerlnfoSave.customerType;
+			const obligorId = custCustomerlnfoSave.obligorId;
+			const obligorName = custCustomerlnfoSave.obligorName;
+			const remark = custCustomerlnfoSave.remark;
+			const commonFileList = custCustomerlnfoSave.commonFileList;
+
+			const addList = custCustomerlnfoSave.bankInfoList.map(item => {
+				return {
+					...item,
+					customerId,
+					customerName,
+					customerType,
+					obligorId,
+					obligorName,
+					remark,
+					commonFileList
+				};
+			});
+
+			addCustomerAcont({ addList })
+				.then(response => {
+					proxy.$modal.msgSuccess("新增成功");
+					loading.value = false;
+					closePage();
+				})
+				.catch(() => {
+					loading.value = false;
+				});
+
+			// if (!custCustomerlnfoSave.customerId) {
+			// 	//新增
+			// 	addCustomerAcont({ addList })
+			// 		.then(response => {
+			// 			proxy.$modal.msgSuccess("新增成功");
+			// 			loading.value = false;
+			// 			closePage();
+			// 		})
+			// 		.catch(() => {
+			// 			loading.value = false;
+			// 		});
+			// } else {
+			// 	//修改
+			// 	updateInfo(custCustomerlnfoSave)
+			// 		.then(response => {
+			// 			proxy.$modal.msgSuccess("修改成功");
+			// 			loading.value = false;
+			// 			closePage();
+			// 		})
+			// 		.catch(() => {
+			// 			loading.value = false;
+			// 		});
+			// }
 		})
 		.catch(() => {
 			const errDom = proxy.$refs["formCon"].querySelectorAll(
@@ -221,7 +253,7 @@ function closePage() {
 	proxy.$tab.closeOpenPage(obj);
 }
 
-getInfoPage();
+// getInfoPage();
 </script>
 
 <style lang="scss" scoped>

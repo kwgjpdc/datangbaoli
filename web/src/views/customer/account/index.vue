@@ -1,13 +1,13 @@
 <template>
 	<div class="app-container">
 		<!-- 查询表单组件 -->
-		<QueryParams
+		<!-- <QueryParams
 			:queryParams="queryParams"
 			:paramsItems="paramsItems"
 			:showSearch="showSearch"
 			@handleQuery="handleQuery"
 			@resetQuery="resetQuery"
-		></QueryParams>
+		></QueryParams> -->
 		<!-- 查询表单组件 end-->
 
 		<el-row :gutter="10" class="mb8" style="margin-top: 20px">
@@ -87,6 +87,10 @@ import {
 	getCustomerList,
 	saveData
 } from "@/api/customer/index";
+
+import {
+	customerAcontInfoList // 银行账号列表
+} from "@/api/customer/customerAccount";
 import { listUser } from "@/api/system/user";
 import { deepClone, developTip } from "@/utils/index";
 import QueryParams from "@/components/QueryParams";
@@ -232,7 +236,7 @@ function getList() {
 		paramsData.params.creditEffectiveStartDate = "";
 		paramsData.params.creditEffectiveEndDate = "";
 	}
-	listInfo(paramsData).then(response => {
+	customerAcontInfoList(paramsData).then(response => {
 		infoList.value = response.rows;
 		total.value = response.total;
 		loading.value = false;
@@ -486,61 +490,6 @@ function handleSaveData() {
 function cancelSaveData() {
 	openBatch.value = false;
 	reset();
-}
-
-// 跳转财务报表导入
-function goReportImport() {
-	router.push({
-		path: "/customer/customer/report",
-		query: {}
-	});
-}
-
-// 生成授信上会报告
-function generateReport() {
-	if (!selectId.value) {
-		ElMessage({
-			message: "请先选择需要生成报告的信息",
-			type: "error"
-		});
-	} else {
-		custExportWord(selectId.value).then(res => {
-			if (!res.code) {
-				if (!res || res.size == 0) {
-					ElMessage({
-						message: "未填写该客户授信信息",
-						type: "error"
-					});
-					return;
-				}
-				const elink = document.createElement("a");
-				elink.href = window.URL.createObjectURL(new Blob([res]));
-				elink.style.display = "none";
-				elink.setAttribute("download", "客户授信上会报告" + ".docx");
-				document.body.appendChild(elink);
-				elink.click();
-				document.body.removeChild(elink);
-			} else if (res.code == 500) {
-				ElMessage({
-					message: "未填写该客户授信信息",
-					type: "error"
-				});
-			} else {
-				ElMessage({
-					message: "未填写该客户授信信息",
-					type: "error"
-				});
-			}
-		});
-	}
-}
-
-function changeColwidth(nw, ow, col, evt) {
-	// for(let item of infoList.columnList){
-	//   if(item.label == column.label){
-	//     item.width = newWidth;
-	//   }
-	// }
 }
 
 getList();
