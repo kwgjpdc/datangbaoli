@@ -30,7 +30,7 @@ export default defineConfig(({ mode, command }) => {
 			proxy: {
 				// https://cn.vitejs.dev/config/#server-proxy
 				"/dev-api": {
-					target: "http://172.16.1.50:8089",
+					target: "http://172.16.1.50:8089",  // wzm
 					//  target: 'http://192.168.0.214:8089',
 					//  target:  'http://172.100.40.48:8089',
 					//  target: 'http://172.16.1.250:8089',
