@@ -172,7 +172,6 @@ function submitForm() {
 			// const customerId = route.query.customerId;
 			// const obligorId = route.query.obligorId;
 
-			debugger;
 			if (!route.query.customerId) {
 				// add
 				addCustomerAcont({ customerAccountManageList })

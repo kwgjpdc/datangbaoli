@@ -38,7 +38,13 @@
 		>
 			<el-table-column type="index" align="center" width="100" label="序号" />
 
-			<el-table-column label="客户名称" align="center" prop="customerName" />
+			<el-table-column label="客户名称" align="center" prop="customerName">
+				<template #default="scope">
+					<el-button link type="primary" @click="handleView(scope.row)">
+						{{ scope.row.customerName }}
+					</el-button>
+				</template>
+			</el-table-column>
 
 			<el-table-column label="客户种类" align="center" prop="customerType" />
 
@@ -318,8 +324,6 @@ function handleAdd() {
 			pageNum: queryParams.value.pageNum
 		}
 	});
-	// open.value = true;
-	// title.value = "添加用户信息";
 }
 
 /** 修改按钮操作 */
@@ -336,88 +340,19 @@ function handleUpdate(row) {
 		}
 	});
 }
-// 发起授信
-function handleCredit(row) {
-	reset();
-	const _customerId = row.customerId;
-	let status = row.cstatus;
-	if (status == 2) {
-		proxy.$modal.msgSuccess("此客户已发起授信流程");
-	} else if (status == 3 || status == 4) {
-		proxy.$modal
-			.confirm("此客户已存在授信结果是否重新发起授信？")
-			.then(function () {
-				router.push({
-					path: "/customer/customer/creditDetail",
-					query: {
-						customerId: _customerId,
-						pageNum: queryParams.value.pageNum
-					}
-				});
-			})
-			.catch(() => {});
-	} else {
-		router.push({
-			path: "/customer/customer/creditDetail",
-			query: {
-				customerId: _customerId,
-				pageNum: queryParams.value.pageNum
-			}
-		});
-	}
-	// const _customerId = row.customerId
-	// router.push({
-	// 	path: '/customer/customer/creditDetail',
-	// 	query: {
-	// 		customerId: _customerId,
-	// 		pageNum: queryParams.value.pageNum
-	// 	}
-	// });
-}
 
-function handleCreditView(row) {
-	reset();
-	const _customerId = row.customerId;
-	router.push({
-		path: "/customer/customer/creditDetail",
-		query: {
-			customerId: _customerId,
-			viewFlag: true,
-			pageNum: queryParams.value.pageNum
-		}
-	});
-}
 // 查看页面
 function handleView(row) {
 	reset();
-	const _customerId = row.customerId;
+	const customerId = row.customerId;
+	const obligorId = row.obligorId;
 	router.push({
-		path: "/customer/customer/detail",
+		path: "/customer/account/detail",
 		query: {
-			customerId: _customerId,
+			customerId,
+			obligorId,
 			viewFlag: true,
 			pageNum: queryParams.value.pageNum
-		}
-	});
-}
-
-/** 提交按钮 */
-function submitForm() {
-	proxy.$refs["infoRef"].validate(valid => {
-		if (valid) {
-			if (form.value.customerId != null) {
-				updateInfo(form.value).then(response => {
-					proxy.$modal.msgSuccess("修改成功");
-					open.value = false;
-					getList();
-				});
-			} else {
-				addInfo(form.value).then(response => {
-					proxy.$modal.msgSuccess("新增成功");
-					open.value = false;
-					getList();
-				});
-			}
 		}
 	});
 }
@@ -435,65 +370,6 @@ function handleDelete(row) {
 			proxy.$modal.msgSuccess("删除成功");
 		})
 		.catch(() => {});
-}
-
-/** 导出按钮操作 */
-function handleExport() {
-	let paramsData = deepClone(queryParams.value);
-	delete paramsData.creditEffectiveDate;
-	const creditEffectiveDate = queryParams.value.creditEffectiveDate;
-	if (null != creditEffectiveDate && "" != creditEffectiveDate) {
-		paramsData.params.creditEffectiveStartDate = creditEffectiveDate.value[0];
-		paramsData.params.creditEffectiveEndDate = creditEffectiveDate.value[1];
-	} else {
-		paramsData.params.creditEffectiveStartDate = "";
-		paramsData.params.creditEffectiveEndDate = "";
-	}
-	proxy.download(
-		"/cust/customer/export",
-		{
-			...paramsData.value
-		},
-		`info_${new Date().getTime()}.xlsx`
-	);
-}
-
-function handleAddBank(row) {
-	console.log(row);
-	const _customerId = row.customerId || ids.value;
-	router.push({
-		path: "/customer/customer/custbankinfo",
-		query: {
-			customerId: _customerId
-		}
-	});
-}
-
-function handleBatch() {
-	// console.log("123")
-	openBatch.value = true;
-}
-
-function handleSaveData() {
-	batchLoading.value = true;
-	if (batchCustomerList.value.length) {
-		batchCustomerList.value.forEach(element => {
-			element.contactList = [element.contact];
-		});
-		saveData({
-			customerList: batchCustomerList.value
-		}).then(response => {
-			batchLoading.value = false;
-			proxy.$modal.msgSuccess("导入成功");
-			openBatch.value = false;
-			getList();
-		});
-	}
-}
-// 取消按钮
-function cancelSaveData() {
-	openBatch.value = false;
-	reset();
 }
 
 getList();
