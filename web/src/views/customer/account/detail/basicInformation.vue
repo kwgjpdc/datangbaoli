@@ -1,12 +1,4 @@
 <template>
-	<!-- <el-form
-		class="info-form"
-		ref="elForm"
-		:model="formData"
-		label-width="140px"
-		:loading="loading"
-		:disabled="props.routerQueryObj.viewFlag"
-	> -->
 	<el-form
 		class="info-form"
 		ref="elForm"

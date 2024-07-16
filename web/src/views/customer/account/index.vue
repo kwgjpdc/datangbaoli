@@ -44,9 +44,11 @@
 
 			<el-table-column label="债务人名称" align="center" prop="obligorName" />
 
+			<el-table-column label="备注" align="center" prop="remark" />
+
 			<el-table-column label="操作" align="center" class-name="small-padding">
 				<template #default="scope">
-					<div class="button-display">
+					<div class="button-display" style="justify-content: center">
 						<el-button
 							link
 							type="primary"
