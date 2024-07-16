@@ -42,13 +42,13 @@
 				></bank-info>
 
 				<!-- 上传附件 -->
-				<client-file
+				<!-- <client-file
 					id="clientFile"
 					ref="clientFileRef"
 					:infoData="customerBankInfo.commonFileList2"
 					:customerId="customerId"
 					:routerQueryObj="routerQueryObj"
-				></client-file>
+				></client-file> -->
 			</div>
 		</div>
 	</div>
@@ -62,8 +62,11 @@ import {
 	getCustomerList
 } from "@/api/customer/index";
 
-import { addCustomerAcont } from "@/api/customer/customerAccount";
-import { onMounted, onBeforeUnmount } from "vue";
+import {
+	addCustomerAcont,
+	customerAcontDetail
+} from "@/api/customer/customerAccount";
+import { onMounted } from "vue";
 import useUserStore from "@/store/modules/user";
 
 import basicInformation from "./basicInformation";
@@ -123,6 +126,8 @@ watch(
 // 		loading.value = false;
 // 	});
 // }
+
+function apiCustomerAcontDetail() {}
 
 function submitForm() {
 	if (!proxy.$refs["bankInfoRef"].formData.bankInfoList.length) {
@@ -225,6 +230,7 @@ function goAnchor(id) {
 		inline: "nearest"
 	});
 }
+
 // 滚动监听器
 function onScroll() {
 	// 获取所有锚点元素
@@ -251,6 +257,7 @@ function onScroll() {
 	console.log(navIndex);
 	active.value = navIndex;
 }
+
 // 关闭详情标签页
 function closePage() {
 	const obj = {
@@ -259,6 +266,51 @@ function closePage() {
 	};
 	proxy.$tab.closeOpenPage(obj);
 }
+
+onMounted(() => {
+	const customerId = route.query.customerId;
+	const obligorId = route.query.obligorId;
+
+	if (customerId && obligorId) {
+		customerAcontDetail({
+			customerId,
+			obligorId
+		})
+			.then(response => {
+				const customerName = response.data[0].customerName;
+				const customerId = response.data[0].customerId;
+				const obligorName = response.data[0].customerName;
+				const obligorId = response.data[0].obligorId;
+				const customerType = response.data[0].customerType;
+				const remark = response.data[0].remark;
+
+				const bankInfoList = response.data.map(item => ({
+					accountType: item.accountType,
+					currencyType: item.currencyType,
+					accountBankInfo: item.accountBankInfo,
+					accountInfo: item.accountInfo,
+					accountName: item.accountName,
+					accountCapitalInfo: item.accountCapitalInfo
+				}));
+
+				customerBankInfo.value = {
+					customerName,
+					customerId,
+					obligorName,
+					obligorId,
+					customerType,
+					remark,
+					bankInfoList
+				};
+			})
+			.catch(err => {
+				console.log(err);
+			})
+			.finally(() => {
+				loading.value = false;
+			});
+	}
+});
 
 // getInfoPage();
 </script>

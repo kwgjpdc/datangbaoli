@@ -325,11 +325,13 @@ function handleAdd() {
 /** 修改按钮操作 */
 function handleUpdate(row) {
 	reset();
-	const _customerId = row.customerId;
+	const customerId = row.customerId;
+	const obligorId = row.obligorId;
 	router.push({
-		path: "/customer/customer/detail",
+		path: "/customer/account/detail",
 		query: {
-			customerId: _customerId,
+			customerId,
+			obligorId,
 			pageNum: queryParams.value.pageNum
 		}
 	});

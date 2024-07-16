@@ -282,13 +282,11 @@ const { sys_currency_type, cust_account_type } = proxy.useDict(
 	"cust_account_type"
 ); //下拉框字典
 watch(
-	props.infoData,
-	(newValue, oldValue) => {
-		console.log(newValue);
+	() => props.infoData,
+	newValue => {
 		if (newValue) {
 			formData.value.bankInfoList = deepClone(newValue);
 		}
-		console.log(formData);
 	},
 	{ immediate: true }
 );
@@ -296,8 +294,6 @@ watch(
 // 联系人弹窗打开
 function addAccount(row) {
 	openAccountAdd.value = true;
-	console.log("row");
-	console.log(row);
 	if (!row) {
 		//   初始化表单数据
 		accountFormInput.value.accountType = cust_account_type.value[0].value;
