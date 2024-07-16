@@ -1,13 +1,13 @@
 <template>
 	<div class="app-container">
 		<!-- 查询表单组件 -->
-		<!-- <QueryParams
+		<QueryParams
 			:queryParams="queryParams"
 			:paramsItems="paramsItems"
 			:showSearch="showSearch"
 			@handleQuery="handleQuery"
 			@resetQuery="resetQuery"
-		></QueryParams> -->
+		></QueryParams>
 		<!-- 查询表单组件 end-->
 
 		<el-row :gutter="10" class="mb8" style="margin-top: 20px">
@@ -50,8 +50,6 @@
 
 			<el-table-column label="债务人名称" align="center" prop="obligorName" />
 
-			<el-table-column label="备注" align="center" prop="remark" />
-
 			<el-table-column label="操作" align="center" class-name="small-padding">
 				<template #default="scope">
 					<div class="button-display" style="justify-content: center">
@@ -86,87 +84,38 @@
 </template>
 
 <script setup name="Info">
-import {
-	listInfo,
-	getInfo,
-	delInfo,
-	addInfo,
-	updateInfo,
-	getCustomerList,
-	saveData
-} from "@/api/customer/index";
+import { delInfo } from "@/api/customer/index";
 
 import {
-	customerAcontInfoList // 银行账号列表
+	customerAcontInfoList, // 客户账号管理-列表
+	delCustomerAcont // 删除
 } from "@/api/customer/customerAccount";
-import { listUser } from "@/api/system/user";
-import { deepClone, developTip } from "@/utils/index";
+
+import { deepClone } from "@/utils/index";
 import QueryParams from "@/components/QueryParams";
-import { ElMessage } from "element-plus";
-import { custExportWord } from "@/api/project/diligence";
+
 const { proxy } = getCurrentInstance();
 const route = useRoute();
 const router = useRouter();
 
 const infoList = ref([]);
-const open = ref(false);
 const loading = ref(true);
 const showSearch = ref(true);
 let custSelection = ref({});
 let selectId = ref("");
 let radio = ref("");
 const total = ref(0);
-const title = ref("");
-const checkList = ref(["customerManagerName", "createby"]);
-const checkItem = ref("");
-const openBatch = ref(false);
-const batchLoading = ref(true);
-const titleBatch = ref("批量导入");
-const creditEffectiveDate = ref([]);
-let batchCustomerList = ref([]);
-const {
-	cust_register_country,
-	cust_customer_type,
-	cust_customer_category,
-	sys_true_or_false,
-	cust_industry_type,
-	sys_pass_status,
-	sys_yes_no
-} = proxy.useDict(
-	"cust_register_country",
-	"cust_customer_type",
-	"cust_customer_category",
-	"sys_true_or_false",
-	"cust_industry_type",
-	"sys_pass_status",
-	"sys_yes_no"
-); //下拉框字典
 
 const data = reactive({
 	form: {},
 	queryParams: {
 		pageNum: 1,
 		pageSize: 10,
-		customerNo: null,
+		accountInfo: null,
 		customerName: null,
-		name: null,
-		creditCode: null,
-		customerManagerName: null,
-		quotaStatus: "",
-		isCredit: "",
-		creditEffectiveDate: [],
-		params: {
-			creditEffectiveStartDate: "",
-			creditEffectiveEndDate: ""
-		}
+		obligorName: null
 	},
 	paramsItems: [
-		{
-			type: "text",
-			label: "客户编号",
-			prop: "customerNo",
-			placeholder: "请输入客户编号"
-		},
 		{
 			type: "text",
 			label: "客户名称",
@@ -175,42 +124,15 @@ const data = reactive({
 		},
 		{
 			type: "text",
-			label: "简称",
-			prop: "name",
-			placeholder: "请输入简称"
+			label: "债务人名称",
+			prop: "obligorName",
+			placeholder: "请输入债务人名称"
 		},
 		{
 			type: "text",
-			label: "工商注册号/\n统一社会信用代码",
-			prop: "creditCode",
-			placeholder: "请输入工商注册号/统一社会信用代码"
-		},
-		{
-			type: "text",
-			label: "客户经理",
-			prop: "customerManagerName",
-			placeholder: "请输入客户经理"
-		},
-		{
-			type: "select_all",
-			label: "是否发起授信",
-			prop: "isCredit",
-			placeholder: "请选择",
-			options: sys_yes_no
-		},
-		{
-			type: "select_all",
-			label: "授信状态",
-			prop: "quotaStatus",
-			placeholder: "请选择",
-			options: sys_pass_status
-		},
-		{
-			type: "daterange",
-			label: "授信生效日",
-			prop: "creditEffectiveDate",
-			placeholder: ["开始日期", "结束日期"],
-			format: "YYYY-MM-DD"
+			label: "银行账号",
+			prop: "accountInfo",
+			placeholder: "请输入银行账号"
 		}
 	]
 });
@@ -218,55 +140,28 @@ const data = reactive({
 const { queryParams, paramsItems, form } = toRefs(data);
 
 const uniqueId = ref("");
+
 onActivated(() => {
 	const time = route.query.t;
-	console.log(route.query.t);
+
 	if (time != null && time != uniqueId.value) {
 		uniqueId.value = time;
 		queryParams.value.pageNum = Number(route.query.pageNum);
-		console.log(queryParams.value);
+
 		proxy.resetForm("queryRef");
 		getList();
 	}
 });
-/** 查询用户信息列表 */
+
+/** 查询客户账号管理 - 列表 */
 function getList() {
 	loading.value = true;
-	radio.value = "";
-	custSelection.value = {};
 	let paramsData = deepClone(queryParams.value);
-	delete paramsData.creditEffectiveDate;
-	const creditEffectiveDate = queryParams.value.creditEffectiveDate;
-	if (null != creditEffectiveDate && "" != creditEffectiveDate) {
-		paramsData.params.creditEffectiveStartDate = creditEffectiveDate[0];
-		paramsData.params.creditEffectiveEndDate = creditEffectiveDate[1];
-	} else {
-		paramsData.params.creditEffectiveStartDate = "";
-		paramsData.params.creditEffectiveEndDate = "";
-	}
 	customerAcontInfoList(paramsData).then(response => {
 		infoList.value = response.rows;
 		total.value = response.total;
 		loading.value = false;
 	});
-	// getCustomerList().then(response => {
-	//   useCompanyStore.setCompanyList(response.rows);
-	// });
-}
-
-// 获取审议编号
-function getCreditNo(row) {
-	if (row.creditList && row.creditList.length > 0) {
-		return row.creditList[0].creditNo;
-	} else {
-		return "";
-	}
-}
-
-// 取消按钮
-function cancel() {
-	open.value = false;
-	reset();
 }
 
 // 表单重置
@@ -306,18 +201,9 @@ function resetQuery(params) {
 	handleQuery(params);
 }
 
-// 选中数据
-function handleSelectionChange(selection) {
-	custSelection.value = selection;
-	selectId.value = selection.customerId;
-	// selectId.value = selection.customerNo;
-	// console.log('选择了', selection)
-}
-
 /** 新增按钮操作 */
 function handleAdd() {
 	reset();
-	//
 	router.push({
 		path: "/customer/account/detail",
 		query: {
@@ -359,11 +245,12 @@ function handleView(row) {
 
 /** 删除按钮操作 */
 function handleDelete(row) {
-	const _customerIds = row.customerId || ids.value;
+	const customerIds = row.customerId;
+	const obligorId = row.obligorId;
 	proxy.$modal
-		.confirm('是否确认删除用户信息编号为"' + _customerIds + '"的数据项？')
+		.confirm("确认是否删除？")
 		.then(function () {
-			return delInfo(_customerIds);
+			return delCustomerAcont(customerIds, obligorId);
 		})
 		.then(() => {
 			getList();

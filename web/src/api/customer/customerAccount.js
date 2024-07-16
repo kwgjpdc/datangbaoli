@@ -37,9 +37,9 @@ export function updateCustomerAcont(data) {
 }
 
 // 删除客户银行账户信息
-export function delCustBankInfo(accountId) {
+export function delCustomerAcont(customerId, obligorId) {
 	return request({
-		url: "/cust/bank/" + accountId,
+		url: `/customeraccount/info/delete-${customerId}-${obligorId}`,
 		method: "delete"
 	});
 }
