@@ -31,7 +31,7 @@ export function addCustomerAcont(data) {
 export function updateCustomerAcont(data) {
 	return request({
 		url: "/customeraccount/info/edit",
-		method: "put",
+		method: "post",
 		data: data
 	});
 }

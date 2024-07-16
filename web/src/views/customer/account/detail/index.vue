@@ -56,22 +56,16 @@
 
 <script setup name="customerDetail">
 import {
-	addInfo,
-	updateInfo,
-	getInfo,
-	getCustomerList
-} from "@/api/customer/index";
-
-import {
 	addCustomerAcont,
+	updateCustomerAcont,
 	customerAcontDetail
 } from "@/api/customer/customerAccount";
+
 import { onMounted } from "vue";
-import useUserStore from "@/store/modules/user";
 
 import basicInformation from "./basicInformation";
-import clientFile from "./clientFile";
 import bankInfo from "./bankInfo";
+// import clientFile from "./clientFile";
 
 const { proxy } = getCurrentInstance();
 const route = useRoute();
@@ -127,8 +121,6 @@ watch(
 // 	});
 // }
 
-function apiCustomerAcontDetail() {}
-
 function submitForm() {
 	if (!proxy.$refs["bankInfoRef"].formData.bankInfoList.length) {
 		return proxy.$message.error(
@@ -146,7 +138,7 @@ function submitForm() {
 	// 账户管理不需要在外层校验；
 	Promise.all([basicInformationForm])
 		.then(() => {
-			const formKeys = ["basicInformationRef", "bankInfoRef", "clientFileRef"];
+			const formKeys = ["basicInformationRef", "bankInfoRef"];
 			let custCustomerlnfoSave = customerBankInfo;
 
 			formKeys.map(formKey => {
@@ -177,39 +169,33 @@ function submitForm() {
 				}
 			);
 
-			addCustomerAcont({ customerAccountManageList })
-				.then(response => {
-					proxy.$modal.msgSuccess("新增成功");
-					loading.value = false;
-					closePage();
-				})
-				.catch(() => {
-					loading.value = false;
-				});
+			// const customerId = route.query.customerId;
+			// const obligorId = route.query.obligorId;
 
-			// if (!custCustomerlnfoSave.customerId) {
-			// 	//新增
-			// 	addCustomerAcont({ addList })
-			// 		.then(response => {
-			// 			proxy.$modal.msgSuccess("新增成功");
-			// 			loading.value = false;
-			// 			closePage();
-			// 		})
-			// 		.catch(() => {
-			// 			loading.value = false;
-			// 		});
-			// } else {
-			// 	//修改
-			// 	updateInfo(custCustomerlnfoSave)
-			// 		.then(response => {
-			// 			proxy.$modal.msgSuccess("修改成功");
-			// 			loading.value = false;
-			// 			closePage();
-			// 		})
-			// 		.catch(() => {
-			// 			loading.value = false;
-			// 		});
-			// }
+			debugger;
+			if (!route.query.customerId) {
+				// add
+				addCustomerAcont({ customerAccountManageList })
+					.then(response => {
+						proxy.$modal.msgSuccess("新增成功");
+						loading.value = false;
+						closePage();
+					})
+					.catch(() => {
+						loading.value = false;
+					});
+			} else {
+				// update
+				updateCustomerAcont({ customerAccountManageList })
+					.then(response => {
+						proxy.$modal.msgSuccess("修改成功");
+						loading.value = false;
+						closePage();
+					})
+					.catch(() => {
+						loading.value = false;
+					});
+			}
 		})
 		.catch(() => {
 			const errDom = proxy.$refs["formCon"].querySelectorAll(
