@@ -1,4 +1,12 @@
 <template>
+	<!-- <el-form
+		class="info-form"
+		ref="elForm"
+		:model="formData"
+		label-width="140px"
+		:loading="loading"
+		:disabled="props.routerQueryObj.viewFlag"
+	> -->
 	<el-form
 		class="info-form"
 		ref="elForm"
@@ -12,7 +20,7 @@
 			<el-collapse-item title="基本信息" name="1">
 				<el-row :gutter="15" style="margin-right: 30px">
 					<el-col :xl="6" :lg="8" :sm="12" :xs="24">
-						<el-form-item label="客户名称" prop="formData.customerName">
+						<el-form-item label="客户名称" prop="customerName">
 							<CustomerSelect
 								:showValue="formData.customerName"
 								:option="customerAttr.option"
@@ -24,7 +32,7 @@
 					</el-col>
 
 					<el-col :xl="6" :lg="8" :sm="12" :xs="24">
-						<el-form-item label="客户种类" prop="formData.customerType">
+						<el-form-item label="客户种类" prop="customerType">
 							<el-input
 								class="fixed-width-input"
 								v-model="formData.customerType"
@@ -34,8 +42,9 @@
 							></el-input>
 						</el-form-item>
 					</el-col>
+
 					<el-col :xl="6" :lg="8" :sm="12" :xs="24">
-						<el-form-item label="债务人名称" prop="formData.obligorName">
+						<el-form-item label="债务人名称" prop="obligorName">
 							<CustomerSelect
 								:showValue="formData.obligorName"
 								:option="obligorAttr.option"
@@ -45,8 +54,9 @@
 							></CustomerSelect>
 						</el-form-item>
 					</el-col>
+
 					<el-col :xs="24">
-						<el-form-item label="备注" prop="formData.remark">
+						<el-form-item label="备注" prop="remark">
 							<el-input
 								class="fixed-width-input"
 								type="textarea"
@@ -155,14 +165,14 @@ const dataScope = reactive({
 	}, // 债务人
 	rules: {
 		customerName: [
-			{ required: true, message: "客户名称不能为空", trigger: "blur" }
+			{ required: true, message: "客户名称不能为空", trigger: "change" }
 		],
 		customerType: [
-			{ required: true, message: "客户种类不能为空", trigger: "blur" }
+			{ required: true, message: "客户种类不能为空", trigger: "change" }
 		],
 
 		obligorName: [
-			{ required: true, message: "营业范围不能为空", trigger: "blur" }
+			{ required: true, message: "营业范围不能为空", trigger: "change" }
 		]
 	}
 });

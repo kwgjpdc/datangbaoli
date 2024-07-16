@@ -32,7 +32,7 @@
 					:routerQueryObj="routerQueryObj"
 				></basic-information>
 
-				<!-- 银行账号信息  -->
+				<!-- 客户银行账号信息  -->
 				<bank-info
 					id="bankInfo"
 					ref="bankInfoRef"
@@ -125,7 +125,12 @@ watch(
 // }
 
 function submitForm() {
-	debugger;
+	if (!proxy.$refs["bankInfoRef"].formData.bankInfoList.length) {
+		return proxy.$message.error(
+			"【客户银行账号信息】不能为空，请添加一条【客户银行账号信息】！"
+		);
+	}
+
 	loading.value = true;
 	const basicInformationForm = new Promise((resolve, reject) => {
 		proxy.$refs["basicInformationRef"].$refs["elForm"].validate(valid => {
@@ -152,18 +157,20 @@ function submitForm() {
 			const remark = custCustomerlnfoSave.remark;
 			const commonFileList = custCustomerlnfoSave.commonFileList;
 
-			const customerAccountManageList = custCustomerlnfoSave.bankInfoList.map(item => {
-				return {
-					...item,
-					customerId,
-					customerName,
-					customerType,
-					obligorId,
-					obligorName,
-					remark,
-					commonFileList
-				};
-			});
+			const customerAccountManageList = custCustomerlnfoSave.bankInfoList.map(
+				item => {
+					return {
+						...item,
+						customerId,
+						customerName,
+						customerType,
+						obligorId,
+						obligorName,
+						remark,
+						commonFileList
+					};
+				}
+			);
 
 			addCustomerAcont({ customerAccountManageList })
 				.then(response => {
@@ -247,7 +254,7 @@ function onScroll() {
 // 关闭详情标签页
 function closePage() {
 	const obj = {
-		path: "/customer/customer/basic",
+		path: "/customer/account/info",
 		query: { t: Date.now(), pageNum: route.query.pageNum }
 	};
 	proxy.$tab.closeOpenPage(obj);

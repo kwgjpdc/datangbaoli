@@ -2,7 +2,7 @@
 	<div class="info-form">
 		<el-form ref="elForm" :model="formData" label-width="140px">
 			<el-collapse v-model="activeNames" style="border-top: 0">
-				<el-collapse-item title="客户账号管理" name="8">
+				<el-collapse-item title="客户银行账号信息" name="8">
 					<!--  联系方式表格-->
 					<el-card class="box-card">
 						<template #header v-if="!props.routerQueryObj.viewFlag">
