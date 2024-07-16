@@ -61,6 +61,15 @@
 					ref="companyInfoRef"
 				></companyInfo>
 
+				<!-- 保理申请人 信息 -->
+				<applicationInfo
+					id="customerDetailInfo"
+					:infoData="customerDetailInfo"
+					ref="applicationInfoRef"
+					:customerId="customerId"
+					:routerQueryObj="routerQueryObj"
+				></applicationInfo>
+
 				<!-- 上传附件 -->
 				<client-file
 					id="clientFile"
@@ -121,6 +130,7 @@ import customerInfo from "./customerInfo";
 import bankInfo from "./bankInfo";
 import taxInfo from "./taxInfo";
 import mobileLoginInfo from "./mobileLoginInfo";
+import applicationInfo from "./applicationInfo"; // 保理申请人信息
 
 const { proxy } = getCurrentInstance();
 const route = useRoute();
@@ -196,8 +206,12 @@ const data = reactive({
 			worth: "",
 			remark: ""
 		},
-		loginName: "",
-		phone: "",
+		loginName: "", // 大唐云端登陆人名称
+		phone: "", // 大唐云端登录手机号
+		applyPersonName: "", // 保理申请人-联系人名称
+		applyPersonMobileNumber: "", // 保理申请人电话
+		applyPersonEmail: "", // 保理申请人电子邮箱
+		applySendAddress: "", // 保理申请人送达地址
 		flowld: "1",
 		userIds: "2",
 		bankInfoList: [],
@@ -276,6 +290,11 @@ function submitForm(statusFlag) {
 			valid ? resolve(valid) : reject(valid);
 		});
 	});
+	const applicationInfoForm = new Promise((resolve, reject) => {
+		proxy.$refs["applicationInfoRef"].$refs["elForm"].validate(valid => {
+			valid ? resolve(valid) : reject(valid);
+		});
+	});
 
 	// const clientFileForm = new Promise((resolve, reject) => {
 	//   proxy.$refs['clientFileRef'].$refs['elForm'].validate(valid => {
@@ -284,7 +303,12 @@ function submitForm(statusFlag) {
 	// })
 
 	// 账户管理不需要在外层校验；
-	Promise.all([basicInformationForm, companyInfoForm, customerInfoForm])
+	Promise.all([
+		basicInformationForm,
+		companyInfoForm,
+		customerInfoForm,
+		applicationInfoForm
+	])
 		.then(() => {
 			const formKeys = [
 				"basicInformationRef",
@@ -294,7 +318,8 @@ function submitForm(statusFlag) {
 				"clientFileRef",
 				"bankInfoRef",
 				"taxInfoRef", // 纳税信息
-				"mobileLoginInfoRef" // 移动端登录认证
+				"mobileLoginInfoRef", // 移动端登录认证
+				"applicationInfoRef" // 保理申请人信息
 			];
 			let custCustomerlnfoSave = customerDetailInfo;
 			let companyInfo = {};

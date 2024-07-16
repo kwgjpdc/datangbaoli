@@ -10,7 +10,7 @@
 		<el-collapse v-model="activeNames" style="border-top: 0">
 			<el-collapse-item title="移动端登录认证" name="2">
 				<el-row :gutter="15" style="margin-right: 30px">
-					<el-col :xl="8" :lg="8" :sm="12" :xs="24">
+					<el-col :xl="6" :lg="8" :sm="12" :xs="24">
 						<el-form-item label="大唐云端登陆人名称" prop="loginName">
 							<el-input
 								class="fixed-width-input"
@@ -55,7 +55,7 @@ const props = defineProps({
 		default: null
 	}
 });
-const loading = ref(false);
+
 const activeNames = ref(["2"]);
 const dataScope = reactive({
 	rules: {} //验证规律
@@ -70,22 +70,17 @@ let formData = ref({
 
 watch(
 	() => props.infoData,
-	(newValue, oldValue) => {
+	newValue => {
 		formData.value.loginName = newValue.loginName;
 		formData.value.phone = newValue.phone;
 	},
 	{ immediate: true, deep: true }
 );
 
-function handleChange(val) {
-	console.log(val);
-}
-
 // 表单验证
 function validForm() {
 	let result = false;
 	this.$refs["elForm"].validate(valid => {
-		console.log(valid);
 		result = valid;
 	});
 	return result;
