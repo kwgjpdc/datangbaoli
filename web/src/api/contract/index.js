@@ -46,7 +46,7 @@ export function delContract(id) {
 // 合同补录
 export function insertContractInfo(data) {
 	return request({
-		url: "cont/insertContractInfo",
+		url: "/cont/insertContractInfo-1",
 		method: "post",
 		data: data
 	});

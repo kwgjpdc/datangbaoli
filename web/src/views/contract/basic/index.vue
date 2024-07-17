@@ -181,9 +181,24 @@
 				align="center"
 				prop="firstApproveDate"
 			/>
-			<el-table-column label="用印时间" width="200" align="center" prop="" />
-			<el-table-column label="签约状态" width="200" align="center" prop="" />
-			<el-table-column label="签约意见" width="200" align="center" prop="" />
+			<el-table-column
+				label="用印时间"
+				width="200"
+				align="center"
+				prop="baseSealTime"
+			/>
+			<el-table-column
+				label="签约状态"
+				width="200"
+				align="center"
+				prop="baseSignStatus"
+			/>
+			<el-table-column
+				label="签约意见"
+				width="200"
+				align="center"
+				prop="baseSignOpinion"
+			/>
 			<el-table-column label="上会时间" width="200" align="center" prop="" />
 			<el-table-column
 				label="审批状态"
@@ -278,6 +293,7 @@
 		<DialogSuppContract
 			v-model:open="dialogSuppIsOpen"
 			:tableSelectedRows="tableSelectedRows"
+			@updateList="getList"
 		/>
 	</div>
 </template>
@@ -462,9 +478,9 @@ function resetQuery() {
 
 // 补录合同按钮操作
 function handleSupp() {
-	// if (tableSelectedRows.value.some(item => item.status !== "3")) {
-	// 	return proxy.$message.warning("请检查所选合同是否【已通过审批】！");
-	// }
+	if (tableSelectedRows.value.some(item => item.status !== "3")) {
+		return proxy.$message.warning("请检查所选合同是否【已通过审批】！");
+	}
 
 	resetQuery();
 	dialogSuppIsOpen.value = true;

@@ -69,6 +69,8 @@ import { ref, reactive, watch } from "vue";
 import { deepClone } from "@/utils/index";
 import { insertContractInfo } from "@/api/contract";
 
+const { proxy } = getCurrentInstance();
+
 const props = defineProps({
 	open: {
 		type: Boolean,
@@ -111,10 +113,15 @@ function handleOk() {
 	}));
 
 	insertContractInfo({ contractInfoList: handleParams })
-	//insertContractInfo(handleParams)
 		.then(response => {
-			console.log("confirm", tableList);
 			handleClose();
+			if (response.code === 200) {
+				proxy.$message.success(response.msg);
+				// props.updateList();
+				emit("updateList");
+			} else {
+				proxy.$message.warning(response.msg);
+			}
 		})
 		.catch(() => {})
 		.finally(() => {
