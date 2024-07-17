@@ -117,10 +117,10 @@ let formData = ref({
 watch(
 	() => props.infoData,
 	newValue => {
-		formData.value.applyPersonName = newValue.loginName;
-		formData.value.applyPersonMobileNumber = newValue.phone;
-		formData.value.applyPersonEmail = newValue.phone;
-		formData.value.applySendAddress = newValue.phone;
+		formData.value.applyPersonName = newValue.applyPersonName;
+		formData.value.applyPersonMobileNumber = newValue.applyPersonMobileNumber;
+		formData.value.applyPersonEmail = newValue.applyPersonEmail;
+		formData.value.applySendAddress = newValue.applySendAddress;
 	},
 	{ immediate: true, deep: true }
 );
