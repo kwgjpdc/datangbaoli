@@ -1,60 +1,86 @@
 <template>
-    <div class="app-container" v-loading.fullscreen.lock="loading" ref="appContainerView">
-        <div class="content">
-            <div class="operate-button" v-if="!routerQueryObj.approveFlag">
-                <el-row :gutter="10" class="mb8" justify="end">
-                    <template v-if="!isView">
-                        <el-col :span="1.5">
-                            <el-button type="primary" icon="List" @click="submitForm(1)">
-                                暂存
-                            </el-button>
-                        </el-col>
-                        <el-col :span="1.5">
-                            <el-button type="primary" icon="Checked" @click="submitForm(2)">
-                                提交
-                            </el-button>
-                        </el-col>
-                    </template>
-                    <el-col :span="1.5">
-                        <el-button type="primary" icon="CircleCloseFilled" @click="closePage">
-                            取消
-                        </el-button>
-                    </el-col>
-                </el-row>
-            </div>
-            <div class="content-item-scroll">
-                <el-tabs v-model="activePaneName">
-                    <el-tab-pane label="基本信息" name="base-pane">
-                        <basePane 
-                            ref="basePaneRef" 
-                            v-model:data="data" 
-                            v-model:loading="loading" 
-                            :routerQueryObj="routerQueryObj" 
-                        />
-                    </el-tab-pane>
-                    <el-tab-pane label="客户信息" name="client-pane">
-                        <customerPane 
-                            ref="customerPaneRef" 
-                            v-model:data="data" 
-                            v-model:loading="loading" 
-                            :routerQueryObj="routerQueryObj" 
-                        />
-                    </el-tab-pane>
-                </el-tabs>
-            </div>
-            <div class="content-item-scroll" v-if="!routerQueryObj.viewFlag">
-                <flow-search id="flowSearch" ref="flowSearchRef" :routerQueryObj="routerQueryObj" :needUser="true"></flow-search>
-            </div>
-        </div>
-    </div>
+	<div
+		class="app-container"
+		v-loading.fullscreen.lock="loading"
+		ref="appContainerView"
+	>
+		<div class="content">
+			<div class="operate-button" v-if="!routerQueryObj.approveFlag">
+				<el-row :gutter="10" class="mb8" justify="end">
+					<template v-if="!isView">
+						<el-col :span="1.5">
+							<el-button type="primary" icon="List" @click="submitForm(1)">
+								暂存
+							</el-button>
+						</el-col>
+						<el-col :span="1.5">
+							<el-button type="primary" icon="Checked" @click="submitForm(2)">
+								提交
+							</el-button>
+						</el-col>
+					</template>
+					<el-col :span="1.5">
+						<el-button
+							type="primary"
+							icon="CircleCloseFilled"
+							@click="closePage"
+						>
+							取消
+						</el-button>
+					</el-col>
+				</el-row>
+			</div>
+			<div class="content-item-scroll">
+				<el-tabs v-model="activePaneName">
+					<el-tab-pane label="基本信息" name="base-pane">
+						<basePane
+							ref="basePaneRef"
+							v-model:data="data"
+							v-model:loading="loading"
+							:routerQueryObj="routerQueryObj"
+						/>
+					</el-tab-pane>
+					<el-tab-pane label="客户信息" name="client-pane">
+						<customerPane
+							ref="customerPaneRef"
+							v-model:data="data"
+							v-model:loading="loading"
+							:routerQueryObj="routerQueryObj"
+						/>
+					</el-tab-pane>
+					<el-tab-pane label="专用条款" name="special-pane">
+						<spacialPane
+							ref="specialPaneRef"
+							v-model:data="data"
+							v-model:loading="loading"
+							:routerQueryObj="routerQueryObj"
+						/>
+					</el-tab-pane>
+				</el-tabs>
+			</div>
+			<div class="content-item-scroll" v-if="!routerQueryObj.viewFlag">
+				<flow-search
+					id="flowSearch"
+					ref="flowSearchRef"
+					:routerQueryObj="routerQueryObj"
+					:needUser="true"
+				></flow-search>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script setup>
 import { ref, computed, onBeforeMount, watch } from "vue";
-import { getContract, addContract, updateContract } from "@/api/contract/index.js"
+import {
+	getContract,
+	addContract,
+	updateContract
+} from "@/api/contract/index.js";
 import basePane from "./base/index.vue";
 import customerPane from "./customer/index.vue";
-import FlowSearch from '@/views/flowable/search/index.vue'
+import spacialPane from "./special/index.vue";
+import FlowSearch from "@/views/flowable/search/index.vue";
 // 当前组件对象
 const { proxy } = getCurrentInstance();
 
@@ -66,73 +92,78 @@ const activePaneName = ref("base-pane");
 
 // 数据对象
 const data = ref({
-    status: null,
-    contractNo: null,
-    bussProduct: null,
-    projectDueId: null,
-    projectNo: null,
-    projectName: null,
-    baseContractStartDate: null,
-    baseContractEndDate: null,
-    baseSealTime: null,
-    baseGraceDays: null,
-    baseChargeInterestWay: "1",
-    baseSettleInterestWay: null,
-    basePrincipalConfirmParty: null,
-    baseProvince: null,
-    baseIndustryType: null,
-    baseItem: null,
-    baseRemark: null,
-    baseSignStatus: null,
-    baseSignOpinion: null,
-    agreeDebtorName: null,
-    agreeCompanyNo: null,
-    agreeSettlement: "1",
-    agreePaymentLimit: null,
-    agreePaymentStartDate: null,
-    agreePaymentEndDate: null,
-    agreePaymentVerify: null,
-    agreeStartDate: null,
-    agreePaymentMaxLimit: null,
-    agreeAdvance: "2",
-    agreeAdvanceGraceDays: null,
-    agreeAdvancePercentage: null,
-    agreeGuaranteePaymentLimit: null,
-    agreePay: null,
-    agreeBuyerPoolCeiling: null,
-    agreeOverrun: null,
-    agreeInform: null,
-    agreeInformOther: null,
-    agreeTransferPart: null,
-    branchCustomerId: null,
-    branchType: null,
-    branchInterestCycle: null,
-    branchFineRate: null,
-    accountType: null,
-    accountName: null,
-    accountCustomerName: null,
-    accountDebtorName: null,
-    accountBankName: null,
-    accountBankAccount: null,
-    accountRemark: null,
-    repayLoan: null,
-    otherContractNo: null,
-    otherContractName: null,
-    otherCurrencyType: null,
-    otherContractAmount: null,
-    otherQuotaCeiling: null,
-    otherQuotaCircle: null,
-    otherContractStartDate: null,
-    otherContractEndDate: null,
-    otherRemark: null,
-    feeList: [],
-    interestList: [],
-    paymentSequenceList: [],
-    customerCardList: [],
-    customerShareholderList: [],
-    customerResidenceList: [],
-    customerSeniorExecutiveList: [],
-    customerTaxList: []
+	status: null,
+	contractNo: null,
+	bussProduct: null,
+	projectDueId: null,
+	projectNo: null,
+	projectName: null,
+	baseContractStartDate: null,
+	baseContractEndDate: null,
+	baseSealTime: null,
+	baseGraceDays: null,
+	baseChargeInterestWay: "1",
+	baseSettleInterestWay: null,
+	basePrincipalConfirmParty: null,
+	baseProvince: null,
+	baseIndustryType: null,
+	baseItem: null,
+	baseRemark: null,
+	baseSignStatus: null,
+	baseSignOpinion: null,
+	agreeDebtorName: null,
+	agreeCompanyNo: null,
+	agreeSettlement: "1",
+	agreePaymentLimit: null,
+	agreePaymentStartDate: null,
+	agreePaymentEndDate: null,
+	agreePaymentVerify: null,
+	agreeStartDate: null,
+	agreePaymentMaxLimit: null,
+	agreeAdvance: "2",
+	agreeAdvanceGraceDays: null,
+	agreeAdvancePercentage: null,
+	agreeGuaranteePaymentLimit: null,
+	agreePay: null,
+	agreeBuyerPoolCeiling: null,
+	agreeOverrun: null,
+	agreeInform: null,
+	agreeInformOther: null,
+	agreeTransferPart: null,
+	branchCustomerId: null,
+	branchType: null,
+	branchInterestCycle: null,
+	branchFineRate: null,
+	accountType: null,
+	accountName: null,
+	accountCustomerName: null,
+	accountDebtorName: null,
+	accountBankName: null,
+	accountBankAccount: null,
+	accountRemark: null,
+	repayLoan: null,
+	otherContractNo: null,
+	otherContractName: null,
+	otherCurrencyType: null,
+	otherContractAmount: null,
+	otherQuotaCeiling: null,
+	otherQuotaCircle: null,
+	otherContractStartDate: null,
+	otherContractEndDate: null,
+	otherRemark: null,
+	feeList: [],
+	interestList: [],
+	paymentSequenceList: [],
+	customerCardList: [],
+	customerShareholderList: [],
+	customerResidenceList: [],
+	customerSeniorExecutiveList: [],
+	customerTaxList: [],
+	// 以下是专用条款
+	a: null,
+	// 以下是通用条款
+	b: null
+	// 以下是合同盖章页面
 });
 
 // router参数
@@ -144,145 +175,154 @@ const basePaneRef = ref(null);
 
 // 页面是View状态
 const isView = computed(() => {
-    let result = false;
-    if (routerQueryObj.value.viewFlag === undefined || routerQueryObj.value.viewFlag === null) {
-        result = false;
-    } else {
-        result = routerQueryObj.value.viewFlag;
-    }
-    return result;
+	let result = false;
+	if (
+		routerQueryObj.value.viewFlag === undefined ||
+		routerQueryObj.value.viewFlag === null
+	) {
+		result = false;
+	} else {
+		result = routerQueryObj.value.viewFlag;
+	}
+	return result;
 });
 
 // 页面是Edit状态
 const isEdit = computed(() => {
-    let result = false;
-    if (routerQueryObj.value.editFlag === undefined || routerQueryObj.value.editFlag === null) {
-        result = false;
-    } else {
-        result = routerQueryObj.value.editFlag;
-    }
-    return result;
+	let result = false;
+	if (
+		routerQueryObj.value.editFlag === undefined ||
+		routerQueryObj.value.editFlag === null
+	) {
+		result = false;
+	} else {
+		result = routerQueryObj.value.editFlag;
+	}
+	return result;
 });
 
 // 新增合同数据
 function addContractData(status) {
-    data.value.status = status;
-    loading.value = true;
-    data.value.flowId = proxy.$refs['flowSearchRef'].formData.flowId;
-    data.value.userIds = proxy.$refs['flowSearchRef'].formData.userIds;
-    addContract(data.value).then(() => {
-        proxy.$modal.msgSuccess("新增成功");
-        loading.value = false;
-        closePage();
-    });
+	data.value.status = status;
+	loading.value = true;
+	data.value.flowId = proxy.$refs["flowSearchRef"].formData.flowId;
+	data.value.userIds = proxy.$refs["flowSearchRef"].formData.userIds;
+	addContract(data.value).then(() => {
+		proxy.$modal.msgSuccess("新增成功");
+		loading.value = false;
+		closePage();
+	});
 }
 
 // 更新合同数据
 function updateContractData(status) {
-    data.value.status = status;
-    loading.value = true;
-    data.value.flowId = proxy.$refs['flowSearchRef'].formData.flowId;
-    data.value.userIds = proxy.$refs['flowSearchRef'].formData.userIds;
+	data.value.status = status;
+	loading.value = true;
+	data.value.flowId = proxy.$refs["flowSearchRef"].formData.flowId;
+	data.value.userIds = proxy.$refs["flowSearchRef"].formData.userIds;
 	// console.log(data.value)
-    updateContract(data.value).then(() => {
-        proxy.$modal.msgSuccess("更新成功");
-        loading.value = false;
-        closePage();
-    });
+	updateContract(data.value).then(() => {
+		proxy.$modal.msgSuccess("更新成功");
+		loading.value = false;
+		closePage();
+	});
 }
 
 // 获取合同数据
 function getContractData(id) {
-    loading.value = true;
-    getContract(id).then(response => {
-        for (const prop in response.data) {
-            if (Array.isArray(data.value[prop])) {
-                data.value[prop].length = 0;
-                if (Array.isArray(response.data[prop])) {
-                    response.data[prop].forEach((v) => {
-                        data.value[prop].push(v);
-                    });
-                }
-            } else {
-                data.value[prop] = response.data[prop];
-            }
-        };
-        loading.value = false;
-    });;
+	loading.value = true;
+	getContract(id).then(response => {
+		for (const prop in response.data) {
+			if (Array.isArray(data.value[prop])) {
+				data.value[prop].length = 0;
+				if (Array.isArray(response.data[prop])) {
+					response.data[prop].forEach(v => {
+						data.value[prop].push(v);
+					});
+				}
+			} else {
+				data.value[prop] = response.data[prop];
+			}
+		}
+		loading.value = false;
+	});
 }
 
 // 提交表单
 function submitForm(status) {
-    const contractForm = new Promise((resolve, reject) => {
-        basePaneRef.value.validate((valid) => {
-            valid ? resolve(valid) : reject(valid);
-        });
-    });
-    const flowForm = new Promise((resolve, reject) => {
-        proxy.$refs['flowSearchRef'].$refs['elForm'].validate(valid => {
-            valid ? resolve(valid) : reject(valid)
-        })
-    });
-    Promise.all([contractForm, flowForm]).then(() => {
-        if (!isEdit.value) {
-            addContractData(status)
-        } else {
-            updateContractData(status)
-        }
-    });
+	const contractForm = new Promise((resolve, reject) => {
+		basePaneRef.value.validate(valid => {
+			valid ? resolve(valid) : reject(valid);
+		});
+	});
+	const flowForm = new Promise((resolve, reject) => {
+		proxy.$refs["flowSearchRef"].$refs["elForm"].validate(valid => {
+			valid ? resolve(valid) : reject(valid);
+		});
+	});
+	Promise.all([contractForm, flowForm]).then(() => {
+		if (!isEdit.value) {
+			addContractData(status);
+		} else {
+			updateContractData(status);
+		}
+	});
 }
 
 // 取消按钮操作
 function closePage() {
-    const obj = { path: "/contract/contract/basic/index", query: { t: Date.now(), pageNum: history.state.pageNum } };
-    proxy.$tab.closeOpenPage(obj);
+	const obj = {
+		path: "/contract/contract/basic/index",
+		query: { t: Date.now(), pageNum: history.state.pageNum }
+	};
+	proxy.$tab.closeOpenPage(obj);
 }
 
 // 在页面挂载前
 onBeforeMount(() => {
-    if(props.approveId){
-        routerQueryObj.value.contractId = props.approveId;
-        routerQueryObj.value.viewFlag = true;
-        routerQueryObj.value.approveFlag = true;
-    }
-    if (isView.value || isEdit.value) {
-        getContractData(routerQueryObj.value.contractId);
-    }
+	if (props.approveId) {
+		routerQueryObj.value.contractId = props.approveId;
+		routerQueryObj.value.viewFlag = true;
+		routerQueryObj.value.approveFlag = true;
+	}
+	if (isView.value || isEdit.value) {
+		getContractData(routerQueryObj.value.contractId);
+	}
 });
 </script>
 
 <style lang="scss" scoped>
 .app-container {
-    position: relative;
-    height: calc(100vh - 85px);
-    overflow: scroll;
+	position: relative;
+	height: calc(100vh - 85px);
+	overflow: scroll;
 }
 
 .operate-button {
-    position: fixed;
-    top: 83px;
-    z-index: 100;
-    background: #fff;
-    right: 0;
-    left: 0;
-    padding: 5px 15px;
+	position: fixed;
+	top: 83px;
+	z-index: 100;
+	background: #fff;
+	right: 0;
+	left: 0;
+	padding: 5px 15px;
 }
 
 .content-item-scroll {
-    margin-top: 30px;
+	margin-top: 30px;
 }
 </style>
 <style>
-	.el-tabs__item {
-		font-weight: bold !important;
-	}
-	.el-collapse-item__header{
-		font-weight: normal !important;
-	}
-	.el-form-item__label{
-		font-weight: normal !important;
-	}
-	.el-table .cell{
-		font-weight: normal !important;
-	}
+.el-tabs__item {
+	font-weight: bold !important;
+}
+.el-collapse-item__header {
+	font-weight: normal !important;
+}
+.el-form-item__label {
+	font-weight: normal !important;
+}
+.el-table .cell {
+	font-weight: normal !important;
+}
 </style>
