@@ -161,6 +161,7 @@ const data = ref({
 	customerTaxList: [],
 	// 以下是专用条款
 	a: null,
+	paymentType: null, // 回款方式
 	// 以下是通用条款
 	b: null
 	// 以下是合同盖章页面
