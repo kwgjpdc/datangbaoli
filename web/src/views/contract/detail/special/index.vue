@@ -39,6 +39,30 @@
 				v-model:loading="loading"
 			/>
 		</el-collapse-item>
+
+		<el-collapse-item title="应收账款转让通知" name="transferNotice">
+			<transferNotice
+				v-model:data="specialData"
+				:routerQueryObj="props.routerQueryObj"
+				v-model:loading="loading"
+			/>
+		</el-collapse-item>
+
+		<el-collapse-item title="增信措施" name="creditEnhancement">
+			<creditEnhancement
+				v-model:data="specialData"
+				:routerQueryObj="props.routerQueryObj"
+				v-model:loading="loading"
+			/>
+		</el-collapse-item>
+
+		<el-collapse-item title="公证与自愿接受强制执行" name="notarization">
+			<notarization
+				v-model:data="specialData"
+				:routerQueryObj="props.routerQueryObj"
+				v-model:loading="loading"
+			/>
+		</el-collapse-item>
 	</el-collapse>
 </template>
 
@@ -48,6 +72,9 @@ import bankAccount from "./bankAccount.vue";
 import payableBankAccount from "./payableBankAccount.vue";
 import earlyRepay from "./earlyRepay.vue";
 import financeBankAccount from "./financeBankAccount.vue";
+import transferNotice from "./transferNotice.vue";
+import creditEnhancement from "./creditEnhancement.vue";
+import notarization from "./notarization.vue";
 
 // 展开的折叠配置
 const activeCollapseNames = reactive([
@@ -55,7 +82,10 @@ const activeCollapseNames = reactive([
 	"bankAccount",
 	"payableBankAccount",
 	"earlyRepay",
-	"financeBankAccount"
+	"financeBankAccount",
+	"transferNotice",
+	"creditEnhancement",
+	"notarization"
 ]);
 
 const props = defineProps({
