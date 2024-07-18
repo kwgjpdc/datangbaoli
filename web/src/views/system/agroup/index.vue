@@ -152,7 +152,7 @@
 </template>
 
 <script setup name="agroup">
-import { listAgroup, getAgroup, addAgroup, updateAgroup, delAgroup, getRoleUser } from "@/api/system/agroup";
+import { listAgroup, addAgroup, updateAgroup, delAgroup, getRoleUser } from "@/api/system/agroup";
 import { pcaTextArr } from "element-china-area-data"
 
 const { proxy } = getCurrentInstance();
@@ -182,8 +182,10 @@ const data = reactive({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
-    roleName: undefined,
-    roleKey: undefined,
+    mainUserId: undefined,
+    minorUserId: undefined,
+    agroupName: undefined,
+    agroupAreas: undefined,
     status: undefined
   },
   rules: {
