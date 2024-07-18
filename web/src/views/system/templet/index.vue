@@ -39,7 +39,7 @@
                icon="Edit"
                :disabled="single"
                @click="handleUpdate"
-               v-hasPermi="['system:role:edit']"
+               v-hasPermi="['system:templet:edit']"
             >修改</el-button>
          </el-col>
          -->
@@ -50,7 +50,7 @@
                icon="Delete"
                :disabled="multiple"
                @click="handleDelete"
-               v-hasPermi="['system:role:remove']"
+               v-hasPermi="['system:templet:remove']"
             >删除</el-button>
          </el-col>
          <!--
@@ -60,7 +60,7 @@
                plain
                icon="Download"
                @click="handleExport"
-               v-hasPermi="['system:role:export']"
+               v-hasPermi="['system:templet:export']"
             >导出</el-button>
          </el-col>
          -->
@@ -354,9 +354,9 @@ function handleDelete(row) {
 }
 /** 导出按钮操作 */
 function handleExport() {
-  proxy.download("system/role/export", {
+  proxy.download("system/templet/export", {
     ...queryParams.value,
-  }, `role_${new Date().getTime()}.xlsx`);
+  }, `templet_${new Date().getTime()}.xlsx`);
 }
 /** 多选框选中数据 */
 function handleSelectionChange(selection) {
