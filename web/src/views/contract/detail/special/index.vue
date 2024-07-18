@@ -8,8 +8,32 @@
 			/>
 		</el-collapse-item>
 
-		<el-collapse-item title="回款专户及保理专户" name="bankAccountInfo">
+		<el-collapse-item title="回款专户及保理专户" name="bankAccount">
 			<bankAccount
+				v-model:data="specialData"
+				:routerQueryObj="props.routerQueryObj"
+				v-model:loading="loading"
+			/>
+		</el-collapse-item>
+
+		<el-collapse-item title="应付款项银行账户" name="payableBankAccount">
+			<payableBankAccount
+				v-model:data="specialData"
+				:routerQueryObj="props.routerQueryObj"
+				v-model:loading="loading"
+			/>
+		</el-collapse-item>
+
+		<el-collapse-item title="提前还款方式" name="earlyRepay">
+			<earlyRepay
+				v-model:data="specialData"
+				:routerQueryObj="props.routerQueryObj"
+				v-model:loading="loading"
+			/>
+		</el-collapse-item>
+
+		<el-collapse-item title="保理融资款收取账户" name="financeBankAccount">
+			<financeBankAccount
 				v-model:data="specialData"
 				:routerQueryObj="props.routerQueryObj"
 				v-model:loading="loading"
@@ -21,9 +45,18 @@
 <script setup>
 import subjectInfo from "./subjectInfo.vue";
 import bankAccount from "./bankAccount.vue";
+import payableBankAccount from "./payableBankAccount.vue";
+import earlyRepay from "./earlyRepay.vue";
+import financeBankAccount from "./financeBankAccount.vue";
 
 // 展开的折叠配置
-const activeCollapseNames = reactive(["subjectInfo", "bankAccountInfo"]);
+const activeCollapseNames = reactive([
+	"subjectInfo",
+	"bankAccount",
+	"payableBankAccount",
+	"earlyRepay",
+	"financeBankAccount"
+]);
 
 const props = defineProps({
 	data: {
