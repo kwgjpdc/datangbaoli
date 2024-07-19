@@ -6,3 +6,5 @@
 6. transferNotice 应收款转让通知
 7. creditEnhancement 增信措施
 8. notarization 公证与自愿接受强制执行
+9. send 送达
+10. supplement 补充条款
