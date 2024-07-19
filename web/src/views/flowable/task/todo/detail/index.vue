@@ -21,7 +21,7 @@
               <!--                <el-button  icon="el-icon-edit-outline" type="primary" size="mini" @click="handleDelegate">委派</el-button>-->
               <!--                <el-button  icon="el-icon-edit-outline" type="primary" size="mini" @click="handleAssign">转办</el-button>-->
               <!--                <el-button  icon="el-icon-edit-outline" type="primary" size="mini" @click="handleDelegate">签收</el-button>-->
-              <!--<el-button icon="RefreshLeft" type="warning" @click="handleReturn">退回</el-button>-->
+              <el-button icon="RefreshLeft" type="warning" @click="handleReturn">退回</el-button>
               <!--<el-button icon="CircleClose" type="danger" @click="handleReject">驳回</el-button>-->
             </div>
           </el-col>
@@ -151,6 +151,12 @@
       <el-dialog :title="returnTitle" v-model="returnOpen" width="40%" append-to-body>
         <el-form ref="taskFormRef" :model="taskForm" label-width="80px">
           <el-form-item label="退回节点" prop="targetKey">
+            
+            <el-select v-model="taskForm.targetKey" filterable placeholder="请选择"  >
+              <el-option v-for="item in returnTaskList" :key="item.id"
+                  :label="item.name" :value="item.id"></el-option>
+            </el-select>
+            <!--
             <el-radio-group v-model="taskForm.targetKey">
               <el-radio-button
                 v-for="item in returnTaskList"
@@ -159,6 +165,7 @@
               >{{ item.name }}
               </el-radio-button>
             </el-radio-group>
+            -->
           </el-form-item>
           <el-form-item label="退回意见" prop="comment"
                         :rules="[{ required: true, message: '请输入意见', trigger: 'blur' }]">
@@ -198,7 +205,6 @@ import {flowRecord} from "@/api/flowable/finished";
 import FlowUser from '@/components/flow/User';
 import FlowRole from '@/components/flow/Role';
 import BpmnViewer from '@/components/Process/viewer';
-//import fundPoolInfo from '@/views/fund/detail/index.vue'
 import {flowXmlAndNode} from "@/api/flowable/definition";
 import {
   complete,
@@ -381,9 +387,9 @@ function getFlowTaskForm(taskId) {
       // 回显表单
       vFormRef.value.setFormJson(res.data.formJson);
       formJson.value = res.data.formJson;
-      console.log(res.data.formData);
-	  console.log(res.data.formData.type)
-	  console.log("======================")
+      //console.log(res.data.formData);
+	    //console.log(res.data.formData.type)
+	    //console.log("======================")
       if(res.data.formData){
         if(res.data.formData.type == "fundPool"){
           approveDetail.value = defineAsyncComponent(()=>{
@@ -493,6 +499,7 @@ function taskReturn() {
     if (valid) {
       returnTask(taskForm.value).then(res => {
         proxy.$modal.msgSuccess(res.msg);
+        returnOpen.value = false;
         goBack()
       });
     }
@@ -527,6 +534,8 @@ function cancelDelegateTask() {
 
 /** 加载审批任务弹框 */
 function handleComplete() {
+  console.log("taskForm.value.procInsId",taskForm.value.procInsId)
+  console.log("taskForm.value",taskForm.value)
   completeOpen.value = true;
   completeTitle.value = "流程审批";
 }
@@ -569,12 +578,12 @@ function submitForm() {
   // 根据当前任务或者流程设计配置的下一步节点 todo 暂时未涉及到考虑网关、表达式和多节点情况
   getNextFlowNode({taskId: taskForm.value.taskId}).then(res => {
     const data = res.data;
-    console.log(data)
+    //console.log(data)
     if (data) {
       vFormRef.value.getFormData().then(formData => {
         Object.assign(taskForm.value.variables, formData);
         taskForm.value.variables.formJson = formJson.value;
-        console.log(taskForm.value, "流程审批提交表单数据1")
+        //console.log(taskForm.value, "提交表单数据1")
         if (data.dataType === 'dynamic') {
           if (data.type === 'assignee') { // 指定人员
             checkSendUser.value = true;
