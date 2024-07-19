@@ -79,6 +79,14 @@
 				v-model:loading="loading"
 			/>
 		</el-collapse-item>
+
+		<el-collapse-item title="合同份数" name="severalContract">
+			<severalContract
+				v-model:data="specialData"
+				v-model:loading="loading"
+				:routerQueryObj="props.routerQueryObj"
+			/>
+		</el-collapse-item>
 	</el-collapse>
 </template>
 
@@ -93,6 +101,7 @@ import creditEnhancement from "./creditEnhancement.vue";
 import notarization from "./notarization.vue";
 import send from "./send.vue";
 import supplement from "./supplement.vue";
+import severalContract from "./severalContract.vue";
 
 // 展开的折叠配置
 const activeCollapseNames = reactive([
@@ -104,7 +113,8 @@ const activeCollapseNames = reactive([
 	"transferNotice",
 	"creditEnhancement",
 	"notarization",
-	"supplement"
+	"supplement",
+	"severalContract"
 ]);
 
 const props = defineProps({

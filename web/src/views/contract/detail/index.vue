@@ -40,15 +40,15 @@
 							:routerQueryObj="routerQueryObj"
 						/>
 					</el-tab-pane>
-					<el-tab-pane label="客户信息" name="client-pane">
+					<!-- <el-tab-pane label="客户信息" name="client-pane">
 						<customerPane
 							ref="customerPaneRef"
 							v-model:data="data"
 							v-model:loading="loading"
 							:routerQueryObj="routerQueryObj"
 						/>
-					</el-tab-pane>
-					<el-tab-pane label="专用条款" name="special-pane">
+					</el-tab-pane> -->
+					<el-tab-pane label="业务合同" name="special-pane">
 						<spacialPane
 							ref="specialPaneRef"
 							v-model:data="data"
