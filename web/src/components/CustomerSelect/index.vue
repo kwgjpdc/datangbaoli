@@ -257,3 +257,9 @@ function selececlientRow(row, column, event) {
 	proxy.resetForm("queryRef");
 }
 </script>
+
+<style lang="scss" scoped>
+.page {
+	margin: 10px 0;
+}
+</style>

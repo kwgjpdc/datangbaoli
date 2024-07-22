@@ -14,12 +14,12 @@
 
 				<el-form-item label="保理商" prop="agreeDebtorName">
 					<div class="form-item__block">
-						<el-input
-							v-model="formData.agreeDebtorName"
-							:placeholder="showPlaceholder('请输入保理商')"
-							clearable
-							:style="formItemContentStyle"
-							maxlength="32"
+						<CustomerSelect
+							:showValue="formData.agreeDebtorName"
+							:option="institution.option"
+							:queryPropList="institution.queryPropList"
+							:tablePropList="institution.tablePropList"
+							@selectRow="customerSelectRow"
 						/>
 					</div>
 				</el-form-item>
@@ -48,7 +48,7 @@
 					</div>
 				</el-form-item>
 			</el-card>
-      
+
 			<el-card shadow="never" style="margin-top: 20px">
 				<template #header>保理申请人信息</template>
 				<el-form-item label="保理申请人" prop="agreeSettlement">
@@ -102,6 +102,8 @@
 					/>
 				</div>
 			</el-form-item>
+
+			<InstitutionSelectDialog open="" />
 		</el-form>
 	</el-card>
 </template>
@@ -109,6 +111,7 @@
 <script setup>
 import { ref, reactive, computed } from "vue";
 import { StrUtil } from "@/utils/StrUtil";
+import CustomerSelect from "@/components/CustomerSelect";
 
 // 组件属性
 const props = defineProps({
@@ -192,6 +195,44 @@ const rules = ref({
 		}
 	]
 });
+
+// start-----机构选择配置
+const dataScope = reactive({
+	institution: {
+		option: {
+			inputW: "100%",
+			placeholder: "请选择机构信息",
+			dialogTitle: "机构信息",
+			queryUrl: "/institution/info/list"
+		},
+		queryPropList: [
+			{
+				prop: "institutionName",
+				label: "机构名称"
+			},
+			{
+				prop: "registerCode",
+				label: "工商注册号"
+			}
+		],
+		tablePropList: [
+			{
+				prop: "institutionName",
+				label: "机构名称"
+			},
+			{
+				prop: "registerCode",
+				label: "工商注册号"
+			}
+		]
+	} // 客户
+});
+const { institution } = toRefs(dataScope);
+function customerSelectRow(row) {
+	// formData.customerId = row.customerId;
+	formData.agreeDebtorName = row.institutionName;
+}
+// end-----机构选择配置
 
 // Form item 内容的统一宽度
 const formItemContentStyle = { width: "100%" };
