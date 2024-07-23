@@ -143,7 +143,6 @@ watch(specialData, newValue => {
 // loading
 const loading = ref(props.loading);
 watch(loading, newValue => {
-	console.log("***************");
 	emit("update:loading", newValue);
 });
 </script>

@@ -32,14 +32,14 @@
 			</div>
 			<div class="content-item-scroll">
 				<el-tabs v-model="activePaneName">
-					<el-tab-pane label="基本信息" name="base-pane">
+					<!-- <el-tab-pane label="基本信息" name="base-pane">
 						<basePane
 							ref="basePaneRef"
 							v-model:data="data"
 							v-model:loading="loading"
 							:routerQueryObj="routerQueryObj"
 						/>
-					</el-tab-pane>
+					</el-tab-pane> -->
 					<!-- <el-tab-pane label="客户信息" name="client-pane">
 						<customerPane
 							ref="customerPaneRef"
@@ -88,7 +88,7 @@ const { proxy } = getCurrentInstance();
 const loading = ref(false);
 
 // 显示的Tab
-const activePaneName = ref("base-pane");
+const activePaneName = ref("special-pane");
 
 // 数据对象
 const data = ref({
@@ -160,12 +160,43 @@ const data = ref({
 	customerSeniorExecutiveList: [],
 	customerTaxList: [],
 	// 以下是专用条款
-	a: null,
-	paymentType: null, // 回款方式
-	type: [],
-	// 以下是通用条款
-	b: null
-	// 以下是合同盖章页面
+	institutionId: null, // 保理商机构主键id
+	institutionName: null, // 保理商名称
+	registAddress: null, // 保理商注册地址
+	legalRepresentative: null, // 保理商-法定代表人/委托代理人
+	applyInstitutionId: null,
+	applyInstitutionName: null,
+	applyRegistAddress: null,
+	applyLegalRepresentative: null,
+	contractWriteOnPlace: null, //签订地点
+
+	replayType: null, // 回款方式（直接，间接）
+	earlyReplatType: null, // 提前还款选项
+	cooperationType: null, // 合作方式：明保理or暗保理
+	sendType: null, // 送达方式-可复选以逗号分割
+	sendTypeOther: null, // 送达方式-其他输入框
+	measuresType: null, // 是否有增信措施0.无-1.有
+	measuresNum1: null, // 增信措施合同编号1
+	measuresName1: null, // 增信措施合同名称1
+	guarantee1: null, // 增信措施担保方式1
+	guaranteePerson1: null, // 增信措施担保人1
+	measuresNum2: null, // 增信措施合同编号2
+	measuresName2: null, // 增信措施合同名称2
+	guarantee2: null, // 增信措施担保方式2
+	guaranteePerson2: null, // 增信措施担保人2
+	fairType: null, // 是否执行强制公正
+	approvalPersonAddress: null, //审批人送达地址
+	approvalPerson: null, // 审批人联系人
+	approvalPersonMobile: null, // 审批人电话
+	approvalPersonEmail: null, // 审批人电子邮箱
+	applyPersonAddress: null, // 保理申请人送达地址
+	applyPerson: null, // 保理申请人联系人
+	applyPersonMobile: null, // 保理申请人电话
+	applyPersonEmail: null, // 保理申请人电子邮箱
+	supplementInfo: null, // 补充条款内容
+	countNumber: null, // 合同总份数
+	jCountNumber: null, // 甲方合同份数
+	yCountNumber: null // 乙方合同份数
 });
 
 // router参数
@@ -252,16 +283,18 @@ function getContractData(id) {
 
 // 提交表单
 function submitForm(status) {
-	const contractForm = new Promise((resolve, reject) => {
-		basePaneRef.value.validate(valid => {
-			valid ? resolve(valid) : reject(valid);
-		});
-	});
-	const flowForm = new Promise((resolve, reject) => {
-		proxy.$refs["flowSearchRef"].$refs["elForm"].validate(valid => {
-			valid ? resolve(valid) : reject(valid);
-		});
-	});
+	// const contractForm = new Promise((resolve, reject) => {
+	// 	basePaneRef.value.validate(valid => {
+	// 		valid ? resolve(valid) : reject(valid);
+	// 	});
+	// });
+	// const flowForm = new Promise((resolve, reject) => {
+	// 	proxy.$refs["flowSearchRef"].$refs["elForm"].validate(valid => {
+	// 		valid ? resolve(valid) : reject(valid);
+	// 	});
+	// });
+	debugger;
+	console.log("xxxxxx---text", data.value);
 	Promise.all([contractForm, flowForm]).then(() => {
 		if (!isEdit.value) {
 			addContractData(status);

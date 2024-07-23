@@ -12,23 +12,24 @@
 			<el-card shadow="never">
 				<template #header>保理商信息</template>
 
-				<el-form-item label="保理商" prop="agreeDebtorName">
+				<el-form-item label="保理商" prop="institutionName">
 					<div class="form-item__block">
 						<CustomerSelect
-							:showValue="formData.agreeDebtorName"
+							:showValue="formData.institutionName"
 							:option="institution.option"
 							:queryPropList="institution.queryPropList"
 							:tablePropList="institution.tablePropList"
-							@selectRow="customerSelectRow"
+							@selectRow="institutionSelectRow"
 						/>
 					</div>
 				</el-form-item>
 
-				<el-form-item label="注册地址" prop="agreeCompanyNo">
+				<el-form-item label="注册地址" prop="registAddress">
 					<div class="form-item__block">
 						<el-input
-							v-model="formData.agreeCompanyNo"
-							:placeholder="showPlaceholder('请输入注册地址')"
+							disabled
+							v-model="formData.registAddress"
+							:placeholder="showPlaceholder('请先选择保理商')"
 							clearable
 							:style="formItemContentStyle"
 							maxlength="32"
@@ -36,11 +37,12 @@
 					</div>
 				</el-form-item>
 
-				<el-form-item label="法定代理人/委托代理人" prop="agreeSettlement">
+				<el-form-item label="法定代理人/委托代理人" prop="legalRepresentative">
 					<div class="form-item__block">
 						<el-input
-							v-model="formData.agreeDebtorName"
-							:placeholder="showPlaceholder('请输入法定代理人/委托代理人')"
+							disabled
+							v-model="formData.legalRepresentative"
+							:placeholder="showPlaceholder('请先选择保理商')"
 							clearable
 							:style="formItemContentStyle"
 							maxlength="32"
@@ -51,33 +53,41 @@
 
 			<el-card shadow="never" style="margin-top: 20px">
 				<template #header>保理申请人信息</template>
-				<el-form-item label="保理申请人" prop="agreeSettlement">
+
+				<el-form-item label="保理申请人" prop="applyInstitutionName">
+					<div class="form-item__block">
+						<CustomerSelect
+							:showValue="formData.applyInstitutionName"
+							:option="institution.option"
+							:queryPropList="institution.queryPropList"
+							:tablePropList="institution.tablePropList"
+							@selectRow="applyInstitutionSelectRow"
+						/>
+					</div>
+				</el-form-item>
+
+				<el-form-item label="注册地址" prop="applyRegistAddress">
 					<div class="form-item__block">
 						<el-input
-							v-model="formData.agreeDebtorName"
-							:placeholder="showPlaceholder('请输入保理申请人')"
+							disabled
+							v-model="formData.applyRegistAddress"
+							:placeholder="showPlaceholder('请先选择保理申请人')"
 							clearable
 							:style="formItemContentStyle"
 							maxlength="32"
 						/>
 					</div>
 				</el-form-item>
-				<el-form-item label="注册地址" prop="agreeSettlement">
+
+				<el-form-item
+					label="法定代表人/委托代理人"
+					prop="applyLegalRepresentative"
+				>
 					<div class="form-item__block">
 						<el-input
-							v-model="formData.agreeDebtorName"
-							:placeholder="showPlaceholder('请输入注册地址')"
-							clearable
-							:style="formItemContentStyle"
-							maxlength="32"
-						/>
-					</div>
-				</el-form-item>
-				<el-form-item label="法定代表人/委托代理人" prop="agreeSettlement">
-					<div class="form-item__block">
-						<el-input
-							v-model="formData.agreeDebtorName"
-							:placeholder="showPlaceholder('请输入法定代表人/委托代理人')"
+							disabled
+							v-model="formData.applyLegalRepresentative"
+							:placeholder="showPlaceholder('请先选择保理申请人')"
 							clearable
 							:style="formItemContentStyle"
 							maxlength="32"
@@ -88,13 +98,13 @@
 
 			<el-form-item
 				label="合同签订地点"
-				prop="agreeDebtorName"
+				prop="contractWriteOnPlace"
 				style="margin-top: 20px"
 			>
 				<div class="form-item__block">
 					<el-input
 						type="textarea"
-						v-model="formData.agreeDebtorName"
+						v-model="formData.contractWriteOnPlace"
 						:placeholder="showPlaceholder('请输入合同签订地点')"
 						clearable
 						:style="formItemContentStyle"
@@ -228,33 +238,22 @@ const dataScope = reactive({
 	} // 客户
 });
 const { institution } = toRefs(dataScope);
-function customerSelectRow(row) {
-	// formData.customerId = row.customerId;
-	formData.agreeDebtorName = row.institutionName;
+function institutionSelectRow(row) {
+	formData.institutionId = row.institutionId;
+	formData.institutionName = row.institutionName;
+	formData.registAddress = row.registAddress;
+	formData.legalRepresentative = row.legalRepresentative;
+}
+function applyInstitutionSelectRow(row) {
+	formData.applyInstitutionId = row.institutionId;
+	formData.applyInstitutionName = row.institutionName;
+	formData.applyRegistAddress = row.registAddress;
+	formData.applyLegalRepresentative = row.legalRepresentative;
 }
 // end-----机构选择配置
 
 // Form item 内容的统一宽度
 const formItemContentStyle = { width: "100%" };
-
-// 系统字典
-const {
-	cont_settlement,
-	day,
-	cont_advance,
-	cont_pay,
-	cont_overrun,
-	proj_dd_type,
-	cont_transfer_part
-} = proxy.useDict(
-	"cont_settlement",
-	"day",
-	"cont_advance",
-	"cont_pay",
-	"cont_overrun",
-	"proj_dd_type",
-	"cont_transfer_part"
-);
 
 // 页面是View状态
 const isView = computed(() => {
