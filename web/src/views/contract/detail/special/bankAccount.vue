@@ -10,9 +10,9 @@
 			:disabled="isView"
 		>
 			<el-row>
-				<el-form-item label="回款方式" prop="paymentType">
+				<el-form-item label="回款方式" prop="replayType">
 					<div class="form-item__block">
-						<el-radio-group v-model="formData.paymentType">
+						<el-radio-group v-model="formData.replayType">
 							<el-radio label="1">直接回款</el-radio>
 							<el-radio label="2">间接回款</el-radio>
 						</el-radio-group>
