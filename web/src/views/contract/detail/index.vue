@@ -171,7 +171,7 @@ const data = ref({
 	contractWriteOnPlace: null, //签订地点
 
 	replayType: null, // 回款方式（直接，间接） 111
-	earlyReplatType: null, // 提前还款选项
+	earlyReplatType: null, // 提前还款选项 111
 	cooperationType: null, // 合作方式：明保理or暗保理
 	sendType: null, // 送达方式-可复选以逗号分割
 	sendTypeOther: null, // 送达方式-其他输入框

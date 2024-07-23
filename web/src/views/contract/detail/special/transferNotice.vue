@@ -10,9 +10,9 @@
 			:disabled="isView"
 		>
 			<el-row>
-				<el-form-item label="保理形式" prop="agreeDebtorName">
+				<el-form-item label="保理形式" prop="cooperationType">
 					<div class="form-item__block">
-						<el-radio-group v-model="formData.radio1">
+						<el-radio-group v-model="formData.cooperationType">
 							<el-radio label="1">明保理形式</el-radio>
 							<el-radio label="2">暗保理形式</el-radio>
 						</el-radio-group>
@@ -20,8 +20,8 @@
 				</el-form-item>
 			</el-row>
 			<el-row>
-				<el-form-item label="通知形式" prop="agreeDebtorName">
-					<el-checkbox-group v-model="formData.type">
+				<el-form-item label="通知形式" prop="sendType">
+					<el-checkbox-group v-model="formData.sendType">
 						<el-checkbox label="Online activities" name="type">
 							电子邮件
 						</el-checkbox>
@@ -44,7 +44,7 @@
 							其他
 							<el-input
 								v-if="isOk"
-								v-model="formData.test"
+								v-model="formData.sendTypeOther"
 								placeholder="请输入其他方式"
 							/>
 						</el-checkbox>

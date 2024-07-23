@@ -8,10 +8,10 @@
 			label-width="160px"
 			:disabled="isView"
 		>
-			<el-form-item label="提前还款方式" prop="agreeDebtorName">
+			<el-form-item label="提前还款方式" prop="earlyReplatType">
 				<div class="form-item__block">
 					<el-select
-						v-model="formData.agreeDebtorName"
+						v-model="formData.earlyReplatType"
 						:placeholder="showPlaceholder('请选择提前还款方式')"
 						clearable
 						:style="formItemContentStyle"
