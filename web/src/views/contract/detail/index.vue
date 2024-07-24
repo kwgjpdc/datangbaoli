@@ -40,6 +40,7 @@
 							:routerQueryObj="routerQueryObj"
 						/>
 					</el-tab-pane> -->
+
 					<!-- <el-tab-pane label="客户信息" name="client-pane">
 						<customerPane
 							ref="customerPaneRef"
@@ -48,6 +49,7 @@
 							:routerQueryObj="routerQueryObj"
 						/>
 					</el-tab-pane> -->
+
 					<el-tab-pane label="业务合同" name="special-pane">
 						<spacialPane
 							ref="specialPaneRef"
@@ -171,6 +173,13 @@ const data = ref({
 	contractWriteOnPlace: null, //签订地点
 
 	replayType: null, // 回款方式（直接，间接） 111
+	customerBankName: null, // 客户开户行
+	customerAccountName: null, // 客户户名
+	customerAccountNum: null, // 客户账号
+	blBankName: null, // 保理公司开户行
+	blAccountName: null, // 保理公司户名
+	blAccountNum: null, // 保理公司账号
+
 	earlyReplatType: null, // 提前还款选项 111
 	cooperationType: null, // 合作方式：明保理or暗保理
 	sendType: null, // 送达方式-可复选以逗号分割

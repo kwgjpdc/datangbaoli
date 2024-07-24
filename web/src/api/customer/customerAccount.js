@@ -13,8 +13,8 @@ export function customerAcontInfoList(query) {
 export function customerAcontDetail(data) {
 	return request({
 		url: "/customeraccount/info/detial",
-		method: "post",
-		data: data
+		method: "get",
+		params: data
 	});
 }
 
