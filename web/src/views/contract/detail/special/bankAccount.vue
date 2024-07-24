@@ -24,16 +24,58 @@
 				<el-card shadow="never">
 					<template #header>保理专户</template>
 
-					<el-form-item label="开户行" prop="blBankName">
+					<el-form-item label="开户行" prop="customerBankName">
 						<div class="form-item__block">
-							1111
-							<!-- <BankAccountSelect
-								:showValue="formData.applyInstitutionName"
+							<BankAccountSelect
+								:showValue="formData.customerBankName"
 								:option="bankAccount.option"
 								:queryPropList="bankAccount.queryPropList"
 								:tablePropList="bankAccount.tablePropList"
+								:queryDefault="queryDefault"
 								@selectRow="bankAccountSelectRow"
-							/> -->
+							/>
+						</div>
+					</el-form-item>
+
+					<el-form-item label="户名" prop="customerAccountName">
+						<div class="form-item__block">
+							<el-input
+								disabled
+								v-model="formData.customerAccountName"
+								:placeholder="showPlaceholder('请输入户名')"
+								clearable
+								:style="formItemContentStyle"
+								maxlength="32"
+							/>
+						</div>
+					</el-form-item>
+
+					<el-form-item label="账号" prop="customerAccountNum">
+						<div class="form-item__block">
+							<el-input
+								disabled
+								v-model="formData.customerAccountNum"
+								:placeholder="showPlaceholder('账号')"
+								clearable
+								:style="formItemContentStyle"
+								maxlength="32"
+							/>
+						</div>
+					</el-form-item>
+				</el-card>
+
+				<el-card shadow="never" style="margin-top: 20px">
+					<template #header>甲方账户</template>
+
+					<el-form-item label="开户行" prop="blBankName">
+						<div class="form-item__block">
+							<CustomerSelect
+								:showValue="formData.blBankName"
+								:option="factoringInstitution.option"
+								:queryPropList="factoringInstitution.queryPropList"
+								:tablePropList="factoringInstitution.tablePropList"
+								@selectRow="factoringInstitutionSelectRow"
+							/>
 						</div>
 					</el-form-item>
 
@@ -54,46 +96,6 @@
 							<el-input
 								v-model="formData.blAccountNum"
 								:placeholder="showPlaceholder('请输入账号')"
-								clearable
-								:style="formItemContentStyle"
-								maxlength="32"
-							/>
-						</div>
-					</el-form-item>
-				</el-card>
-
-				<el-card shadow="never" style="margin-top: 20px">
-					<template #header>甲方账户</template>
-
-					<el-form-item label="开户行" prop="customerBankName">
-						<div class="form-item__block">
-							<el-input
-								v-model="formData.customerBankName"
-								:placeholder="showPlaceholder('请输入开户行')"
-								clearable
-								:style="formItemContentStyle"
-								maxlength="32"
-							/>
-						</div>
-					</el-form-item>
-
-					<el-form-item label="户名" prop="customerAccountName">
-						<div class="form-item__block">
-							<el-input
-								v-model="formData.customerAccountName"
-								:placeholder="showPlaceholder('请输入户名')"
-								clearable
-								:style="formItemContentStyle"
-								maxlength="32"
-							/>
-						</div>
-					</el-form-item>
-
-					<el-form-item label="账号" prop="customerAccountNum">
-						<div class="form-item__block">
-							<el-input
-								v-model="formData.customerAccountNum"
-								:placeholder="showPlaceholder('账号')"
 								clearable
 								:style="formItemContentStyle"
 								maxlength="32"
@@ -192,7 +194,8 @@
 import { ref, reactive, computed } from "vue";
 import { StrUtil } from "@/utils/StrUtil";
 
-import BankAccountSelect from "@/componemts/BankAccountSelect";
+import BankAccountSelect from "@/components/BankAccountSelect";
+import CustomerSelect from "@/components/CustomerSelect";
 
 // 组件属性
 const props = defineProps({
@@ -210,7 +213,7 @@ const props = defineProps({
 const emit = defineEmits(["update:data"]);
 
 // vue实例对象
-// const { proxy } = getCurrentInstance();
+const { proxy } = getCurrentInstance();
 
 // Form item 内容的统一宽度
 const formItemContentStyle = { width: "100%" };
@@ -294,61 +297,97 @@ const isView = computed(() => {
 	return result;
 });
 
+const queryDefault = computed(() => {
+	return { customerName: formData.applyInstitutionName };
+});
+
 // 侦听表单数据变化
 watch(formData, newValue => {
 	emit("update:data", newValue);
 });
 
-// start-----银行账号
-// const dataScope = reactive({
-// 	bankAccount: {
-// 		option: {
-// 			inputW: "100%",
-// 			placeholder: "请选择银行账号信息",
-// 			dialogTitle: "银行账号信息",
-// 			queryUrl: "/customeraccount/info/detial",
-// 			defaultQueryData: {
-// 				customerName: formData.applyInstitutionName
-// 			}
-// 		},
-// 		queryPropList: [
-// 			{
-// 				prop: "accountBankInfo",
-// 				label: "开户行"
-// 			},
-// 			{
-// 				prop: "accountInfo",
-// 				label: "账号"
-// 			},
-// 			{
-// 				prop: "customerName",
-// 				label: "户名"
-// 			}
-// 		],
-// 		tablePropList: [
-// 			{
-// 				prop: "accountBankInfo",
-// 				label: "银行信息"
-// 			},
-// 			{
-// 				prop: "accountInfo",
-// 				label: "账号"
-// 			},
-// 			{
-// 				prop: "accountName",
-// 				label: "户名"
-// 			}
-// 		]
-// 	}
-// });
-// const { bankAccount } = toRefs(dataScope);
-// function bankAccountSelectRow(row) {
-// 	formData.institutionId = row.institutionId;
-// 	formData.institutionName = row.institutionName;
-// 	formData.registAddress = row.registAddress;
-// 	formData.legalRepresentative = row.legalRepresentative;
-// }
-// end-----银行账号
+const dataScope = reactive({
+	bankAccount: {
+		option: {
+			inputW: "100%",
+			placeholder: "请选择银行账号信息",
+			dialogTitle: "银行账号信息",
+			queryUrl: "/customeraccount/info/detial"
+		},
+		queryPropList: [
+			{
+				prop: "accountBankInfo",
+				label: "开户行"
+			},
+			{
+				prop: "accountInfo",
+				label: "账号"
+			},
+			{
+				prop: "customerName",
+				label: "户名"
+			}
+		],
+		tablePropList: [
+			{
+				prop: "accountBankInfo",
+				label: "银行信息"
+			},
+			{
+				prop: "accountInfo",
+				label: "账号"
+			},
+			{
+				prop: "accountName",
+				label: "户名"
+			}
+		]
+	},
+	factoringInstitution: {
+		option: {
+			inputW: "100%",
+			placeholder: "请选择机构信息",
+			dialogTitle: "机构信息",
+			queryUrl: "/finance/payment/list"
+		},
+		queryPropList: [
+			{
+				prop: "accountName",
+				label: "户名"
+			},
+			{
+				prop: "paymentAccount",
+				label: "银行账号"
+			}
+		],
+		tablePropList: [
+			{
+				prop: "depositBank",
+				label: "开户行"
+			},
+			{
+				prop: "accountName",
+				label: "户名"
+			},
+			{
+				prop: "paymentAccount",
+				label: "银行账号"
+			}
+		]
+	}
+});
+
+const { bankAccount, factoringInstitution } = toRefs(dataScope);
+function bankAccountSelectRow(row) {
+	formData.customerBankName = row.institutionId;
+	formData.customerAccountName = row.institutionName;
+	formData.customerAccountNum = row.registAddress;
+}
+function factoringInstitutionSelectRow(row) {
+	formData.blBankName = row.depositBank;
+	formData.blAccountName = row.accountName;
+	formData.blAccountNum = row.paymentAccount;
+}
 
 // 监听 radio
 watch(formData.replayType, () => {

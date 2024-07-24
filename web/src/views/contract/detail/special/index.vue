@@ -1,6 +1,5 @@
 <template>
-	11111111111
-	<!-- <el-collapse v-model="activeCollapseNames">
+	<el-collapse v-model="activeCollapseNames">
 		<el-collapse-item title="甲乙方签订信息" name="subjectInfo">
 			<subjectInfo
 				v-model:data="specialData"
@@ -88,7 +87,7 @@
 				:routerQueryObj="props.routerQueryObj"
 			/>
 		</el-collapse-item>
-	</el-collapse> -->
+	</el-collapse>
 </template>
 
 <script setup>

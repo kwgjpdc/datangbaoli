@@ -81,16 +81,6 @@
 					</el-col>
 				</el-row>
 			</div>
-			<div class="page">
-				<el-pagination
-					@size-change="handleSizeChange"
-					@current-change="handleCurrentChange"
-					:page-size="queryParams.pageSize"
-					layout="total, prev, pager, next"
-					:total="total"
-				>
-				</el-pagination>
-			</div>
 		</el-dialog>
 	</div>
 </template>
@@ -113,10 +103,7 @@ const props = defineProps({
 			dialogW: "",
 			placeholder: "请选择",
 			dialogTitle: "用户信息",
-			queryUrl:
-				"https://mock.apifox.com/m1/3688489-0-default/dev-api/test/list",
-			defaultQueryData: null,
-			queryType: "get"
+			queryUrl: "https://mock.apifox.com/m1/3688489-0-default/dev-api/test/list"
 		}
 	},
 	queryPropList: {
@@ -145,6 +132,10 @@ const props = defineProps({
 			}
 		]
 	},
+	queryDefault: {
+		type: Object,
+		default: {}
+	},
 	showValue: {
 		type: String,
 		default: ""
@@ -155,10 +146,7 @@ let resultLoading = ref(true);
 const emit = defineEmits();
 const data = reactive({
 	showValue: "",
-	queryParams: {
-		pageNum: 1,
-		pageSize: 10
-	}
+	queryParams: {}
 });
 
 const { showValue, queryParams } = toRefs(data);
@@ -209,17 +197,9 @@ watch(
 	{ immediate: true, deep: true }
 );
 
-function handleSizeChange(val) {
-	queryParams.value.pageNum = val;
-	getList();
-}
-function handleCurrentChange(val) {
-	queryParams.value.pageNum = val;
-	getList();
-}
 // 查询
 function handleQuery() {
-	queryParams.value.pageNum = 1;
+	queryParams.value = Object.assign(queryParams.value, props.queryDefault);
 	getList();
 }
 // 重置条件
@@ -235,9 +215,7 @@ function getList() {
 	return request({
 		url: option.value.queryUrl,
 		method: "get",
-		params: option.value.defaultQueryData
-			? option.value.defaultQueryData
-			: queryParams.value
+		params: queryParams.value
 	}).then(response => {
 		resultList.value = response.rows;
 		total.value = response.total;
