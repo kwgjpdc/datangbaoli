@@ -211,44 +211,49 @@ const dataScope = reactive({
 	institution: {
 		option: {
 			inputW: "100%",
+			dialogW: "1000px",
 			placeholder: "请选择机构信息",
 			dialogTitle: "机构信息",
-			queryUrl: "/institution/info/list"
+			queryUrl: "/cust/customer/list"
 		},
 		queryPropList: [
 			{
-				prop: "institutionName",
-				label: "机构名称"
+				prop: "customerName",
+				label: "公司名称"
 			},
 			{
-				prop: "registerCode",
-				label: "工商注册号"
+				prop: "corporationName",
+				label: "法人代表"
 			}
 		],
 		tablePropList: [
 			{
-				prop: "institutionName",
-				label: "机构名称"
+				prop: "customerName",
+				label: "公司名称"
 			},
 			{
-				prop: "registerCode",
-				label: "工商注册号"
+				prop: "corporationName",
+				label: "法人代表"
+			},
+			{
+				prop: "",
+				label: "注册地址"
 			}
 		]
 	} // 客户
 });
 const { institution } = toRefs(dataScope);
 function institutionSelectRow(row) {
-	formData.institutionId = row.institutionId;
-	formData.institutionName = row.institutionName;
+	formData.customerId = row.customerId;
+	formData.institutionName = row.customerName;
 	formData.registAddress = row.registAddress;
-	formData.legalRepresentative = row.legalRepresentative;
+	formData.legalRepresentative = row.corporationName;
 }
 function applyInstitutionSelectRow(row) {
-	formData.applyInstitutionId = row.institutionId;
-	formData.applyInstitutionName = row.institutionName;
+	formData.applyInstitutionId = row.customerId;
+	formData.applyInstitutionName = row.customerName;
 	formData.applyRegistAddress = row.registAddress;
-	formData.applyLegalRepresentative = row.legalRepresentative;
+	formData.applyLegalRepresentative = row.corporationName;
 }
 // end-----机构选择配置
 
