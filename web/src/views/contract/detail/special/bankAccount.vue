@@ -22,7 +22,7 @@
 
 			<template v-if="formData.replayType === '1'">
 				<el-card shadow="never">
-					<template #header>保理专户</template>
+					<template #header>客户账户信息</template>
 
 					<el-form-item label="开户行" prop="customerBankName">
 						<div class="form-item__block">
@@ -65,7 +65,7 @@
 				</el-card>
 
 				<el-card shadow="never" style="margin-top: 20px">
-					<template #header>甲方账户</template>
+					<template #header>保理公司账号信息</template>
 
 					<el-form-item label="开户行" prop="blBankName">
 						<div class="form-item__block">
@@ -82,6 +82,7 @@
 					<el-form-item label="户名" prop="blAccountName">
 						<div class="form-item__block">
 							<el-input
+								disabled
 								v-model="formData.blAccountName"
 								:placeholder="showPlaceholder('请输入户名')"
 								clearable
@@ -94,6 +95,7 @@
 					<el-form-item label="账号" prop="blAccountNum">
 						<div class="form-item__block">
 							<el-input
+								disabled
 								v-model="formData.blAccountNum"
 								:placeholder="showPlaceholder('请输入账号')"
 								clearable
@@ -107,7 +109,7 @@
 
 			<template v-if="formData.replayType === '2'">
 				<el-card shadow="never">
-					<template #header>专用回款专户</template>
+					<template #header>客户账号信息</template>
 
 					<el-form-item label="开户行" prop="customerBankName">
 						<div class="form-item__block">
@@ -124,6 +126,7 @@
 					<el-form-item label="户名" prop="customerAccountName">
 						<div class="form-item__block">
 							<el-input
+								disabled
 								v-model="formData.customerAccountName"
 								:placeholder="showPlaceholder('请输入户名')"
 								clearable
@@ -136,6 +139,7 @@
 					<el-form-item label="账号" prop="customerAccountNum">
 						<div class="form-item__block">
 							<el-input
+								disabled
 								v-model="formData.customerAccountNum"
 								:placeholder="showPlaceholder('账号')"
 								clearable
@@ -147,7 +151,7 @@
 				</el-card>
 
 				<el-card shadow="never" style="margin-top: 20px">
-					<template #header>保理专户</template>
+					<template #header>保理公司账号信息</template>
 
 					<el-form-item label="开户行" prop="blBankName">
 						<div class="form-item__block">
@@ -164,6 +168,7 @@
 					<el-form-item label="户名" prop="blAccountName">
 						<div class="form-item__block">
 							<el-input
+								disabled
 								v-model="formData.blAccountName"
 								:placeholder="showPlaceholder('请输入户名')"
 								clearable
@@ -176,6 +181,7 @@
 					<el-form-item label="账号" prop="blAccountNum">
 						<div class="form-item__block">
 							<el-input
+								disabled
 								v-model="formData.blAccountNum"
 								:placeholder="showPlaceholder('账号')"
 								clearable
@@ -378,6 +384,7 @@ const dataScope = reactive({
 });
 
 const { bankAccount, factoringInstitution } = toRefs(dataScope);
+
 function bankAccountSelectRow(row) {
 	formData.customerBankName = row.institutionId;
 	formData.customerAccountName = row.institutionName;
@@ -390,14 +397,17 @@ function factoringInstitutionSelectRow(row) {
 }
 
 // 监听 radio
-watch(formData.replayType, () => {
-	formData.customerBankName = null;
-	formData.customerAccountName = null;
-	formData.customerAccountNum = null;
-	formData.blBankName = null;
-	formData.blAccountName = null;
-	formData.blAccountNum = null;
-});
+watch(
+	() => formData.replayType,
+	() => {
+		formData.customerBankName = null;
+		formData.customerAccountName = null;
+		formData.customerAccountNum = null;
+		formData.blBankName = null;
+		formData.blAccountName = null;
+		formData.blAccountNum = null;
+	}
+);
 
 // 验证业务类型
 function validateInform(rule, value, callback) {

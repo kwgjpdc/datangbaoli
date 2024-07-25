@@ -22,25 +22,13 @@
 			<el-row>
 				<el-form-item label="通知形式" prop="sendType">
 					<el-checkbox-group v-model="formData.sendType">
-						<el-checkbox label="Online activities" name="type">
-							电子邮件
-						</el-checkbox>
-						<el-checkbox label="Promotion activities" name="type">
-							电子通讯方式
-						</el-checkbox>
-						<el-checkbox label="Offline activities" name="type">
-							快递
-						</el-checkbox>
-						<el-checkbox label="Simple brand exposure" name="type">
-							挂号信
-						</el-checkbox>
-						<el-checkbox label="Simple brand exposure" name="type">
-							债务人盖章确认
-						</el-checkbox>
-						<el-checkbox label="Simple brand exposure" name="type">
-							公证送达
-						</el-checkbox>
-						<el-checkbox label="other" name="type">
+						<el-checkbox label="1" name="type"> 电子邮件 </el-checkbox>
+						<el-checkbox label="2" name="type"> 电子通讯方式 </el-checkbox>
+						<el-checkbox label="3" name="type"> 快递 </el-checkbox>
+						<el-checkbox label="4" name="type"> 挂号信 </el-checkbox>
+						<el-checkbox label="5" name="type"> 债务人盖章确认 </el-checkbox>
+						<el-checkbox label="6" name="type"> 公证送达 </el-checkbox>
+						<el-checkbox label="7" name="type" @change="otherChange">
 							其他
 							<el-input
 								v-if="isOk"
@@ -85,7 +73,7 @@ const formData = reactive(props.data);
 
 const isOk = computed(() => {
 	// debugger;
-	return Array.isArray(formData.type) && formData.type.includes("other")
+	return Array.isArray(formData.sendType) && formData.sendType.includes("7")
 		? true
 		: false;
 });
@@ -148,6 +136,12 @@ const rules = ref({
 		}
 	]
 });
+
+function otherChange(val) {
+	if (!val) {
+		formData.sendTypeOther = null;
+	}
+}
 
 // Form item 内容的统一宽度
 const formItemContentStyle = { width: "100%" };

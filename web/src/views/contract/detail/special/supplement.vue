@@ -8,9 +8,13 @@
 			label-width="160px"
 			:disabled="isView"
 		>
-			<el-form-item label="补充条款" prop="agreeDebtorName">
+			<el-form-item label="补充条款" prop="supplementInfo">
 				<div class="form-item__block">
-					<el-input type="textarea" />
+					<el-input
+						type="textarea"
+						v-model="formData.supplementInfo"
+						:placeholder="showPlaceholder('请输入补充条款')"
+					/>
 				</div>
 			</el-form-item>
 		</el-form>

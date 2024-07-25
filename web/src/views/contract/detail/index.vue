@@ -181,9 +181,11 @@ const data = ref({
 	blAccountNum: null, // 保理公司账号
 
 	earlyReplatType: null, // 提前还款选项 111
-	cooperationType: null, // 合作方式：明保理or暗保理
-	sendType: null, // 送达方式-可复选以逗号分割
+
+	cooperationType: null, // 合作方式：明保理or暗保理 11
+	sendType: [], // 送达方式-可复选以逗号分割
 	sendTypeOther: null, // 送达方式-其他输入框
+
 	measuresType: null, // 是否有增信措施0.无-1.有
 	measuresNum1: null, // 增信措施合同编号1
 	measuresName1: null, // 增信措施合同名称1
@@ -193,16 +195,20 @@ const data = ref({
 	measuresName2: null, // 增信措施合同名称2
 	guarantee2: null, // 增信措施担保方式2
 	guaranteePerson2: null, // 增信措施担保人2
+
 	fairType: null, // 是否执行强制公正
-	approvalPersonAddress: null, //审批人送达地址
+
+	approvalPersonAddress: "北京市西城区菜市口大街1号院2号楼中融信托大厦10层", //审批人送达地址
 	approvalPerson: null, // 审批人联系人
 	approvalPersonMobile: null, // 审批人电话
-	approvalPersonEmail: null, // 审批人电子邮箱
+	approvalPersonEmail: "dtbllaw@cdt-zbkg.com", // 审批人电子邮箱
 	applyPersonAddress: null, // 保理申请人送达地址
 	applyPerson: null, // 保理申请人联系人
 	applyPersonMobile: null, // 保理申请人电话
 	applyPersonEmail: null, // 保理申请人电子邮箱
-	supplementInfo: null, // 补充条款内容
+
+	supplementInfo: "不适用", // 补充条款内容
+
 	countNumber: null, // 合同总份数
 	jCountNumber: null, // 甲方合同份数
 	yCountNumber: null // 乙方合同份数

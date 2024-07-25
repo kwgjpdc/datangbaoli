@@ -11,51 +11,51 @@
 			<el-card shadow="never">
 				<template #header>甲方信息</template>
 
-				<el-form-item label="联系人" prop="agreeDebtorName">
+				<el-form-item label="联系人" prop="approvalPerson">
 					<div class="form-item__block">
 						<el-input
-							v-model="formData.agreeDebtorName"
-							:placeholder="showPlaceholder('请输入开户行')"
+							v-model="formData.approvalPerson"
+							:placeholder="showPlaceholder('请输入联系人')"
 							clearable
 							:style="formItemContentStyle"
-							maxlength="32"
+							maxlength="50"
 						/>
 					</div>
 				</el-form-item>
 
-				<el-form-item label="电话" prop="agreeCompanyNo">
+				<el-form-item label="电话" prop="approvalPersonMobile">
 					<div class="form-item__block">
 						<el-input
-							v-model="formData.agreeCompanyNo"
-							:placeholder="showPlaceholder('请输入户名')"
+							v-model="formData.approvalPersonMobile"
+							:placeholder="showPlaceholder('请输入电话')"
 							clearable
 							:style="formItemContentStyle"
-							maxlength="32"
+							maxlength="50"
 						/>
 					</div>
 				</el-form-item>
 
-				<el-form-item label="邮箱" prop="agreeSettlement">
+				<el-form-item label="邮箱" prop="approvalPersonEmail">
 					<div class="form-item__block">
 						<el-input
-							v-model="formData.agreeDebtorName"
-							:placeholder="showPlaceholder('请输入账号')"
+							v-model="formData.approvalPersonEmail"
+							:placeholder="showPlaceholder('请输入邮箱')"
 							clearable
 							:style="formItemContentStyle"
-							maxlength="32"
+							maxlength="50"
 						/>
 					</div>
 				</el-form-item>
 
-				<el-form-item label="送达地址" prop="agreeSettlement">
+				<el-form-item label="送达地址" prop="approvalPersonAddress">
 					<div class="form-item__block">
 						<el-input
 							type="textarea"
-							v-model="formData.agreeDebtorName"
-							:placeholder="showPlaceholder('请输入账号')"
+							v-model="formData.approvalPersonAddress"
+							:placeholder="showPlaceholder('请输入送达地址')"
 							clearable
 							:style="formItemContentStyle"
-							maxlength="32"
+							maxlength="500"
 						/>
 					</div>
 				</el-form-item>
@@ -64,51 +64,54 @@
 			<el-card shadow="never" style="margin-top: 20px">
 				<template #header>乙方信息</template>
 
-				<el-form-item label="联系人" prop="agreeDebtorName">
+				<el-form-item label="联系人" prop="applyPerson">
 					<div class="form-item__block">
-						<el-input
-							v-model="formData.agreeDebtorName"
-							:placeholder="showPlaceholder('请输入开户行')"
-							clearable
-							:style="formItemContentStyle"
-							maxlength="32"
+						<CustomerSelect
+							:showValue="formData.applyPerson"
+							:option="configSelect.option"
+							:queryPropList="configSelect.queryPropList"
+							:tablePropList="configSelect.tablePropList"
+							@selectRow="configSelectRow"
 						/>
 					</div>
 				</el-form-item>
 
-				<el-form-item label="电话" prop="agreeCompanyNo">
+				<el-form-item label="电话" prop="applyPersonMobile">
 					<div class="form-item__block">
 						<el-input
-							v-model="formData.agreeCompanyNo"
-							:placeholder="showPlaceholder('请输入户名')"
+							disabled
+							v-model="formData.applyPersonMobile"
+							:placeholder="showPlaceholder('请输入电话')"
 							clearable
 							:style="formItemContentStyle"
-							maxlength="32"
+							maxlength="50"
 						/>
 					</div>
 				</el-form-item>
 
-				<el-form-item label="邮箱" prop="agreeSettlement">
+				<el-form-item label="邮箱" prop="applyPersonEmail">
 					<div class="form-item__block">
 						<el-input
-							v-model="formData.agreeDebtorName"
-							:placeholder="showPlaceholder('请输入账号')"
+							disabled
+							v-model="formData.applyPersonEmail"
+							:placeholder="showPlaceholder('请输入邮箱')"
 							clearable
 							:style="formItemContentStyle"
-							maxlength="32"
+							maxlength="50"
 						/>
 					</div>
 				</el-form-item>
 
-				<el-form-item label="送达地址" prop="agreeSettlement">
+				<el-form-item label="送达地址" prop="applyPersonAddress">
 					<div class="form-item__block">
 						<el-input
+							disabled
 							type="textarea"
-							v-model="formData.agreeDebtorName"
-							:placeholder="showPlaceholder('请输入账号')"
+							v-model="formData.applyPersonAddress"
+							:placeholder="showPlaceholder('请输入送达地址')"
 							clearable
 							:style="formItemContentStyle"
-							maxlength="32"
+							maxlength="1000"
 						/>
 					</div>
 				</el-form-item>
@@ -120,6 +123,7 @@
 <script setup>
 import { ref, reactive, computed } from "vue";
 import { StrUtil } from "@/utils/StrUtil";
+import CustomerSelect from "@/components/CustomerSelect";
 
 // 组件属性
 const props = defineProps({
@@ -204,27 +208,59 @@ const rules = ref({
 	]
 });
 
+const dataScope = reactive({
+	configSelect: {
+		option: {
+			inputW: "100%",
+			placeholder: "请选择客户信息",
+			dialogTitle: "客户信息",
+			queryUrl: "/cust/customer/list"
+		},
+		queryPropList: [
+			{
+				prop: "customerName",
+				label: "客户名称"
+			},
+			{
+				prop: "applyPersonName",
+				label: "联系人"
+			}
+		],
+		tablePropList: [
+			{
+				prop: "customerName",
+				label: "客户名称"
+			},
+			{
+				prop: "applyPersonName",
+				label: "联系人"
+			},
+			{
+				prop: "applyPersonMobileNumber",
+				label: "电话"
+			},
+			{
+				prop: "applyPersonEmail",
+				label: "邮箱"
+			},
+			{
+				prop: "applySendAddress",
+				label: "地址"
+			}
+		]
+	}
+});
+
+const { configSelect } = toRefs(dataScope);
+
+function configSelectRow(row) {
+	formData.blBankName = row.depositBank;
+	formData.blAccountName = row.accountName;
+	formData.blAccountNum = row.paymentAccount;
+}
+
 // Form item 内容的统一宽度
 const formItemContentStyle = { width: "100%" };
-
-// 系统字典
-const {
-	cont_settlement,
-	day,
-	cont_advance,
-	cont_pay,
-	cont_overrun,
-	proj_dd_type,
-	cont_transfer_part
-} = proxy.useDict(
-	"cont_settlement",
-	"day",
-	"cont_advance",
-	"cont_pay",
-	"cont_overrun",
-	"proj_dd_type",
-	"cont_transfer_part"
-);
 
 // 页面是View状态
 const isView = computed(() => {
@@ -261,38 +297,9 @@ function validateInform(rule, value, callback) {
 	}
 }
 
-// 结算方式改变方法
-function handleSettlementChange() {
-	formData.agreePaymentLimit = null;
-	formData.agreePaymentStartDate = null;
-	formData.agreePaymentEndDate = null;
-	formData.agreePaymentVerify = null;
-	formData.agreeStartDate = null;
-	formData.agreePaymentMaxLimit = null;
-}
-
-// 改变是否垫付
-function handleAdvanceChange() {
-	formData.agreeAdvanceGraceDays = null;
-	formData.agreeAdvancePercentage = null;
-}
-
-// 改变业务类型
-function handleInformChange() {
-	formData.agreeInformOther = null;
-}
-
 // 显示placeholder占位字符
 function showPlaceholder(txt) {
 	return isView.value ? " " : txt;
-}
-
-// 监听input:number的字段长度问题
-function handleInput(value, name, len = 32) {
-	// 如果输入长度超过5，截取前5位
-	if (value.length > len) {
-		formData[name] = value.slice(0, len);
-	}
 }
 
 // 验证表单

@@ -9,9 +9,9 @@
 			:disabled="isView"
 		>
 			<el-row>
-				<el-form-item label="强制执行公证" prop="paymentType">
+				<el-form-item label="强制执行公证" prop="fairType">
 					<div class="form-item__block">
-						<el-radio-group v-model="formData.ccc123456">
+						<el-radio-group v-model="formData.fairType">
 							<el-radio label="1">办理</el-radio>
 							<el-radio label="2">不办理</el-radio>
 						</el-radio-group>

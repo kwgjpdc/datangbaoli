@@ -9,41 +9,47 @@
 			:disabled="isView"
 		>
 			<el-row>
-				<el-form-item label="有无增信措施" prop="paymentType">
+				<el-form-item label="有无增信措施" prop="measuresType">
 					<div class="form-item__block">
-						<el-radio-group v-model="formData.paymentType">
+						<el-radio-group
+							v-model="formData.measuresType"
+							@change="radioChange"
+						>
+							<el-radio label="0">无</el-radio>
 							<el-radio label="1">有</el-radio>
-							<el-radio label="2">无</el-radio>
 						</el-radio-group>
 					</div>
 				</el-form-item>
 			</el-row>
-			<el-row v-if="formData.paymentType === '1'">
-				<el-form-item label="增信措施方式" prop="typehaha">
+			<el-row v-if="formData.measuresType === '1'">
+				<el-form-item label="增信措施方式" prop="measuresUseType">
 					<div class="radio-column">
-						<el-radio-group v-model="formData.typehaha">
+						<el-radio-group
+							v-model="formData.measuresUseType"
+							@change="typeRadioChange"
+						>
 							<el-radio label="1">
 								编号
 								<el-input
-									v-model="formData.haha"
+									v-model="formData.measuresNum1"
 									style="width: 150px"
 									size="small"
 								/>
 								的《
 								<el-input
-									v-model="formData.haha"
+									v-model="formData.measuresName1"
 									style="width: 150px"
 									size="small"
 								/>
 								合同 》，担保方式为
 								<el-input
-									v-model="formData.haha"
+									v-model="formData.guarantee1"
 									style="width: 150px"
 									size="small"
 								/>
 								，担保人为
 								<el-input
-									v-model="formData.haha"
+									v-model="formData.guaranteePerson1"
 									style="width: 150px"
 									size="small"
 								/>
@@ -52,25 +58,25 @@
 							<el-radio label="2">
 								编号
 								<el-input
-									v-model="formData.haha"
+									v-model="formData.measuresNum2"
 									style="width: 150px"
 									size="small"
 								/>
 								的《
 								<el-input
-									v-model="formData.haha"
+									v-model="formData.measuresName2"
 									style="width: 150px"
 									size="small"
 								/>
 								合同 》，担保方式为
 								<el-input
-									v-model="formData.haha"
+									v-model="formData.guarantee2"
 									style="width: 150px"
 									size="small"
 								/>
 								，担保人为
 								<el-input
-									v-model="formData.haha"
+									v-model="formData.guaranteePerson2"
 									style="width: 150px"
 									size="small"
 								/>
@@ -172,6 +178,48 @@ const rules = ref({
 		}
 	]
 });
+
+// 有/无 radio change
+function radioChange(val) {
+	if (val === "1") {
+		formData.measuresNum1 = null;
+		formData.measuresName1 = null;
+		formData.guarantee1 = null;
+		formData.guaranteePerson1 = null;
+		formData.measuresNum2 = null;
+		formData.measuresName2 = null;
+		formData.guarantee2 = null;
+		formData.guaranteePerson2 = null;
+	}
+}
+
+// 增信措施 change
+function typeRadioChange(val) {
+	if (val === "1") {
+		formData.measuresNum2 = null;
+		formData.measuresName2 = null;
+		formData.guarantee2 = null;
+		formData.guaranteePerson2 = null;
+	}
+
+	if (val === "2") {
+		formData.measuresNum1 = null;
+		formData.measuresName1 = null;
+		formData.guarantee1 = null;
+		formData.guaranteePerson1 = null;
+	}
+
+	if (val === "3" || val === "4") {
+		formData.measuresNum1 = null;
+		formData.measuresName1 = null;
+		formData.guarantee1 = null;
+		formData.guaranteePerson1 = null;
+		formData.measuresNum2 = null;
+		formData.measuresName2 = null;
+		formData.guarantee2 = null;
+		formData.guaranteePerson2 = null;
+	}
+}
 
 // Form item 内容的统一宽度
 const formItemContentStyle = { width: "100%" };

@@ -9,23 +9,24 @@
 			label-width="160px"
 			:disabled="isView"
 		>
-			<el-form-item label="开户行" prop="agreeDebtorName">
+			<el-form-item label="开户行" prop="blBankName">
 				<div class="form-item__block">
-					<el-input
-						v-model="formData.agreeDebtorName"
-						:placeholder="showPlaceholder('请输入开户行')"
-						clearable
-						:style="formItemContentStyle"
-						maxlength="32"
+					<CustomerSelect
+						:showValue="formData.blBankName"
+						:option="selectConf.option"
+						:queryPropList="selectConf.queryPropList"
+						:tablePropList="selectConf.tablePropList"
+						@selectRow="configSelectRow"
 					/>
 				</div>
 			</el-form-item>
 
-			<el-form-item label="户名" prop="agreeCompanyNo">
+			<el-form-item label="户名" prop="blAccountName">
 				<div class="form-item__block">
 					<el-input
+						disabled
 						v-model="formData.agreeCompanyNo"
-						:placeholder="showPlaceholder('请输入户名')"
+						:placeholder="showPlaceholder('户名')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
@@ -36,6 +37,7 @@
 			<el-form-item label="账号" prop="agreeSettlement">
 				<div class="form-item__block">
 					<el-input
+						disabled
 						v-model="formData.agreeDebtorName"
 						:placeholder="showPlaceholder('账号')"
 						clearable
@@ -51,6 +53,7 @@
 <script setup>
 import { ref, reactive, computed } from "vue";
 import { StrUtil } from "@/utils/StrUtil";
+import CustomerSelect from "@/components/CustomerSelect";
 
 // 组件属性
 const props = defineProps({
@@ -134,6 +137,49 @@ const rules = ref({
 		}
 	]
 });
+
+const dataScope = reactive({
+	selectConf: {
+		option: {
+			inputW: "100%",
+			placeholder: "请选择银行账号",
+			dialogTitle: "银行账号",
+			queryUrl: "/finance/payment/list"
+		},
+		queryPropList: [
+			{
+				prop: "accountName",
+				label: "户名"
+			},
+			{
+				prop: "paymentAccount",
+				label: "银行账号"
+			}
+		],
+		tablePropList: [
+			{
+				prop: "depositBank",
+				label: "开户行"
+			},
+			{
+				prop: "accountName",
+				label: "户名"
+			},
+			{
+				prop: "paymentAccount",
+				label: "银行账号"
+			}
+		]
+	}
+});
+
+const { selectConf } = toRefs(dataScope);
+
+function configSelectRow(row) {
+	formData.blBankName = row.depositBank;
+	formData.blAccountName = row.accountName;
+	formData.blAccountNum = row.paymentAccount;
+}
 
 // Form item 内容的统一宽度
 const formItemContentStyle = { width: "100%" };

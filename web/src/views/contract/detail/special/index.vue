@@ -16,13 +16,13 @@
 			/>
 		</el-collapse-item>
 
-		<el-collapse-item title="应付款项银行账户" name="payableBankAccount">
+		<!-- <el-collapse-item title="应付款项银行账户" name="payableBankAccount">
 			<payableBankAccount
 				v-model:data="specialData"
 				:routerQueryObj="props.routerQueryObj"
 				v-model:loading="loading"
 			/>
-		</el-collapse-item>
+		</el-collapse-item> -->
 
 		<el-collapse-item title="提前还款方式" name="earlyRepay">
 			<earlyRepay
@@ -32,13 +32,13 @@
 			/>
 		</el-collapse-item>
 
-		<el-collapse-item title="保理融资款收取账户" name="financeBankAccount">
+		<!-- <el-collapse-item title="保理融资款收取账户" name="financeBankAccount">
 			<financeBankAccount
 				v-model:data="specialData"
 				:routerQueryObj="props.routerQueryObj"
 				v-model:loading="loading"
 			/>
-		</el-collapse-item>
+		</el-collapse-item> -->
 
 		<el-collapse-item title="应收账款转让通知" name="transferNotice">
 			<transferNotice
@@ -93,9 +93,9 @@
 <script setup>
 import subjectInfo from "./subjectInfo.vue";
 import bankAccount from "./bankAccount.vue";
-import payableBankAccount from "./payableBankAccount.vue";
+// import payableBankAccount from "./payableBankAccount.vue";
 import earlyRepay from "./earlyRepay.vue";
-import financeBankAccount from "./financeBankAccount.vue";
+// import financeBankAccount from "./financeBankAccount.vue";
 import transferNotice from "./transferNotice.vue";
 import creditEnhancement from "./creditEnhancement.vue";
 import notarization from "./notarization.vue";
