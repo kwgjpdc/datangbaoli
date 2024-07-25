@@ -187,6 +187,7 @@ const data = ref({
 	sendTypeOther: null, // 送达方式-其他输入框
 
 	measuresType: null, // 是否有增信措施0.无-1.有
+	measuresUseType: null,
 	measuresNum1: null, // 增信措施合同编号1
 	measuresName1: null, // 增信措施合同名称1
 	guarantee1: null, // 增信措施担保方式1

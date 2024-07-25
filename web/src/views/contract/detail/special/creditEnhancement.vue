@@ -122,58 +122,17 @@ const formData = reactive(props.data);
 
 // 表单验证规则
 const rules = ref({
-	agreePaymentLimit: [
+	measuresType: [
 		{
 			required: true,
-			message: "付款期限不能为空",
+			message: "有无增信措施不能为空",
 			trigger: "change"
 		}
 	],
-	agreePaymentStartDate: [
+	measuresUseType: [
 		{
 			required: true,
-			message: "起日不能为空",
-			trigger: "change"
-		}
-	],
-	agreePaymentEndDate: [
-		{
-			required: true,
-			message: "迄日不能为空",
-			trigger: "change"
-		}
-	],
-	agreePaymentVerify: [
-		{
-			required: true,
-			message: "对账期限不能为空",
-			trigger: "change"
-		}
-	],
-	agreeStartDate: [
-		{
-			required: true,
-			message: "初始日不能为空",
-			trigger: "change"
-		}
-	],
-	agreePaymentMaxLimit: [
-		{
-			required: true,
-			message: "最大付款期限不能为空",
-			trigger: "change"
-		}
-	],
-	agreeAdvanceGraceDays: [
-		{
-			required: true,
-			message: "垫款宽限期不能为空",
-			trigger: "change"
-		}
-	],
-	agreeInform: [
-		{
-			validator: validateInform,
+			message: "增信措施方式不能为空",
 			trigger: "change"
 		}
 	]

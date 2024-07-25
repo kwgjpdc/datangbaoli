@@ -151,58 +151,59 @@ const formData = reactive(props.data);
 
 // 表单验证规则
 const rules = ref({
-	agreePaymentLimit: [
+	approvalPerson: [
 		{
 			required: true,
-			message: "付款期限不能为空",
+			message: "联系人不能为空",
 			trigger: "change"
 		}
 	],
-	agreePaymentStartDate: [
+	approvalPersonMobile: [
 		{
 			required: true,
-			message: "起日不能为空",
+			message: "电话不能为空",
 			trigger: "change"
 		}
 	],
-	agreePaymentEndDate: [
+	approvalPersonEmail: [
 		{
 			required: true,
-			message: "迄日不能为空",
+			message: "邮箱不能为空",
 			trigger: "change"
 		}
 	],
-	agreePaymentVerify: [
+	approvalPersonAddress: [
 		{
 			required: true,
-			message: "对账期限不能为空",
+			message: "地址不能为空",
 			trigger: "change"
 		}
 	],
-	agreeStartDate: [
+	applyPerson: [
 		{
 			required: true,
-			message: "初始日不能为空",
+			message: "联系人不能为空",
 			trigger: "change"
 		}
 	],
-	agreePaymentMaxLimit: [
+	applyPersonMobile: [
 		{
 			required: true,
-			message: "最大付款期限不能为空",
+			message: "连线电话不能为空",
 			trigger: "change"
 		}
 	],
-	agreeAdvanceGraceDays: [
+	applyPersonEmail: [
 		{
 			required: true,
-			message: "垫款宽限期不能为空",
+			message: "电子邮箱不能为空",
 			trigger: "change"
 		}
 	],
-	agreeInform: [
+	applyPersonAddress: [
 		{
-			validator: validateInform,
+			required: true,
+			message: "地址不能为空",
 			trigger: "change"
 		}
 	]

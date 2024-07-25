@@ -8,10 +8,10 @@
 			label-width="160px"
 			:disabled="isView"
 		>
-			<el-form-item label="合同总份数" prop="agreeDebtorName">
+			<el-form-item label="合同总份数" prop="countNumber">
 				<div class="form-item__block">
 					<el-input
-						v-model="formData.agreeDebtorName"
+						v-model="formData.countNumber"
 						:placeholder="showPlaceholder('请输入合同总份数')"
 						clearable
 						:style="formItemContentStyle"
@@ -19,10 +19,10 @@
 					/>
 				</div>
 			</el-form-item>
-			<el-form-item label="甲方合同份数" prop="agreeDebtorName">
+			<el-form-item label="甲方合同份数" prop="jCountNumber">
 				<div class="form-item__block">
 					<el-input
-						v-model="formData.agreeDebtorName"
+						v-model="formData.jCountNumber"
 						:placeholder="showPlaceholder('请输入合同总份数')"
 						clearable
 						:style="formItemContentStyle"
@@ -30,10 +30,10 @@
 					/>
 				</div>
 			</el-form-item>
-			<el-form-item label="乙方合同份数" prop="agreeDebtorName">
+			<el-form-item label="乙方合同份数" prop="yCountNumber">
 				<div class="form-item__block">
 					<el-input
-						v-model="formData.agreeDebtorName"
+						v-model="formData.yCountNumber"
 						:placeholder="showPlaceholder('请输入合同总份数')"
 						clearable
 						:style="formItemContentStyle"
@@ -75,58 +75,24 @@ const formData = reactive(props.data);
 
 // 表单验证规则
 const rules = ref({
-	agreePaymentLimit: [
+	countNumber: [
 		{
 			required: true,
-			message: "付款期限不能为空",
+			message: "合同总份数不能为空",
 			trigger: "change"
 		}
 	],
-	agreePaymentStartDate: [
+	jCountNumber: [
 		{
 			required: true,
-			message: "起日不能为空",
+			message: "甲方合同份数不能为空",
 			trigger: "change"
 		}
 	],
-	agreePaymentEndDate: [
+	yCountNumber: [
 		{
 			required: true,
-			message: "迄日不能为空",
-			trigger: "change"
-		}
-	],
-	agreePaymentVerify: [
-		{
-			required: true,
-			message: "对账期限不能为空",
-			trigger: "change"
-		}
-	],
-	agreeStartDate: [
-		{
-			required: true,
-			message: "初始日不能为空",
-			trigger: "change"
-		}
-	],
-	agreePaymentMaxLimit: [
-		{
-			required: true,
-			message: "最大付款期限不能为空",
-			trigger: "change"
-		}
-	],
-	agreeAdvanceGraceDays: [
-		{
-			required: true,
-			message: "垫款宽限期不能为空",
-			trigger: "change"
-		}
-	],
-	agreeInform: [
-		{
-			validator: validateInform,
+			message: "乙方合同份数不能为空",
 			trigger: "change"
 		}
 	]

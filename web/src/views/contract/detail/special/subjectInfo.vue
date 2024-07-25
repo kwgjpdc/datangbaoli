@@ -37,7 +37,7 @@
 					</div>
 				</el-form-item>
 
-				<el-form-item label="法定代理人/委托代理人" prop="legalRepresentative">
+				<el-form-item label="法定代表人/委托代理人" prop="legalRepresentative">
 					<div class="form-item__block">
 						<el-input
 							disabled
@@ -149,61 +149,48 @@ const formData = reactive(props.data);
 
 // 表单验证规则
 const rules = ref({
-	agreePaymentLimit: [
+	institutionName: [
 		{
 			required: true,
-			message: "付款期限不能为空",
+			message: "保理商",
 			trigger: "change"
 		}
 	],
-	agreePaymentStartDate: [
+	legalRepresentative: [
 		{
 			required: true,
-			message: "起日不能为空",
+			message: "法定代表人/委托代理人不能为空",
 			trigger: "change"
 		}
 	],
-	agreePaymentEndDate: [
+	applyInstitutionName: [
 		{
 			required: true,
-			message: "迄日不能为空",
+			message: "保理申请人",
 			trigger: "change"
 		}
 	],
-	agreePaymentVerify: [
+	applyLegalRepresentative: [
 		{
 			required: true,
-			message: "对账期限不能为空",
+			message: "法定代表人/委托代理人",
 			trigger: "change"
 		}
 	],
-	agreeStartDate: [
+	contractWriteOnPlace: [
 		{
 			required: true,
-			message: "初始日不能为空",
-			trigger: "change"
-		}
-	],
-	agreePaymentMaxLimit: [
-		{
-			required: true,
-			message: "最大付款期限不能为空",
-			trigger: "change"
-		}
-	],
-	agreeAdvanceGraceDays: [
-		{
-			required: true,
-			message: "垫款宽限期不能为空",
-			trigger: "change"
-		}
-	],
-	agreeInform: [
-		{
-			validator: validateInform,
+			message: "签订地点不能为空",
 			trigger: "change"
 		}
 	]
+
+	// agreeInform: [
+	// 	{
+	// 		validator: validateInform,
+	// 		trigger: "change"
+	// 	}
+	// ]
 });
 
 // start-----机构选择配置

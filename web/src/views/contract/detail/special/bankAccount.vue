@@ -20,94 +20,100 @@
 				</el-form-item>
 			</el-row>
 
-			<template v-if="formData.replayType === '1'">
-				<el-card shadow="never">
-					<template #header>客户账户信息</template>
+			<el-card shadow="never">
+				<template #header>客户账户信息</template>
 
-					<el-form-item label="开户行" prop="customerBankName">
-						<div class="form-item__block">
-							<BankAccountSelect
-								:showValue="formData.customerBankName"
-								:option="bankAccount.option"
-								:queryPropList="bankAccount.queryPropList"
-								:tablePropList="bankAccount.tablePropList"
-								:queryDefault="queryDefault"
-								@selectRow="bankAccountSelectRow"
-							/>
-						</div>
-					</el-form-item>
+				<el-form-item label="开户行" prop="customerBankName">
+					<div class="form-item__block">
+						<!-- <el-input
+							v-if="!formData.applyInstitutionName"
+							:placeholder="showPlaceholder('请选择银行账号信息')"
+							readonly
+							@click="messageTip"
+						/> -->
+						<BankAccountSelect
+							:showValue="formData.customerBankName"
+							:option="customerConfig.option"
+							:queryPropList="customerConfig.queryPropList"
+							:tablePropList="customerConfig.tablePropList"
+							:queryDefault="queryDefault"
+							@selectRow="customerConfigSelectRow"
+						/>
+					</div>
+				</el-form-item>
 
-					<el-form-item label="户名" prop="customerAccountName">
-						<div class="form-item__block">
-							<el-input
-								disabled
-								v-model="formData.customerAccountName"
-								:placeholder="showPlaceholder('请输入户名')"
-								clearable
-								:style="formItemContentStyle"
-								maxlength="32"
-							/>
-						</div>
-					</el-form-item>
+				<el-form-item label="户名" prop="customerAccountName">
+					<div class="form-item__block">
+						<el-input
+							disabled
+							v-model="formData.customerAccountName"
+							:placeholder="showPlaceholder('户名')"
+							clearable
+							:style="formItemContentStyle"
+							maxlength="32"
+						/>
+					</div>
+				</el-form-item>
 
-					<el-form-item label="账号" prop="customerAccountNum">
-						<div class="form-item__block">
-							<el-input
-								disabled
-								v-model="formData.customerAccountNum"
-								:placeholder="showPlaceholder('账号')"
-								clearable
-								:style="formItemContentStyle"
-								maxlength="32"
-							/>
-						</div>
-					</el-form-item>
-				</el-card>
+				<el-form-item label="账号" prop="customerAccountNum">
+					<div class="form-item__block">
+						<el-input
+							disabled
+							v-model="formData.customerAccountNum"
+							:placeholder="showPlaceholder('账号')"
+							clearable
+							:style="formItemContentStyle"
+							maxlength="32"
+						/>
+					</div>
+				</el-form-item>
+			</el-card>
 
-				<el-card shadow="never" style="margin-top: 20px">
-					<template #header>保理公司账号信息</template>
+			<el-card shadow="never" style="margin-top: 20px">
+				<template #header>保理公司账号信息</template>
 
-					<el-form-item label="开户行" prop="blBankName">
-						<div class="form-item__block">
-							<CustomerSelect
-								:showValue="formData.blBankName"
-								:option="factoringInstitution.option"
-								:queryPropList="factoringInstitution.queryPropList"
-								:tablePropList="factoringInstitution.tablePropList"
-								@selectRow="factoringInstitutionSelectRow"
-							/>
-						</div>
-					</el-form-item>
+				<el-form-item label="开户行" prop="blBankName">
+					<div class="form-item__block">
+						<CustomerSelect
+							:showValue="formData.blBankName"
+							:option="factoringConfig.option"
+							:queryPropList="factoringConfig.queryPropList"
+							:tablePropList="factoringConfig.tablePropList"
+							@selectRow="factoringConfigSelectRow"
+						/>
+					</div>
+				</el-form-item>
 
-					<el-form-item label="户名" prop="blAccountName">
-						<div class="form-item__block">
-							<el-input
-								disabled
-								v-model="formData.blAccountName"
-								:placeholder="showPlaceholder('请输入户名')"
-								clearable
-								:style="formItemContentStyle"
-								maxlength="32"
-							/>
-						</div>
-					</el-form-item>
+				<el-form-item label="户名" prop="blAccountName">
+					<div class="form-item__block">
+						<el-input
+							disabled
+							v-model="formData.blAccountName"
+							:placeholder="showPlaceholder('户名')"
+							clearable
+							:style="formItemContentStyle"
+							maxlength="32"
+						/>
+					</div>
+				</el-form-item>
 
-					<el-form-item label="账号" prop="blAccountNum">
-						<div class="form-item__block">
-							<el-input
-								disabled
-								v-model="formData.blAccountNum"
-								:placeholder="showPlaceholder('请输入账号')"
-								clearable
-								:style="formItemContentStyle"
-								maxlength="32"
-							/>
-						</div>
-					</el-form-item>
-				</el-card>
-			</template>
+				<el-form-item label="账号" prop="blAccountNum">
+					<div class="form-item__block">
+						<el-input
+							disabled
+							v-model="formData.blAccountNum"
+							:placeholder="showPlaceholder('账号')"
+							clearable
+							:style="formItemContentStyle"
+							maxlength="32"
+						/>
+					</div>
+				</el-form-item>
+			</el-card>
 
-			<template v-if="formData.replayType === '2'">
+			<!-- <template v-if="formData.replayType === '1'"></template> -->
+
+			<!-- <template v-if="formData.replayType === '2'">
 				<el-card shadow="never">
 					<template #header>客户账号信息</template>
 
@@ -191,7 +197,7 @@
 						</div>
 					</el-form-item>
 				</el-card>
-			</template>
+			</template> -->
 		</el-form>
 	</el-card>
 </template>
@@ -232,58 +238,52 @@ const formData = reactive(props.data);
 
 // 表单验证规则
 const rules = ref({
-	agreePaymentLimit: [
+	replayType: [
 		{
 			required: true,
-			message: "付款期限不能为空",
+			message: "回款方式",
 			trigger: "change"
 		}
 	],
-	agreePaymentStartDate: [
+	customerBankName: [
 		{
 			required: true,
-			message: "起日不能为空",
+			message: "开户行不能为空",
 			trigger: "change"
 		}
 	],
-	agreePaymentEndDate: [
+	customerAccountName: [
 		{
 			required: true,
-			message: "迄日不能为空",
+			message: "户名不能为空",
 			trigger: "change"
 		}
 	],
-	agreePaymentVerify: [
+	customerAccountNum: [
 		{
 			required: true,
-			message: "对账期限不能为空",
+			message: "账号不能为空",
 			trigger: "change"
 		}
 	],
-	agreeStartDate: [
+	blBankName: [
 		{
 			required: true,
-			message: "初始日不能为空",
+			message: "开户行不能为空",
 			trigger: "change"
 		}
 	],
-	agreePaymentMaxLimit: [
+	blAccountName: [
 		{
 			required: true,
-			message: "最大付款期限不能为空",
+			message: "户名不能为空",
 			trigger: "change"
 		}
 	],
-	agreeAdvanceGraceDays: [
+	blAccountNum: [
 		{
 			required: true,
-			message: "垫款宽限期不能为空",
-			trigger: "change"
-		}
-	],
-	agreeInform: [
-		{
-			validator: validateInform,
+			message: "账号不能为空",
 			trigger: "change"
 		}
 	]
@@ -313,47 +313,56 @@ watch(formData, newValue => {
 });
 
 const dataScope = reactive({
-	bankAccount: {
+	customerConfig: {
 		option: {
 			inputW: "100%",
+			dialogW: "1000px",
 			placeholder: "请选择银行账号信息",
 			dialogTitle: "银行账号信息",
 			queryUrl: "/customeraccount/info/detial"
 		},
 		queryPropList: [
 			{
+				prop: "customerName",
+				label: "客户名称"
+			},
+			{
 				prop: "accountBankInfo",
-				label: "开户行"
+				label: "银行名称"
+			},
+			{
+				prop: "accountName",
+				label: "银行户名"
 			},
 			{
 				prop: "accountInfo",
-				label: "账号"
-			},
-			{
-				prop: "customerName",
-				label: "户名"
+				label: "银行账号"
 			}
 		],
 		tablePropList: [
 			{
-				prop: "accountBankInfo",
-				label: "银行信息"
+				prop: "customerName",
+				label: "客户名称"
 			},
 			{
-				prop: "accountInfo",
-				label: "账号"
+				prop: "accountBankInfo",
+				label: "银行名称"
 			},
 			{
 				prop: "accountName",
-				label: "户名"
+				label: "银行户名"
+			},
+			{
+				prop: "accountInfo",
+				label: "银行账号"
 			}
 		]
 	},
-	factoringInstitution: {
+	factoringConfig: {
 		option: {
 			inputW: "100%",
-			placeholder: "请选择机构信息",
-			dialogTitle: "机构信息",
+			placeholder: "请选择银行账号信息",
+			dialogTitle: "银行账号信息",
 			queryUrl: "/finance/payment/list"
 		},
 		queryPropList: [
@@ -383,14 +392,19 @@ const dataScope = reactive({
 	}
 });
 
-const { bankAccount, factoringInstitution } = toRefs(dataScope);
+const { customerConfig, factoringConfig } = toRefs(dataScope);
 
-function bankAccountSelectRow(row) {
-	formData.customerBankName = row.institutionId;
-	formData.customerAccountName = row.institutionName;
-	formData.customerAccountNum = row.registAddress;
+// function messageTip() {
+// 	proxy.$message.error("请先选定【保理申请人】");
+// }
+
+function customerConfigSelectRow(row) {
+	formData.customerBankName = row.accountBankInfo;
+	formData.customerAccountName = row.accountName;
+	formData.customerAccountNum = row.accountInfo;
 }
-function factoringInstitutionSelectRow(row) {
+
+function factoringConfigSelectRow(row) {
 	formData.blBankName = row.depositBank;
 	formData.blAccountName = row.accountName;
 	formData.blAccountNum = row.paymentAccount;

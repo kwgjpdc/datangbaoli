@@ -217,7 +217,7 @@ function getList() {
 		method: "get",
 		params: queryParams.value
 	}).then(response => {
-		resultList.value = response.rows;
+		resultList.value = response.rows || response.data;
 		total.value = response.total;
 		resultLoading.value = false;
 	});
