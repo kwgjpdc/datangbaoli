@@ -12,7 +12,7 @@
 			<el-row>
 				<el-form-item label="回款方式" prop="replayType">
 					<div class="form-item__block">
-						<el-radio-group v-model="formData.replayType">
+						<el-radio-group v-model="formData.replayType" @change="radioChange">
 							<el-radio label="1">直接回款</el-radio>
 							<el-radio label="2">间接回款</el-radio>
 						</el-radio-group>
@@ -25,12 +25,6 @@
 
 				<el-form-item label="开户行" prop="customerBankName">
 					<div class="form-item__block">
-						<!-- <el-input
-							v-if="!formData.applyInstitutionName"
-							:placeholder="showPlaceholder('请选择银行账号信息')"
-							readonly
-							@click="messageTip"
-						/> -->
 						<BankAccountSelect
 							:showValue="formData.customerBankName"
 							:option="customerConfig.option"
@@ -110,94 +104,6 @@
 					</div>
 				</el-form-item>
 			</el-card>
-
-			<!-- <template v-if="formData.replayType === '1'"></template> -->
-
-			<!-- <template v-if="formData.replayType === '2'">
-				<el-card shadow="never">
-					<template #header>客户账号信息</template>
-
-					<el-form-item label="开户行" prop="customerBankName">
-						<div class="form-item__block">
-							<el-input
-								v-model="formData.customerBankName"
-								:placeholder="showPlaceholder('请输入开户行')"
-								clearable
-								:style="formItemContentStyle"
-								maxlength="32"
-							/>
-						</div>
-					</el-form-item>
-
-					<el-form-item label="户名" prop="customerAccountName">
-						<div class="form-item__block">
-							<el-input
-								disabled
-								v-model="formData.customerAccountName"
-								:placeholder="showPlaceholder('请输入户名')"
-								clearable
-								:style="formItemContentStyle"
-								maxlength="32"
-							/>
-						</div>
-					</el-form-item>
-
-					<el-form-item label="账号" prop="customerAccountNum">
-						<div class="form-item__block">
-							<el-input
-								disabled
-								v-model="formData.customerAccountNum"
-								:placeholder="showPlaceholder('账号')"
-								clearable
-								:style="formItemContentStyle"
-								maxlength="32"
-							/>
-						</div>
-					</el-form-item>
-				</el-card>
-
-				<el-card shadow="never" style="margin-top: 20px">
-					<template #header>保理公司账号信息</template>
-
-					<el-form-item label="开户行" prop="blBankName">
-						<div class="form-item__block">
-							<el-input
-								v-model="formData.blBankName"
-								:placeholder="showPlaceholder('请输入开户行')"
-								clearable
-								:style="formItemContentStyle"
-								maxlength="32"
-							/>
-						</div>
-					</el-form-item>
-
-					<el-form-item label="户名" prop="blAccountName">
-						<div class="form-item__block">
-							<el-input
-								disabled
-								v-model="formData.blAccountName"
-								:placeholder="showPlaceholder('请输入户名')"
-								clearable
-								:style="formItemContentStyle"
-								maxlength="32"
-							/>
-						</div>
-					</el-form-item>
-
-					<el-form-item label="账号" prop="blAccountNum">
-						<div class="form-item__block">
-							<el-input
-								disabled
-								v-model="formData.blAccountNum"
-								:placeholder="showPlaceholder('账号')"
-								clearable
-								:style="formItemContentStyle"
-								maxlength="32"
-							/>
-						</div>
-					</el-form-item>
-				</el-card>
-			</template> -->
 		</el-form>
 	</el-card>
 </template>
@@ -394,10 +300,6 @@ const dataScope = reactive({
 
 const { customerConfig, factoringConfig } = toRefs(dataScope);
 
-// function messageTip() {
-// 	proxy.$message.error("请先选定【保理申请人】");
-// }
-
 function customerConfigSelectRow(row) {
 	formData.customerBankName = row.accountBankInfo;
 	formData.customerAccountName = row.accountName;
@@ -410,18 +312,14 @@ function factoringConfigSelectRow(row) {
 	formData.blAccountNum = row.paymentAccount;
 }
 
-// 监听 radio
-watch(
-	() => formData.replayType,
-	() => {
-		formData.customerBankName = null;
-		formData.customerAccountName = null;
-		formData.customerAccountNum = null;
-		formData.blBankName = null;
-		formData.blAccountName = null;
-		formData.blAccountNum = null;
-	}
-);
+function radioChange() {
+	// formData.customerBankName = null;
+	// formData.customerAccountName = null;
+	// formData.customerAccountNum = null;
+	// formData.blBankName = null;
+	// formData.blAccountName = null;
+	// formData.blAccountNum = null;
+}
 
 // 验证业务类型
 function validateInform(rule, value, callback) {

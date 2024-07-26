@@ -178,7 +178,7 @@ const rules = ref({
 			message: "地址不能为空",
 			trigger: "change"
 		}
-	],
+	]
 	// applyPerson: [
 	// 	{
 	// 		required: true,
@@ -213,6 +213,7 @@ const dataScope = reactive({
 	configSelect: {
 		option: {
 			inputW: "100%",
+			dialogW: "1000px",
 			placeholder: "请选择客户信息",
 			dialogTitle: "客户信息",
 			queryUrl: "/cust/customer/list"
@@ -243,10 +244,6 @@ const dataScope = reactive({
 			{
 				prop: "applyPersonEmail",
 				label: "邮箱"
-			},
-			{
-				prop: "applySendAddress",
-				label: "地址"
 			}
 		]
 	}
@@ -255,9 +252,10 @@ const dataScope = reactive({
 const { configSelect } = toRefs(dataScope);
 
 function configSelectRow(row) {
-	formData.blBankName = row.depositBank;
-	formData.blAccountName = row.accountName;
-	formData.blAccountNum = row.paymentAccount;
+	formData.applyPerson = row.applyPersonName;
+	formData.applyPersonMobile = row.applyPersonMobileNumber;
+	formData.applyPersonEmail = row.applyPersonEmail;
+	formData.applyPersonAddress = row.applySendAddress;
 }
 
 // Form item 内容的统一宽度

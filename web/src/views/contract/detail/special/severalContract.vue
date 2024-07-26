@@ -19,10 +19,10 @@
 					/>
 				</div>
 			</el-form-item>
-			<el-form-item label="甲方合同份数" prop="jCountNumber">
+			<el-form-item label="甲方合同份数" prop="jcountNumber">
 				<div class="form-item__block">
 					<el-input
-						v-model="formData.jCountNumber"
+						v-model="formData.jcountNumber"
 						:placeholder="showPlaceholder('请输入合同总份数')"
 						clearable
 						:style="formItemContentStyle"
@@ -30,10 +30,10 @@
 					/>
 				</div>
 			</el-form-item>
-			<el-form-item label="乙方合同份数" prop="yCountNumber">
+			<el-form-item label="乙方合同份数" prop="ycountNumber">
 				<div class="form-item__block">
 					<el-input
-						v-model="formData.yCountNumber"
+						v-model="formData.ycountNumber"
 						:placeholder="showPlaceholder('请输入合同总份数')"
 						clearable
 						:style="formItemContentStyle"
@@ -82,14 +82,14 @@ const rules = ref({
 			trigger: "change"
 		}
 	],
-	jCountNumber: [
+	jcountNumber: [
 		{
 			required: true,
 			message: "甲方合同份数不能为空",
 			trigger: "change"
 		}
 	],
-	yCountNumber: [
+	ycountNumber: [
 		{
 			required: true,
 			message: "乙方合同份数不能为空",

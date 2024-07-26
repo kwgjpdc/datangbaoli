@@ -211,8 +211,8 @@ const data = ref({
 	supplementInfo: "不适用", // 补充条款内容
 
 	countNumber: null, // 合同总份数
-	jCountNumber: null, // 甲方合同份数
-	yCountNumber: null // 乙方合同份数
+	jcountNumber: null, // 甲方合同份数
+	ycountNumber: null // 乙方合同份数
 });
 
 // router参数
@@ -282,11 +282,14 @@ function updateContractData(status) {
 	data.value.flowId = proxy.$refs["flowSearchRef"].formData.flowId;
 	data.value.userIds = proxy.$refs["flowSearchRef"].formData.userIds;
 	// console.log(data.value)
-	updateContract(data.value).then(() => {
-		proxy.$modal.msgSuccess("更新成功");
-		loading.value = false;
-		closePage();
-	});
+	updateContract(data.value)
+		.then(() => {
+			proxy.$modal.msgSuccess("更新成功");
+			closePage();
+		})
+		.finally(() => {
+			loading.value = false;
+		});
 }
 
 // 获取合同数据
@@ -296,6 +299,7 @@ function getContractData(id) {
 		response.data;
 
 		for (const prop in response.data) {
+			// 不处理paymentSequenceList
 			if (prop === "paymentSequenceList") {
 				continue;
 			}
@@ -306,12 +310,13 @@ function getContractData(id) {
 					response.data[prop].forEach(v => {
 						data.value[prop].push(v);
 					});
+				} else {
+					if (prop === "sendType") {
+						data.value[prop] = response.data[prop].split(",");
+					}
 				}
 			} else {
 				data.value[prop] = response.data[prop];
-				if (prop === "sendType" && response.data[prop]) {
-					data.value.sendType = data.value.sendType.split();
-				}
 			}
 		}
 		loading.value = false;
@@ -320,18 +325,11 @@ function getContractData(id) {
 
 // 提交表单
 function submitForm(status) {
-	// const contractForm = new Promise((resolve, reject) => {
-	// 	basePaneRef.value.validate(valid => {
-	// 		valid ? resolve(valid) : reject(valid);
-	// 	});
-	// });
-
-	console.log("xxxxxx---text", data.value);
-	debugger;
-
 	if (status === 1) {
+		// 暂存
+
 		if (!data.value.projectDueId) {
-			proxy.$message.error("请先选择");
+			return proxy.$message.error("请选择【项目尽调编号】");
 		}
 
 		if (!isEdit.value) {
@@ -340,6 +338,14 @@ function submitForm(status) {
 			updateContractData(status);
 		}
 	} else {
+		//
+
+		// const contractForm = new Promise((resolve, reject) => {
+		// 	basePaneRef.value.validate(valid => {
+		// 		valid ? resolve(valid) : reject(valid);
+		// 	});
+		// });
+
 		const specialForm = new Promise((resolve, reject) => {
 			specialPaneRef.value.validate(valid => {
 				valid ? resolve(valid) : reject(valid);
