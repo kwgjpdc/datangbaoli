@@ -80,58 +80,10 @@ const isOk = computed(() => {
 
 // 表单验证规则
 const rules = ref({
-	agreePaymentLimit: [
+	cooperationType: [
 		{
 			required: true,
 			message: "付款期限不能为空",
-			trigger: "change"
-		}
-	],
-	agreePaymentStartDate: [
-		{
-			required: true,
-			message: "起日不能为空",
-			trigger: "change"
-		}
-	],
-	agreePaymentEndDate: [
-		{
-			required: true,
-			message: "迄日不能为空",
-			trigger: "change"
-		}
-	],
-	agreePaymentVerify: [
-		{
-			required: true,
-			message: "对账期限不能为空",
-			trigger: "change"
-		}
-	],
-	agreeStartDate: [
-		{
-			required: true,
-			message: "初始日不能为空",
-			trigger: "change"
-		}
-	],
-	agreePaymentMaxLimit: [
-		{
-			required: true,
-			message: "最大付款期限不能为空",
-			trigger: "change"
-		}
-	],
-	agreeAdvanceGraceDays: [
-		{
-			required: true,
-			message: "垫款宽限期不能为空",
-			trigger: "change"
-		}
-	],
-	agreeInform: [
-		{
-			validator: validateInform,
 			trigger: "change"
 		}
 	]
@@ -145,25 +97,6 @@ function otherChange(val) {
 
 // Form item 内容的统一宽度
 const formItemContentStyle = { width: "100%" };
-
-// 系统字典
-const {
-	cont_settlement,
-	day,
-	cont_advance,
-	cont_pay,
-	cont_overrun,
-	proj_dd_type,
-	cont_transfer_part
-} = proxy.useDict(
-	"cont_settlement",
-	"day",
-	"cont_advance",
-	"cont_pay",
-	"cont_overrun",
-	"proj_dd_type",
-	"cont_transfer_part"
-);
 
 // 页面是View状态
 const isView = computed(() => {

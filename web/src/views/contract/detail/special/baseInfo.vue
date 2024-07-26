@@ -8,36 +8,14 @@
 			label-width="160px"
 			:disabled="isView"
 		>
-			<el-form-item label="合同总份数" prop="countNumber">
+			<el-form-item label="项目尽调编号" prop="projectNo">
 				<div class="form-item__block">
-					<el-input
-						v-model="formData.countNumber"
-						:placeholder="showPlaceholder('请输入合同总份数')"
-						clearable
-						:style="formItemContentStyle"
-						maxlength="32"
-					/>
-				</div>
-			</el-form-item>
-			<el-form-item label="甲方合同份数" prop="jCountNumber">
-				<div class="form-item__block">
-					<el-input
-						v-model="formData.jCountNumber"
-						:placeholder="showPlaceholder('请输入合同总份数')"
-						clearable
-						:style="formItemContentStyle"
-						maxlength="32"
-					/>
-				</div>
-			</el-form-item>
-			<el-form-item label="乙方合同份数" prop="yCountNumber">
-				<div class="form-item__block">
-					<el-input
-						v-model="formData.yCountNumber"
-						:placeholder="showPlaceholder('请输入合同总份数')"
-						clearable
-						:style="formItemContentStyle"
-						maxlength="32"
+					<CustomerSelect
+						:showValue="formData.projectNo"
+						:option="config.option"
+						:queryPropList="config.queryPropList"
+						:tablePropList="config.tablePropList"
+						@selectRow="configSelectRow"
 					/>
 				</div>
 			</el-form-item>
@@ -48,6 +26,7 @@
 <script setup>
 import { ref, reactive, computed } from "vue";
 import { StrUtil } from "@/utils/StrUtil";
+import CustomerSelect from "@/components/CustomerSelect";
 
 // 组件属性
 const props = defineProps({
@@ -75,28 +54,54 @@ const formData = reactive(props.data);
 
 // 表单验证规则
 const rules = ref({
-	countNumber: [
+	projectNo: [
 		{
 			required: true,
-			message: "合同总份数不能为空",
-			trigger: "change"
-		}
-	],
-	jCountNumber: [
-		{
-			required: true,
-			message: "甲方合同份数不能为空",
-			trigger: "change"
-		}
-	],
-	yCountNumber: [
-		{
-			required: true,
-			message: "乙方合同份数不能为空",
+			message: "尽调编号不能为空",
 			trigger: "change"
 		}
 	]
 });
+
+const dataScope = reactive({
+	config: {
+		option: {
+			inputW: "100%",
+			dialogW: "1000px",
+			placeholder: "请选择尽调信息",
+			dialogTitle: "尽调信息",
+			queryUrl: "/project/diligence/list"
+		},
+		queryPropList: [
+			{
+				prop: "dueNo",
+				label: "尽调编号"
+			},
+			{
+				prop: "name",
+				label: "项目名称"
+			}
+		],
+		tablePropList: [
+			{
+				prop: "dueNo",
+				label: "尽调编号"
+			},
+			{
+				prop: "name",
+				label: "项目名称"
+			}
+		]
+	} // 客户
+});
+const { config } = toRefs(dataScope);
+
+function configSelectRow(rows) {
+	formData.projectDueId = rows.id;
+	formData.projectNo = rows.dueNo;
+	formData.projectName = rows.name;
+	formData.bussProduct = rows.businessType;
+}
 
 // Form item 内容的统一宽度
 const formItemContentStyle = { width: "100%" };
@@ -153,32 +158,6 @@ function validateInform(rule, value, callback) {
 			callback();
 		}
 	}
-}
-
-// 结算方式改变方法
-function handleSettlementChange() {
-	formData.agreePaymentLimit = null;
-	formData.agreePaymentStartDate = null;
-	formData.agreePaymentEndDate = null;
-	formData.agreePaymentVerify = null;
-	formData.agreeStartDate = null;
-	formData.agreePaymentMaxLimit = null;
-}
-
-// 改变是否垫付
-function handleAdvanceChange() {
-	formData.agreeAdvanceGraceDays = null;
-	formData.agreeAdvancePercentage = null;
-}
-
-// 改变业务类型
-function handleInformChange() {
-	formData.agreeInformOther = null;
-}
-
-// 显示placeholder占位字符
-function showPlaceholder(txt) {
-	return isView.value ? " " : txt;
 }
 
 // 监听input:number的字段长度问题
