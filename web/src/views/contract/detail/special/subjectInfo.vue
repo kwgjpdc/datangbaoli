@@ -221,21 +221,19 @@ const dataScope = reactive({
 			{
 				prop: "corporationName",
 				label: "法人代表"
-			},
-			{
-				prop: "",
-				label: "注册地址"
 			}
 		]
 	} // 客户
 });
 const { institution } = toRefs(dataScope);
+
 function institutionSelectRow(row) {
 	formData.customerId = row.customerId;
 	formData.institutionName = row.customerName;
-	formData.registAddress = row.registAddress;
 	formData.legalRepresentative = row.corporationName;
+	formData.registAddress = `${row.registerCountry}${row.registerProvince}${row.registerCity}${row.registerAddr}`;
 }
+
 function applyInstitutionSelectRow(row) {
 	formData.applyInstitutionId = row.customerId;
 	formData.applyInstitutionName = row.customerName;

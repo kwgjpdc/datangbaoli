@@ -221,6 +221,7 @@ const props = defineProps({ approveId: Number });
 
 // 基本信息页面
 const basePaneRef = ref(null);
+const specialPaneRef = ref(null);
 
 // 页面是View状态
 const isView = computed(() => {
@@ -254,19 +255,30 @@ const isEdit = computed(() => {
 function addContractData(status) {
 	data.value.status = status;
 	loading.value = true;
+	// 单独处理 sendType
+	data.value.sendType = data.value.sendType.join();
+
 	data.value.flowId = proxy.$refs["flowSearchRef"].formData.flowId;
 	data.value.userIds = proxy.$refs["flowSearchRef"].formData.userIds;
-	addContract(data.value).then(() => {
-		proxy.$modal.msgSuccess("新增成功");
-		loading.value = false;
-		closePage();
-	});
+
+	addContract(data.value)
+		.then(() => {
+			proxy.$modal.msgSuccess("新增成功");
+			closePage();
+		})
+		.finally(() => {
+			loading.value = false;
+		});
 }
 
 // 更新合同数据
 function updateContractData(status) {
 	data.value.status = status;
 	loading.value = true;
+
+	// 单独处理 sendType
+	data.value.sendType = data.value.sendType.join();
+
 	data.value.flowId = proxy.$refs["flowSearchRef"].formData.flowId;
 	data.value.userIds = proxy.$refs["flowSearchRef"].formData.userIds;
 	// console.log(data.value)
@@ -281,7 +293,13 @@ function updateContractData(status) {
 function getContractData(id) {
 	loading.value = true;
 	getContract(id).then(response => {
+		response.data;
+
 		for (const prop in response.data) {
+			if (prop === "paymentSequenceList") {
+				continue;
+			}
+
 			if (Array.isArray(data.value[prop])) {
 				data.value[prop].length = 0;
 				if (Array.isArray(response.data[prop])) {
@@ -291,6 +309,9 @@ function getContractData(id) {
 				}
 			} else {
 				data.value[prop] = response.data[prop];
+				if (prop === "sendType" && response.data[prop]) {
+					data.value.sendType = data.value.sendType.split();
+				}
 			}
 		}
 		loading.value = false;
@@ -304,20 +325,41 @@ function submitForm(status) {
 	// 		valid ? resolve(valid) : reject(valid);
 	// 	});
 	// });
-	// const flowForm = new Promise((resolve, reject) => {
-	// 	proxy.$refs["flowSearchRef"].$refs["elForm"].validate(valid => {
-	// 		valid ? resolve(valid) : reject(valid);
-	// 	});
-	// });
-	debugger;
+
 	console.log("xxxxxx---text", data.value);
-	Promise.all([contractForm, flowForm]).then(() => {
+	debugger;
+
+	if (status === 1) {
+		if (!data.value.projectDueId) {
+			proxy.$message.error("请先选择");
+		}
+
 		if (!isEdit.value) {
 			addContractData(status);
 		} else {
 			updateContractData(status);
 		}
-	});
+	} else {
+		const specialForm = new Promise((resolve, reject) => {
+			specialPaneRef.value.validate(valid => {
+				valid ? resolve(valid) : reject(valid);
+			});
+		});
+
+		const flowForm = new Promise((resolve, reject) => {
+			proxy.$refs["flowSearchRef"].$refs["elForm"].validate(valid => {
+				valid ? resolve(valid) : reject(valid);
+			});
+		});
+
+		Promise.all([flowForm, specialForm]).then(() => {
+			if (!isEdit.value) {
+				addContractData(status);
+			} else {
+				updateContractData(status);
+			}
+		});
+	}
 }
 
 // 取消按钮操作

@@ -179,34 +179,34 @@ const rules = ref({
 			trigger: "change"
 		}
 	],
-	applyPerson: [
-		{
-			required: true,
-			message: "联系人不能为空",
-			trigger: "change"
-		}
-	],
-	applyPersonMobile: [
-		{
-			required: true,
-			message: "连线电话不能为空",
-			trigger: "change"
-		}
-	],
-	applyPersonEmail: [
-		{
-			required: true,
-			message: "电子邮箱不能为空",
-			trigger: "change"
-		}
-	],
-	applyPersonAddress: [
-		{
-			required: true,
-			message: "地址不能为空",
-			trigger: "change"
-		}
-	]
+	// applyPerson: [
+	// 	{
+	// 		required: true,
+	// 		message: "联系人不能为空",
+	// 		trigger: "change"
+	// 	}
+	// ],
+	// applyPersonMobile: [
+	// 	{
+	// 		required: true,
+	// 		message: "电话不能为空",
+	// 		trigger: "change"
+	// 	}
+	// ],
+	// applyPersonEmail: [
+	// 	{
+	// 		required: true,
+	// 		message: "电子邮箱不能为空",
+	// 		trigger: "change"
+	// 	}
+	// ],
+	// applyPersonAddress: [
+	// 	{
+	// 		required: true,
+	// 		message: "地址不能为空",
+	// 		trigger: "change"
+	// 	}
+	// ]
 });
 
 const dataScope = reactive({
