@@ -20,7 +20,9 @@
             <div class="content-item-scroll">
                 <basic-info id="basicInfo" :diligenceInfo="diligenceInfo" ref="basicInfoRef" :diligenceId="diligenceId"
                     :routerQueryObj="routerQueryObj"></basic-info>
+                <!--
 			    <flow-search id="flowSearch" v-if="!routerQueryObj.viewFlag" ref="flowSearchRef" :routerQueryObj="routerQueryObj" :needUser="true"></flow-search>
+                -->
             </div>
 
         </div>
@@ -129,27 +131,31 @@ function getProjInfoPage() {
 // 表单验证
 
 function submitForm(statusFlag) {
+    // 改为固定流程ID
+    /*
 	const flowForm = new Promise((resolve, reject) => {
 	    proxy.$refs['flowSearchRef'].$refs['elForm'].validate(valid => {
 	        valid ? resolve(valid) : reject(valid)
 	    })
 	});
-	let basicInfoRefForm = new Promise((resolve, reject) => {
-		proxy.$refs['basicInfoRef'].$refs['elForm'].validate(valid => {
-			valid ? resolve(valid) : reject(valid)
-		})
-	})
-	Promise.all([basicInfoRefForm,flowForm]).then(() => {
-		if (statusFlag != 1) {
-			saveFormData(statusFlag)
-			// Promise.all([basicInfoRefForm]).then(() => {
-			// 	saveFormData(statusFlag)
-			// })
-		} else {
-			saveFormData(statusFlag)
-		}
-	})
+    console.log("flowId",proxy.$refs['flowSearchRef'].formData.flowId);
+    */
 
+    if (statusFlag != 1) {
+        let basicInfoRefForm = new Promise((resolve, reject) => {
+            proxy.$refs['basicInfoRef'].$refs['elForm'].validate(valid => {
+                valid ? resolve(valid) : reject(valid)
+            })
+        })
+
+        //不提交流程form，流程id写死到function saveFormData 中
+        //Promise.all([basicInfoRefForm,flowForm]).then(() => {
+        Promise.all([basicInfoRefForm]).then(() => {
+            saveFormData(statusFlag)
+        })
+    } else {
+        saveFormData(statusFlag)
+    }
 
 }
 
@@ -161,30 +167,32 @@ function saveFormData(statusFlag) {
         const partFormData = proxy.$refs[formKey].formData
         Object.assign(diligenceInfoSave, partFormData)
     })
+
     diligenceInfoSave.status = statusFlag;
-	diligenceInfoSave.flowId = proxy.$refs['flowSearchRef'].formData.flowId;
-	diligenceInfoSave.userIds = proxy.$refs['flowSearchRef'].formData.userIds;
+    diligenceInfoSave.flowId = "flow_nsztl4s7:22:167747";//改为固定流程而不是选择流程 167751 145030 
+	//diligenceInfoSave.flowId = proxy.$refs['flowSearchRef'].formData.flowId;
+	diligenceInfoSave.userIds = diligenceInfo.value.sponsor;
+    
 	if(proxy.$refs['basicInfoRef'].$refs['attachInfoRef'].formData){
 		diligenceInfoSave.commonFileList = proxy.$refs['basicInfoRef'].$refs['attachInfoRef'].formData.commonFileList;
 	}
- //    console.log(diligenceInfoSave);
 	// return;
     if (!diligenceId.value) {
-        //新增
+        // 新增
         addDiligence(diligenceInfoSave).then(response => {
             proxy.$modal.msgSuccess("新增成功");
             loading.value = false;
             closePage()
         });
     } else {
-        //修改
-        //修改
+        // 修改
         updateDiligence(diligenceInfoSave).then(response => {
             proxy.$modal.msgSuccess("修改成功");
             loading.value = false;
             closePage()
         });
     }
+    
 }
 
 

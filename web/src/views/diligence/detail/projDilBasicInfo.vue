@@ -466,7 +466,7 @@ const dataScope = reactive({
         // financeLimitExpireDate: [
         //     { required: true, message: "保理融资额度到期日不能为空", trigger: "change" }
         // ],
-        sponsor: [
+        sponsorName: [
             { required: true, message: "主办人不能为空", trigger: "blur" }
         ],
         coreEnterpriseNo: [
