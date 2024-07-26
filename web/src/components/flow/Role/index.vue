@@ -121,11 +121,16 @@ watch(roleList, newValue => {
       if (newValue.length > 0) {
         proxy.$nextTick(() => {
           proxy.$refs.dataTable.clearSelection();
-          selectRoleList.value.forEach(key => {
-            proxy.$refs.dataTable.toggleRowSelection(roleList.value.find(
-                item => key === item.roleId
-            ), true)
-          });
+          /*
+          操作时，会显示报错，暂时去掉，目前没有影响正常逻辑
+          if(selectRoleList != null && selectRoleList != undefined){
+            selectRoleList.value.forEach(key => {
+              proxy.$refs.dataTable.toggleRowSelection(roleList.value.find(
+                  item => key === item.roleId
+              ), true)
+            });
+          }
+          */
         });
       }
     }
