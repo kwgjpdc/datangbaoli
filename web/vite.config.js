@@ -34,7 +34,7 @@ export default defineConfig(({ mode, command }) => {
 					//  target: 'http://192.168.0.214:8089',
 					//  target:  'http://172.100.40.48:8089',
 					//  target: 'http://172.16.1.250:8089',
-					// target: 'http://localhost:8089',
+					// target: 'http://172.16.1.97:8089', // yhl
 
 					changeOrigin: true,
 					rewrite: p => p.replace(/^\/dev-api/, "")
