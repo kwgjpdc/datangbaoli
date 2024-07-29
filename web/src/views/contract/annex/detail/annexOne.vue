@@ -59,7 +59,7 @@
 						style="float: right; padding: 3px 0; margin-right: 20px"
 						type="primary"
 						link
-						@click="addAccount()"
+						@click="dialogAdd()"
 						>新增</el-button
 					>
 				</template>
@@ -99,11 +99,7 @@
 					>
 					</el-table-column>
 
-					<el-table-column
-						label="备注"
-						align="center"
-						prop="remark"
-					>
+					<el-table-column label="备注" align="center" prop="remark">
 					</el-table-column>
 
 					<el-table-column
@@ -149,7 +145,7 @@
 				ref="formInput"
 				label-width="200px"
 				label-position="top"
-				:model="dialogFormInput"
+				:model="dialogFormData"
 				:rules="dialogRules"
 			>
 				<el-row>
@@ -159,7 +155,7 @@
 							prop="transactionContNumName"
 						>
 							<el-input
-								v-model="dialogFormInput.transactionContNumName"
+								v-model="dialogFormData.transactionContNumName"
 								maxlength="100"
 								placeholder="请输入基础交易合同编号及名称"
 								:style="{ width: '80%' }"
@@ -170,7 +166,7 @@
 					<el-col :span="12">
 						<el-form-item label="债务人名称" prop="debtName">
 							<el-input
-								v-model="dialogFormInput.debtName"
+								v-model="dialogFormData.debtName"
 								maxlength="100"
 								placeholder="请输入债务人名称"
 								:style="{ width: '80%' }"
@@ -183,7 +179,7 @@
 							<el-input
 								placeholder="请输入应收账款金额"
 								maxlength="100"
-								v-model="dialogFormInput.receivableNum"
+								v-model="dialogFormData.receivableNum"
 								:style="{ width: '80%' }"
 							></el-input>
 						</el-form-item>
@@ -194,7 +190,7 @@
 							<el-input
 								placeholder="请输入账号"
 								maxlength="100"
-								v-model="dialogFormInput.invoiceNum"
+								v-model="dialogFormData.invoiceNum"
 								:style="{ width: '80%' }"
 							></el-input>
 						</el-form-item>
@@ -203,9 +199,10 @@
 					<el-col :span="12">
 						<el-form-item label="应收账款到期日" prop="receivableEndDate">
 							<el-date-picker
-								v-model="dialogFormInput.receivableEndDate"
-								type="date"
+								v-model="dialogFormData.receivableEndDate"
 								placeholder="请选择到期日"
+								type="date"
+								value-format="YYYY-MM-DD"
 								:style="{ width: '80%' }"
 							/>
 						</el-form-item>
@@ -216,7 +213,7 @@
 							<el-input
 								placeholder="请输入备注"
 								maxlength="1000"
-								v-model="dialogFormInput.remark"
+								v-model="dialogFormData.remark"
 								:style="{ width: '80%' }"
 							></el-input>
 						</el-form-item>
@@ -224,7 +221,7 @@
 
 					<el-col :span="24">
 						<el-row justify="end">
-							<el-button type="primary" @click="saveAccount">保存</el-button>
+							<el-button type="primary" @click="saveDialog">保存</el-button>
 							<el-button type="primary" @click="closeAccountAdd(false)"
 								>取消</el-button
 							>
@@ -239,7 +236,7 @@
 <script setup>
 import { ref, reactive, computed } from "vue";
 import { StrUtil } from "@/utils/StrUtil";
-import CustomerSelect from "@/components/CustomerSelect";
+import { deepClone } from "@/utils/index";
 
 // 组件属性
 const props = defineProps({
@@ -279,7 +276,7 @@ const rules = ref({
 });
 
 // dialog 表单
-let dialogFormInput = ref({
+let dialogFormData = ref({
 	transactionContNumName: null, // 基础交易合同编号及名称
 	debtName: null, //债务人名称
 	receivableNum: null, //应收账款金额
@@ -287,6 +284,8 @@ let dialogFormInput = ref({
 	receivableEndDate: null, //应收账款到期日
 	remark: null
 }); //后面要进行修改的对象用let定义
+
+const dialogType = ref("add"); // add新增 edit编辑
 
 const dataScope = reactive({
 	dialogRules: {
@@ -311,7 +310,6 @@ const dataScope = reactive({
 		]
 	}
 });
-
 const { dialogRules } = toRefs(dataScope);
 
 // 页面是View状态
@@ -329,27 +327,47 @@ const isView = computed(() => {
 });
 
 // 侦听表单数据变化
-watch(formData, newValue => {
-	emit("update:data", newValue);
-});
+watch(
+	formData,
+	newValue => {
+		emit("update:data", newValue);
+	},
+	{ deep: true }
+);
 
-// ref, recative, watch --------------------------------------------------------
+//----------------------- ref, recative, watch --------------------------------------------------------
+
+// dialog  数据修改
+function handleUpdate(rows) {
+	dialogAdd(rows);
+}
+
+// dialog 数据移除
+function handleDelete(rows) {
+	proxy.$modal
+		.confirm("是否确认数据项？")
+		.then(function () {
+			formData.carList = formData.carList.filter(item => {
+				return item.transactionContNumName !== rows.transactionContNumName;
+			});
+		})
+		.catch(e => {
+			console.log(e);
+		});
+}
 
 // dialog打开
-function addAccount(row) {
+function dialogAdd(row) {
 	openAccountAdd.value = true;
-	if (!row) {
-		// 新增
-	}
 
-	// if (!row) {
-	// 	//   初始化表单数据
-	// 	dialogFormInput.value.accountType = cust_account_type.value[0].value;
-	// 	dialogFormInput.value.currencyType = sys_currency_type.value[0].value;
-	// } else {
-	// 	dialogFormInput.value = row;
-	// 	dialogFormInput.value.type = "1";
-	// }
+	// 根据row 判断 是 【编辑】还是 【新增】
+	if (row) {
+		dialogType.value = "edit";
+
+		dialogFormData.value = deepClone(row);
+	} else {
+		dialogType.value = "add";
+	}
 }
 // Form item 内容的统一宽度
 const formItemContentStyle = { width: "100%" };
@@ -362,8 +380,8 @@ function configSelectRow(rows) {
 }
 
 // 重置添加联系人
-function resetAccountFormInput() {
-	dialogFormInput.value = {
+function resetDialogForm() {
+	dialogFormData.value = {
 		accountType: null,
 		currencyType: null,
 		accountBankInfo: null,
@@ -375,29 +393,35 @@ function resetAccountFormInput() {
 }
 
 // dialog 保存
-function saveAccount() {
+function saveDialog() {
 	proxy.$refs["formInput"].validate(valid => {
 		if (valid) {
-			if (dialogFormInput.value.type) {
-				// x修改
-				formData.value.bankInfoList.map(list => {
-					if (list.accountName == dialogFormInput.value.accountName) {
-						list = dialogFormInput.value;
+			if (dialogType.value === "edit") {
+				// 修改
+				formData.carList = formData.carList.map(item => {
+					if (
+						item.transactionContNumName ==
+						dialogFormData.value.transactionContNumName
+					) {
+						return dialogFormData.value;
+					} else {
+						return item;
 					}
 				});
 			} else {
 				// 新增
-				formData.carList.push(dialogFormInput.value);
+				formData.carList.push(dialogFormData.value);
 			}
-			resetAccountFormInput();
+
 			openAccountAdd.value = false;
+			resetDialogForm();
 		}
 	});
 }
 
 // dialog 关闭
 function closeAccountAdd() {
-	resetAccountFormInput();
+	resetDialogForm();
 	openAccountAdd.value = false;
 }
 

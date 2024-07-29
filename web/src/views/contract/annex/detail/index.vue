@@ -98,14 +98,19 @@ const data = ref({
 	customerName: null, //保理申请人
 	contractNum: null, // 保理主合同编号
 
-	transactionContNumName: null, //基础交易合同编号及名称
-	debtName: null, //债务人名称
-	receivableNum: null, //应收账款金额
-	invoiceNum: null, // 发票号码
-	receivableEndDate: null, // 应收账款到期日
-	remark: null, // 备注
+	// transactionContNumName: null, //基础交易合同编号及名称
+	// debtName: null, //债务人名称
+	// receivableNum: null, //应收账款金额
+	// invoiceNum: null, // 发票号码
+	// receivableEndDate: null, // 应收账款到期日
+	// remark: null, // 备注
 
-	carList: [] // 附件1
+	carList: [], // 附件1
+
+	// 附件2：
+	
+
+
 });
 
 // router参数
