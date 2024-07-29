@@ -8,10 +8,10 @@
 			label-width="160px"
 			:disabled="isView"
 		>
-			<el-form-item label="项目尽调编号" prop="projDueDiligenceId">
+			<el-form-item label="项目尽调编号（id）" prop="contractId">
 				<div class="form-item__block">
 					<CustomerSelect
-						:showValue="formData.projDueDiligenceId"
+						:showValue="formData.contractId"
 						:option="config.option"
 						:queryPropList="config.queryPropList"
 						:tablePropList="config.tablePropList"
@@ -19,6 +19,8 @@
 					/>
 				</div>
 			</el-form-item>
+
+			<el-form-item> </el-form-item>
 		</el-form>
 	</el-card>
 </template>
@@ -26,6 +28,7 @@
 <script setup>
 import { ref, reactive, computed } from "vue";
 import { StrUtil } from "@/utils/StrUtil";
+import { getDiligence } from "@/api/project/diligence.js";
 import CustomerSelect from "@/components/CustomerSelect";
 
 // 组件属性
@@ -45,6 +48,7 @@ const emit = defineEmits(["update:data"]);
 
 // vue实例对象
 const { proxy } = getCurrentInstance();
+
 
 // 表单对象
 const elFormRef = ref(null);
@@ -68,39 +72,49 @@ const dataScope = reactive({
 		option: {
 			inputW: "100%",
 			dialogW: "1000px",
-			placeholder: "请选择尽调信息",
-			dialogTitle: "尽调信息",
-			queryUrl: "/project/diligence/list"
+			placeholder: "请选择合同信息",
+			dialogTitle: "合同信息",
+			queryUrl: "/cont/list"
 		},
 		queryPropList: [
 			{
-				prop: "dueNo",
-				label: "尽调编号"
+				prop: "contractNo",
+				label: "合同编号"
 			},
 			{
-				prop: "name",
-				label: "项目名称"
+				prop: "otherContractName",
+				label: "合同名称"
 			}
 		],
 		tablePropList: [
 			{
-				prop: "dueNo",
-				label: "尽调编号"
+				prop: "contractNo",
+				label: "合同编号"
 			},
 			{
-				prop: "name",
-				label: "项目名称"
+				prop: "otherContractName",
+				label: "合同名称"
 			}
 		]
 	} // 客户
 });
 const { config } = toRefs(dataScope);
 
+// 侦听表单数据变化
+watch(formData, newValue => {
+	emit("update:data", newValue);
+});
+
+// ----------------ref,torefs,watch,computed-----------------------------------------------
+
 function configSelectRow(rows) {
-	formData.projectDueId = rows.id;
-	formData.projectNo = rows.dueNo;
-	formData.projectName = rows.name;
-	formData.bussProduct = rows.businessType;
+	// projectDueId  尽调id
+	// contractId  项目id
+	// otherContractName  项目名称
+
+	formData.contractId = rows.contractId;
+	formData.projDueDiligenceId = rows.projectDueId;
+	formData.otherContractName = rows.otherContractName;
 }
 
 // Form item 内容的统一宽度

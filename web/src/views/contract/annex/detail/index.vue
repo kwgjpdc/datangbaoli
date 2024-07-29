@@ -9,7 +9,7 @@
 				<el-row :gutter="10" class="mb8" justify="end">
 					<template v-if="!isView">
 						<el-col :span="1.5">
-							<el-button type="primary" icon="Checked" @click="submitForm(2)">
+							<el-button type="primary" icon="Checked" @click="submitForm">
 								提交
 							</el-button>
 						</el-col>
@@ -27,7 +27,7 @@
 			</div>
 			<div class="content-item-scroll">
 				<el-collapse v-model="activeCollapseNames">
-					<el-collapse-item title="合同基本信息" name="baseInfo">
+					<el-collapse-item title="附件基本信息" name="baseInfo">
 						<baseInfo
 							ref="baseInfoRef"
 							v-model:data="data"
@@ -35,20 +35,29 @@
 							v-model:loading="loading"
 						/>
 					</el-collapse-item>
+
 					<el-collapse-item title="应收账款信息（附件一）" name="annexOne">
 						<annexOne
-							ref="baseInfoRef"
+							ref="annexOneRef"
 							v-model:data="data"
 							:routerQueryObj="props.routerQueryObj"
 							v-model:loading="loading"
 						/>
 					</el-collapse-item>
+
 					<el-collapse-item title="应收账款信息（附件二）" name="annexTwo">
-						2222
+						<annexTwo
+							ref="annexTwoRef"
+							v-model:data="data"
+							:routerQueryObj="props.routerQueryObj"
+							v-model:loading="loading"
+						/>
 					</el-collapse-item>
+
 					<el-collapse-item title="应收账款信息（附件三）" name="annexThree">
 						333
 					</el-collapse-item>
+
 					<el-collapse-item title="签收回执（附件四）" name="annexFour">
 						444
 					</el-collapse-item>
@@ -66,8 +75,11 @@ import {
 	updateContract
 } from "@/api/contract/index.js";
 
+import { addContFileInfo } from "@/api/contract/annex.js";
+
 import baseInfo from "./baseInfo.vue";
 import annexOne from "./annexOne.vue";
+import annexTwo from "./annexTwo.vue";
 
 // 当前组件对象
 const { proxy } = getCurrentInstance();
@@ -92,26 +104,86 @@ const data = ref({
 	// 附件1：
 	contractId: null, // 保理合同主键id
 	projDueDiligenceId: null, // 项目尽调主键id
-	contractFileId: null, // //保理附件主键id
+	contractFileId: null, //保理附件主键id
 
 	receivableNumber: null, //应收账款转让明细表 【编号】
 	customerName: null, //保理申请人
 	contractNum: null, // 保理主合同编号
 
-	// transactionContNumName: null, //基础交易合同编号及名称
-	// debtName: null, //债务人名称
-	// receivableNum: null, //应收账款金额
-	// invoiceNum: null, // 发票号码
-	// receivableEndDate: null, // 应收账款到期日
-	// remark: null, // 备注
-
-	carList: [], // 附件1
+	carList: [
+		// transactionContNumName: null, //基础交易合同编号及名称
+		// debtName: null, //债务人名称
+		// receivableNum: null, //应收账款金额
+		// invoiceNum: null, // 发票号码
+		// receivableEndDate: null, // 应收账款到期日
+		// remark: null, // 备注
+	],
 
 	// 附件2：
-	
+	contractId: null, // 保理合同主键id
+	contractNum: null, // //保理合同编号
+	projDueDiligenceId: null, // 项目尽调主键id
+	contractFileId: null, //保理附件主键id
 
+	financingNum: null, // 保理融资本金
 
+	receivableEndDate: [], //保理融资期限-关联应收账款转让明细表中的应收
+	receivablePayDate: null, //保理融资款拨付日 （解释：其中一个选项）
+
+	interestGraceDate: null, //利息支付宽限期-从项目尽调中带入 （尽调无）
+	payBackGraceDate: null, //还款宽限期-从项目尽调中带入 （尽调有，带入）
+
+	manageCost: null, // 管理费率 （尽调有，可修改）
+	financingCost: null, // 保理融资利率 （尽调无）
+	graceCost: null, // 宽限期利率 （尽调有，可修改）
+
+	managePayType: [], //管理费支付方式
+	//【缺失参数】 每季度末月？日前
+	managePayTypeWrite: null, //管理费支付方式 【其他】选项手写内容
+
+	financingCostPayType: [], //保理融资利息支付方式-除了其他方式以外
+	//【【缺失参数】 每季度末月？日前】
+	// 缺失其他补充参数
+
+	defaultInterestRate: null, //违约金利率-从尽调中取值，尽调中的违约利 （尽调有）
+
+	obligorGuaranteeAmount: null, //应收账款债务人付款担保额度-与保理融资本金一致
+
+	paymentsType: [], //保理融资款收取账户选项
+	paymentsAccountName: null, //保理融资款收取账户-户名填写内容
+	paymentsAccount: null, //保理融资款收取账户-账号填写内容
+	paymentsAccountBank: null, //保理融资款收取账户-开户行名称
+
+	// 附件3
+	crtList: [],
+	// 附件4
+	conSignReceiptVo: {
+		projDueDiligenceId: null, //项目尽调主键id
+		contractNum: null, //保理主合同编号
+		contractId: null, //保理业务合同主键id
+		contractFileId: null, //保理附件主键id
+		financingNum: null, //保理融资本金
+		receivableEndDate: null, //保理融资期限-关联应收账款转让明细表中的应收账款到期
+		receivablePayDate: null, //保理融资款拨付日
+		interestGraceDate: null, //利息宽限期-从项目尽调中带入
+		payBackGraceDate: null, //还款宽限期-从项目尽调中带入
+		manageCost: null, //管理费率
+		financingCost: null, //保理融资利率
+		graceCost: null, //宽限期利率
+		managePayType: null, //管理费支付方式
+		managePayTypeWrite: null, //管理费支付方式填写内容
+		financingCostPayType: null, //保理融资利息支付方式-除了其他方式以外都从尽调
+		defaultInterestRate: null, //违约金利率-从尽调中取值，尽调中的违约利率改为百
+		obligorGuaranteeAmount: null, //应收账款债务人付款担保额度-与保理融资本金
+		paymentsType: null, //保理融资款收取账户选项
+		paymentsAccountName: null, //保理融资款收取账户-户名填写内容
+		paymentsAccount: null, //保理融资款收取账户-账号填写内容
+		paymentsAccountBank: null //保理融资款收取账户-开户行名称
+	}
 });
+
+// 尽调详情
+const projectDetail = ref({});
 
 // router参数
 const routerQueryObj = ref(history.state);
@@ -149,17 +221,37 @@ const isEdit = computed(() => {
 	return result;
 });
 
+watch(
+	() => data.value.projDueDiligenceId,
+	() => {
+		getDiligenceInfo(rows.projectDueId || 52);
+	}
+);
+
+// -----------------------------------------------------------------------------------
+
+// 获取 尽调详情接口
+function getDiligenceInfo(id) {
+	getDiligence(id).then(response => {
+		projectDetail.value = response.data;
+	});
+}
+
 // 新增合同数据
 function addContractData(status) {
 	data.value.status = status;
 	loading.value = true;
+
 	// 单独处理 sendType
-	data.value.sendType = data.value.sendType.join();
+	data.value.receivableEndDate = data.value.receivableEndDate.join();
+	data.value.managePayType = data.value.managePayType.join();
+	data.value.financingCostPayType = data.value.financingCostPayType.join();
+	data.value.paymentsType = data.value.paymentsType.join();
 
-	data.value.flowId = proxy.$refs["flowSearchRef"].formData.flowId;
-	data.value.userIds = proxy.$refs["flowSearchRef"].formData.userIds;
+	// data.value.flowId = proxy.$refs["flowSearchRef"].formData.flowId;
+	// data.value.userIds = proxy.$refs["flowSearchRef"].formData.userIds;
 
-	addContract(data.value)
+	addContFileInfo(data.value)
 		.then(() => {
 			proxy.$modal.msgSuccess("新增成功");
 			closePage();
@@ -223,47 +315,49 @@ function getContractData(id) {
 
 // 提交表单
 function submitForm(status) {
-	if (status === 1) {
-		// 暂存
+	addContractData();
 
-		if (!data.value.projectDueId) {
-			return proxy.$message.error("请选择【项目尽调编号】");
-		}
+	// if (status === 1) {
+	// 	// 暂存
 
-		if (!isEdit.value) {
-			addContractData(status);
-		} else {
-			updateContractData(status);
-		}
-	} else {
-		//
+	// 	if (!data.value.projectDueId) {
+	// 		return proxy.$message.error("请选择【项目尽调编号】");
+	// 	}
 
-		// const contractForm = new Promise((resolve, reject) => {
-		// 	basePaneRef.value.validate(valid => {
-		// 		valid ? resolve(valid) : reject(valid);
-		// 	});
-		// });
+	// 	if (!isEdit.value) {
+	// 		addContractData(status);
+	// 	} else {
+	// 		updateContractData(status);
+	// 	}
+	// } else {
+	// 	//
 
-		const specialForm = new Promise((resolve, reject) => {
-			specialPaneRef.value.validate(valid => {
-				valid ? resolve(valid) : reject(valid);
-			});
-		});
+	// 	// const contractForm = new Promise((resolve, reject) => {
+	// 	// 	basePaneRef.value.validate(valid => {
+	// 	// 		valid ? resolve(valid) : reject(valid);
+	// 	// 	});
+	// 	// });
 
-		const flowForm = new Promise((resolve, reject) => {
-			proxy.$refs["flowSearchRef"].$refs["elForm"].validate(valid => {
-				valid ? resolve(valid) : reject(valid);
-			});
-		});
+	// 	const specialForm = new Promise((resolve, reject) => {
+	// 		specialPaneRef.value.validate(valid => {
+	// 			valid ? resolve(valid) : reject(valid);
+	// 		});
+	// 	});
 
-		Promise.all([flowForm, specialForm]).then(() => {
-			if (!isEdit.value) {
-				addContractData(status);
-			} else {
-				updateContractData(status);
-			}
-		});
-	}
+	// 	const flowForm = new Promise((resolve, reject) => {
+	// 		proxy.$refs["flowSearchRef"].$refs["elForm"].validate(valid => {
+	// 			valid ? resolve(valid) : reject(valid);
+	// 		});
+	// 	});
+
+	// 	Promise.all([flowForm, specialForm]).then(() => {
+	// 		if (!isEdit.value) {
+	// 			addContractData(status);
+	// 		} else {
+	// 			updateContractData(status);
+	// 		}
+	// 	});
+	// }
 }
 
 // 取消按钮操作

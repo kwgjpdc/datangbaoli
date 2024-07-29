@@ -30,7 +30,6 @@
 							:option="customerConfig.option"
 							:queryPropList="customerConfig.queryPropList"
 							:tablePropList="customerConfig.tablePropList"
-							:queryDefault="queryDefault"
 							@selectRow="customerConfigSelectRow"
 						/>
 					</div>
