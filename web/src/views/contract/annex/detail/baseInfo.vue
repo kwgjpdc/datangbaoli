@@ -8,10 +8,10 @@
 			label-width="160px"
 			:disabled="isView"
 		>
-			<el-form-item label="项目尽调编号（id）" prop="contractId">
+			<el-form-item label="合同编号" prop="contractNum">
 				<div class="form-item__block">
 					<CustomerSelect
-						:showValue="formData.contractId"
+						:showValue="formData.contractNum"
 						:option="config.option"
 						:queryPropList="config.queryPropList"
 						:tablePropList="config.tablePropList"
@@ -19,8 +19,6 @@
 					/>
 				</div>
 			</el-form-item>
-
-			<el-form-item> </el-form-item>
 		</el-form>
 	</el-card>
 </template>
@@ -28,7 +26,7 @@
 <script setup>
 import { ref, reactive, computed } from "vue";
 import { StrUtil } from "@/utils/StrUtil";
-import { getDiligence } from "@/api/project/diligence.js";
+
 import CustomerSelect from "@/components/CustomerSelect";
 
 // 组件属性
@@ -48,7 +46,6 @@ const emit = defineEmits(["update:data"]);
 
 // vue实例对象
 const { proxy } = getCurrentInstance();
-
 
 // 表单对象
 const elFormRef = ref(null);
@@ -96,7 +93,7 @@ const dataScope = reactive({
 				label: "合同名称"
 			}
 		]
-	} // 客户
+	}
 });
 const { config } = toRefs(dataScope);
 
@@ -107,37 +104,19 @@ watch(formData, newValue => {
 
 // ----------------ref,torefs,watch,computed-----------------------------------------------
 
-function configSelectRow(rows) {
+function configSelectRow(row) {
 	// projectDueId  尽调id
 	// contractId  项目id
 	// otherContractName  项目名称
 
-	formData.contractId = rows.contractId;
-	formData.projDueDiligenceId = rows.projectDueId;
-	formData.otherContractName = rows.otherContractName;
+	formData.contractId = row.contractId; // 合同id
+	formData.contractNum = row.contractNo; // 合同编码；
+	formData.projDueDiligenceId = row.projectDueId || 52; // 尽调id
+	formData.otherContractName = row.otherContractName; // 尽调项目名称
 }
 
 // Form item 内容的统一宽度
 const formItemContentStyle = { width: "100%" };
-
-// 系统字典
-const {
-	cont_settlement,
-	day,
-	cont_advance,
-	cont_pay,
-	cont_overrun,
-	proj_dd_type,
-	cont_transfer_part
-} = proxy.useDict(
-	"cont_settlement",
-	"day",
-	"cont_advance",
-	"cont_pay",
-	"cont_overrun",
-	"proj_dd_type",
-	"cont_transfer_part"
-);
 
 // 页面是View状态
 const isView = computed(() => {

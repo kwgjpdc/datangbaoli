@@ -27,18 +27,19 @@
 			</div>
 			<div class="content-item-scroll">
 				<el-collapse v-model="activeCollapseNames">
-					<el-collapse-item title="附件基本信息" name="baseInfo">
+					<!-- <el-collapse-item title="附件基本信息" name="baseInfo">
 						<baseInfo
 							ref="baseInfoRef"
 							v-model:data="data"
 							:routerQueryObj="props.routerQueryObj"
 							v-model:loading="loading"
 						/>
-					</el-collapse-item>
+					</el-collapse-item> -->
 
 					<el-collapse-item title="应收账款信息（附件一）" name="annexOne">
 						<annexOne
 							ref="annexOneRef"
+							:proDetail="projectDetail"
 							v-model:data="data"
 							:routerQueryObj="props.routerQueryObj"
 							v-model:loading="loading"
@@ -69,13 +70,10 @@
 
 <script setup>
 import { ref, computed, onBeforeMount, watch } from "vue";
-import {
-	getContract,
-	addContract,
-	updateContract
-} from "@/api/contract/index.js";
+import { getContract, updateContract } from "@/api/contract/index.js";
 
 import { addContFileInfo } from "@/api/contract/annex.js";
+import { getDiligence } from "@/api/project/diligence.js";
 
 import baseInfo from "./baseInfo.vue";
 import annexOne from "./annexOne.vue";
@@ -101,6 +99,7 @@ const data = ref({
 	// 总：
 	contractId: null, // 合同主键id
 	projDueDiligenceId: null, // 项目尽调主键id
+
 	// 附件1：
 	contractId: null, // 保理合同主键id
 	projDueDiligenceId: null, // 项目尽调主键id
@@ -120,10 +119,10 @@ const data = ref({
 	],
 
 	// 附件2：
-	contractId: null, // 保理合同主键id
-	contractNum: null, // //保理合同编号
+	contractId: null, // 主合同id
+	contractNum: null, // 主合同编号
 	projDueDiligenceId: null, // 项目尽调主键id
-	contractFileId: null, //保理附件主键id
+	contractFileId: null, // 附件id
 
 	financingNum: null, // 保理融资本金
 
@@ -224,11 +223,11 @@ const isEdit = computed(() => {
 watch(
 	() => data.value.projDueDiligenceId,
 	() => {
-		getDiligenceInfo(rows.projectDueId || 52);
+		getDiligenceInfo(data.value.projDueDiligenceId);
 	}
 );
 
-// -----------------------------------------------------------------------------------
+// --------------------以上是 ref watch  computed 等状态数据------------------------------------------------------------------------------------------
 
 // 获取 尽调详情接口
 function getDiligenceInfo(id) {
@@ -237,21 +236,81 @@ function getDiligenceInfo(id) {
 	});
 }
 
-// 新增合同数据
-function addContractData(status) {
-	data.value.status = status;
+function handleParams() {
+	const formData = data.value;
+
+	// 附件1 处理数据
+	const carList = formData.carList.map(item => ({
+		projDueDiligenceId: formData.projDueDiligenceId, // 尽调id
+		contractId: formData.contractId, // 合同id
+		contractFileId: formData.contractFileId, // 附件id
+
+		receivableNumber: null, //应收账款转让明细表 【编号】
+		customerName: null, //保理申请人
+		contractNum: null, // 保理主合同编号
+
+		...item
+	}));
+
+	// 附件2 处理数据
+	const contractAgreeFileVo = {
+		contractId: formData.contractId, // 保理合同主键id
+		contractNum: formData.contractNum, // 保理合同编号
+		projDueDiligenceId: formData.projDueDiligenceId, // 项目尽调主键id
+		contractFileId: null, // 保理附件主键id, 编辑才会有
+
+		financingNum: formData.financingNum, // 保理融资本金
+
+		receivableEndDate: formData.receivableEndDate, // 保理融资期限-关联应收账款转让明细表中的应收
+		receivablePayDate: formData.receivablePayDate, // 保理融资款拨付日 （解释：其中一个选项）
+
+		interestGraceDate: formData.interestGraceDate, // 利息支付宽限期-从项目尽调中带入 （尽调无）
+		payBackGraceDate: formData.payBackGraceDate, // 还款宽限期-从项目尽调中带入 （尽调有，带入）
+
+		manageCost: formData.manageCost, // 管理费率 （尽调有，可修改）
+		financingCost: formData.financingCost, // 保理融资利率 （尽调无）
+		graceCost: formData.graceCost, // 宽限期利率 （尽调有，可修改）
+
+		managePayType: formData.managePayType, //管理费支付方式
+		//【缺失参数】 每季度末月？日前
+		managePayTypeWrite: null, //管理费支付方式 【其他】选项手写内容
+
+		financingCostPayType: formData.financingCostPayType, //保理融资利息支付方式-除了其他方式以外
+		//【【缺失参数】 每季度末月？日前】
+		// 缺失其他补充参数
+
+		defaultInterestRate: null, //违约金利率-从尽调中取值，尽调中的违约利 （尽调有）
+
+		obligorGuaranteeAmount: null, //应收账款债务人付款担保额度-与保理融资本金一致
+
+		paymentsType: formData.paymentsType, //保理融资款收取账户选项
+		paymentsAccountName: null, //保理融资款收取账户-户名填写内容
+		paymentsAccount: null, //保理融资款收取账户-账号填写内容
+		paymentsAccountBank: null //保理融资款收取账户-开户行名称}
+	};
+
+	// 附件3
+	const crtList = formData.crtList;
+
+	// 附件4
+	const conSignReceiptVo = formData.conSignReceiptVo;
+
+	return {
+		contractId: formData.contractId,
+		projDueDiligenceId: formData.projDueDiligenceId,
+		carList,
+		contractAgreeFileVo,
+		crtList,
+		conSignReceiptVo
+	};
+}
+
+// 新增附件数据
+function apiAddContFileInfo() {
 	loading.value = true;
+	const handleData = handleParams();
 
-	// 单独处理 sendType
-	data.value.receivableEndDate = data.value.receivableEndDate.join();
-	data.value.managePayType = data.value.managePayType.join();
-	data.value.financingCostPayType = data.value.financingCostPayType.join();
-	data.value.paymentsType = data.value.paymentsType.join();
-
-	// data.value.flowId = proxy.$refs["flowSearchRef"].formData.flowId;
-	// data.value.userIds = proxy.$refs["flowSearchRef"].formData.userIds;
-
-	addContFileInfo(data.value)
+	addContFileInfo(handleData)
 		.then(() => {
 			proxy.$modal.msgSuccess("新增成功");
 			closePage();
@@ -262,60 +321,60 @@ function addContractData(status) {
 }
 
 // 更新合同数据
-function updateContractData(status) {
-	data.value.status = status;
-	loading.value = true;
+// function updateContractData(status) {
+// 	data.value.status = status;
+// 	loading.value = true;
 
-	// 单独处理 sendType
-	data.value.sendType = data.value.sendType.join();
+// 	// 单独处理 sendType
+// 	data.value.sendType = data.value.sendType.join();
 
-	data.value.flowId = proxy.$refs["flowSearchRef"].formData.flowId;
-	data.value.userIds = proxy.$refs["flowSearchRef"].formData.userIds;
-	// console.log(data.value)
-	updateContract(data.value)
-		.then(() => {
-			proxy.$modal.msgSuccess("更新成功");
-			closePage();
-		})
-		.finally(() => {
-			loading.value = false;
-		});
-}
+// 	data.value.flowId = proxy.$refs["flowSearchRef"].formData.flowId;
+// 	data.value.userIds = proxy.$refs["flowSearchRef"].formData.userIds;
+// 	// console.log(data.value)
+// 	updateContract(data.value)
+// 		.then(() => {
+// 			proxy.$modal.msgSuccess("更新成功");
+// 			closePage();
+// 		})
+// 		.finally(() => {
+// 			loading.value = false;
+// 		});
+// }
 
 // 获取合同数据
-function getContractData(id) {
-	loading.value = true;
-	getContract(id).then(response => {
-		response.data;
+// function getContractData(id) {
+// 	loading.value = true;
+// 	getContract(id).then(response => {
+// 		response.data;
 
-		for (const prop in response.data) {
-			// 不处理paymentSequenceList
-			if (prop === "paymentSequenceList") {
-				continue;
-			}
+// 		for (const prop in response.data) {
+// 			// 不处理paymentSequenceList
+// 			if (prop === "paymentSequenceList") {
+// 				continue;
+// 			}
 
-			if (Array.isArray(data.value[prop])) {
-				data.value[prop].length = 0;
-				if (Array.isArray(response.data[prop])) {
-					response.data[prop].forEach(v => {
-						data.value[prop].push(v);
-					});
-				} else {
-					if (prop === "sendType") {
-						data.value[prop] = response.data[prop].split(",");
-					}
-				}
-			} else {
-				data.value[prop] = response.data[prop];
-			}
-		}
-		loading.value = false;
-	});
-}
+// 			if (Array.isArray(data.value[prop])) {
+// 				data.value[prop].length = 0;
+// 				if (Array.isArray(response.data[prop])) {
+// 					response.data[prop].forEach(v => {
+// 						data.value[prop].push(v);
+// 					});
+// 				} else {
+// 					if (prop === "sendType") {
+// 						data.value[prop] = response.data[prop].split(",");
+// 					}
+// 				}
+// 			} else {
+// 				data.value[prop] = response.data[prop];
+// 			}
+// 		}
+// 		loading.value = false;
+// 	});
+// }
 
 // 提交表单
-function submitForm(status) {
-	addContractData();
+function submitForm() {
+	apiAddContFileInfo();
 
 	// if (status === 1) {
 	// 	// 暂存
@@ -325,7 +384,7 @@ function submitForm(status) {
 	// 	}
 
 	// 	if (!isEdit.value) {
-	// 		addContractData(status);
+	// 		apiAddContFileInfo(status);
 	// 	} else {
 	// 		updateContractData(status);
 	// 	}
@@ -352,7 +411,7 @@ function submitForm(status) {
 
 	// 	Promise.all([flowForm, specialForm]).then(() => {
 	// 		if (!isEdit.value) {
-	// 			addContractData(status);
+	// 			apiAddContFileInfo(status);
 	// 		} else {
 	// 			updateContractData(status);
 	// 		}

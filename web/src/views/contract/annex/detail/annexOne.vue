@@ -11,11 +11,24 @@
 			<el-form-item label="编号" prop="receivableNumber">
 				<div class="form-item__block">
 					<el-input
-						v-model="formData.customerAccountName"
-						:placeholder="showPlaceholder('请输入编号')"
+						disabled
+						v-model="formData.receivableNumber"
+						:placeholder="showPlaceholder('保存后自动生成')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
+					/>
+				</div>
+			</el-form-item>
+
+			<el-form-item label="保理合同编号" prop="contractNum">
+				<div class="form-item__block">
+					<CustomerSelect
+						:showValue="formData.contractNum"
+						:option="config.option"
+						:queryPropList="config.queryPropList"
+						:tablePropList="config.tablePropList"
+						@selectRow="configSelectRow"
 					/>
 				</div>
 			</el-form-item>
@@ -23,20 +36,9 @@
 			<el-form-item label="保理申请人" prop="customerName">
 				<div class="form-item__block">
 					<el-input
-						v-model="formData.customerAccountName"
-						:placeholder="showPlaceholder('请输入保理申请人')"
-						clearable
-						:style="formItemContentStyle"
-						maxlength="32"
-					/>
-				</div>
-			</el-form-item>
-
-			<el-form-item label="保理主合同标号" prop="contractNum">
-				<div class="form-item__block">
-					<el-input
-						v-model="formData.customerAccountName"
-						:placeholder="showPlaceholder('请输入合同标号')"
+						disabled
+						v-model="formData.customerName"
+						:placeholder="showPlaceholder('请先选择保理主合同标号')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
@@ -237,10 +239,15 @@
 import { ref, reactive, computed } from "vue";
 import { StrUtil } from "@/utils/StrUtil";
 import { deepClone } from "@/utils/index";
+import CustomerSelect from "@/components/CustomerSelect";
 
 // 组件属性
 const props = defineProps({
 	data: {
+		type: Object,
+		default: {}
+	},
+	proDetail: {
 		type: Object,
 		default: {}
 	},
@@ -308,9 +315,46 @@ const dataScope = reactive({
 		receivableEndDate: [
 			{ required: true, message: "应收账款到期日为空", trigger: "change" }
 		]
+	},
+	config: {
+		option: {
+			inputW: "100%",
+			dialogW: "1000px",
+			placeholder: "请选择合同信息",
+			dialogTitle: "合同信息",
+			queryUrl: "/cont/list"
+		},
+		queryPropList: [
+			{
+				prop: "contractNo",
+				label: "合同编号"
+			},
+			{
+				prop: "otherContractName",
+				label: "合同名称"
+			},
+			{
+				prop: "factoringApplicantName",
+				label: "申请人"
+			}
+		],
+		tablePropList: [
+			{
+				prop: "contractNo",
+				label: "合同编号"
+			},
+			{
+				prop: "otherContractName",
+				label: "合同名称"
+			},
+			{
+				prop: "factoringApplicantName",
+				label: "申请人"
+			}
+		]
 	}
 });
-const { dialogRules } = toRefs(dataScope);
+const { dialogRules, config } = toRefs(dataScope);
 
 // 页面是View状态
 const isView = computed(() => {
@@ -336,6 +380,18 @@ watch(
 );
 
 //----------------------- ref, recative, watch --------------------------------------------------------
+
+function configSelectRow(row) {
+	// projectDueId  尽调id
+	// contractId  合同id
+	// otherContractName  项目尽调名称
+
+	formData.contractId = row.contractId; // 合同id
+	formData.contractNum = row.contractNo; // 合同编码；
+	formData.customerName = row.factoringApplicantName; // 合同申请人
+	formData.projDueDiligenceId = row.projectDueId || 52; // 尽调id
+	formData.otherContractName = row.otherContractName; // 尽调项目名称
+}
 
 // dialog  数据修改
 function handleUpdate(rows) {
@@ -371,13 +427,6 @@ function dialogAdd(row) {
 }
 // Form item 内容的统一宽度
 const formItemContentStyle = { width: "100%" };
-
-function configSelectRow(rows) {
-	formData.projectDueId = rows.id;
-	formData.projectNo = rows.dueNo;
-	formData.projectName = rows.name;
-	formData.bussProduct = rows.businessType;
-}
 
 // 重置添加联系人
 function resetDialogForm() {

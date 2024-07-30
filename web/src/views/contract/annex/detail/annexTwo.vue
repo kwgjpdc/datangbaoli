@@ -8,10 +8,10 @@
 			label-width="160px"
 			:disabled="isView"
 		>
-			<el-form-item label="编号" prop="receivableNumber">
+			<el-form-item label="编号" prop="contractNum">
 				<div class="form-item__block">
 					<el-input
-						v-model="formData.customerAccountName"
+						v-model="formData.contractNum"
 						:placeholder="showPlaceholder('请输入编号')"
 						clearable
 						:style="formItemContentStyle"
@@ -20,11 +20,12 @@
 				</div>
 			</el-form-item>
 
-			<el-form-item label="保理合同号" prop="contractNum">
+			<el-form-item label="保理主合同标号" prop="contractNum">
 				<div class="form-item__block">
 					<el-input
-						v-model="formData.customerAccountName"
-						:placeholder="showPlaceholder('请输入合同标号')"
+						disabled
+						v-model="formData.contractNum"
+						:placeholder="showPlaceholder('请输入保理主合同标号')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
@@ -32,10 +33,11 @@
 				</div>
 			</el-form-item>
 
-			<el-form-item label="应收账款转让明细表编号" prop="contractNum">
+			<el-form-item label="应收账款转让明细表编号" prop="receivableNumber">
 				<div class="form-item__block">
 					<el-input
-						v-model="formData.customerAccountName"
+						disabled
+						v-model="formData.receivableNumber"
 						:placeholder="showPlaceholder('请输入应收账款转让明细表编号')"
 						clearable
 						:style="formItemContentStyle"
@@ -47,7 +49,7 @@
 			<el-form-item label="保理融资本金" prop="financingNum">
 				<div class="form-item__block">
 					<el-input
-						v-model="formData.customerAccountName"
+						v-model="formData.financingNum"
 						:placeholder="showPlaceholder('请输入保理融资本金')"
 						clearable
 						:style="formItemContentStyle"
@@ -58,23 +60,24 @@
 
 			<el-row>
 				<el-form-item label="融资期限" prop="receivableEndDate">
-					<el-checkbox-group v-model="formData.receivableEndDate">
-						<el-checkbox label="1" name="type"
+					<el-radio-group v-model="formData.receivableEndDate">
+						<el-radio label="1" name="type"
 							>自保理融资款拨付之日至{{
 								(formData.carList[0] &&
 									formData.carList[0].receivableEndDate) ||
 								"-"
-							}}</el-checkbox
+							}}</el-radio
 						>
-						<el-checkbox label="2" name="type">
+						<el-radio label="2" name="type">
 							自保理融资款拨付之日起
 							<el-input
+								size="small"
 								v-model="formData.receivablePayDate"
 								style="width: 80px"
 							/>
 							天
-						</el-checkbox>
-					</el-checkbox-group>
+						</el-radio>
+					</el-radio-group>
 				</el-form-item>
 			</el-row>
 
@@ -93,7 +96,6 @@
 			<el-form-item label="还款宽限期" prop="payBackGraceDate">
 				<div class="form-item__block">
 					<el-input
-						disabled
 						v-model="formData.payBackGraceDate"
 						:placeholder="showPlaceholder('尽调自动获取')"
 						clearable
@@ -141,42 +143,44 @@
 
 			<el-row>
 				<el-form-item label="管理费支付方式" prop="managePayType">
-					<el-checkbox-group v-model="formData.managePayType">
-						<el-checkbox label="1" name="type"
-							>在甲方支付保理融资前由乙方一次性支付</el-checkbox
+					<el-radio-group v-model="formData.managePayType">
+						<el-radio label="1" name="type"
+							>在甲方支付保理融资前由乙方一次性支付</el-radio
 						>
-						<el-checkbox label="2" name="type">每季度支付一次</el-checkbox>
-						<el-checkbox label="3" name="type" @change="otherChange">
+						<el-radio label="2" name="type">每季度支付一次</el-radio>
+						<el-radio label="3" name="type" @change="otherChange">
 							其他方式
 							<el-input
+								size="small"
 								v-if="formData.managePayType.includes('3')"
 								v-model="formData.managePayTypeWrite"
 								placeholder="请输入其他方式"
 							/>
-						</el-checkbox>
-					</el-checkbox-group>
+						</el-radio>
+					</el-radio-group>
 				</el-form-item>
 			</el-row>
 
 			<el-row>
 				<el-form-item label="保理融资利息支付方式" prop="financingCostPayType">
-					<el-checkbox-group v-model="formData.financingCostPayType">
-						<el-checkbox label="1" name="type"
-							>在甲方支付保理融资前由乙方一次性支付</el-checkbox
+					<el-radio-group v-model="formData.financingCostPayType">
+						<el-radio label="1" name="type"
+							>在甲方支付保理融资前由乙方一次性支付</el-radio
 						>
-						<el-checkbox label="2" name="type">每季度支付一次</el-checkbox>
-						<el-checkbox label="3" name="type"
-							>甲方在收到的应收账款中直接扣收</el-checkbox
+						<el-radio label="2" name="type">每季度支付一次</el-radio>
+						<el-radio label="3" name="type"
+							>甲方在收到的应收账款中直接扣收</el-radio
 						>
-						<el-checkbox label="4" name="type" @change="otherChange2">
+						<el-radio label="4" name="type" @change="otherChange2">
 							其他方式
 							<el-input
-								v-if="formData.managePayType.includes('4')"
+								size="small"
+								v-if="formData.financingCostPayType.includes('4')"
 								v-model="formData.managePayTypeWrite"
 								placeholder="请输入其他方式"
 							/>
-						</el-checkbox>
-					</el-checkbox-group>
+						</el-radio>
+					</el-radio-group>
 				</el-form-item>
 			</el-row>
 
@@ -209,14 +213,14 @@
 
 			<el-row>
 				<el-form-item label="保理融资款收取账户" prop="paymentsType">
-					<div class="checkbox-column">
-						<el-checkbox-group v-model="formData.paymentsType">
-							<el-checkbox label="1" name="type"
-								>乙方确认，本次保理融资款收取账户为本合同专用条款约定的收款账户</el-checkbox
+					<div class="radio-column">
+						<el-radio-group v-model="formData.paymentsType">
+							<el-radio label="1" name="type"
+								>乙方确认，本次保理融资款收取账户为本合同专用条款约定的收款账户</el-radio
 							>
-							<el-checkbox label="2" name="type">
+							<el-radio label="2" name="type">
 								乙方确认，本次保理融资款收取账户如下：
-							</el-checkbox>
+							</el-radio>
 
 							<div>
 								<el-row>
@@ -240,7 +244,7 @@
 									</el-form-item>
 								</el-row>
 							</div>
-						</el-checkbox-group>
+						</el-radio-group>
 					</div>
 				</el-form-item>
 			</el-row>
@@ -423,8 +427,8 @@ defineExpose({
 	}
 }
 
-.checkbox-column {
-	:deep(.el-checkbox-group) {
+.radio-column {
+	:deep(.el-radio-group) {
 		display: flex;
 		flex-direction: column;
 		align-items: start;
