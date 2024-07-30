@@ -27,15 +27,6 @@
 			</div>
 			<div class="content-item-scroll">
 				<el-collapse v-model="activeCollapseNames">
-					<!-- <el-collapse-item title="附件基本信息" name="baseInfo">
-						<baseInfo
-							ref="baseInfoRef"
-							v-model:data="data"
-							:routerQueryObj="props.routerQueryObj"
-							v-model:loading="loading"
-						/>
-					</el-collapse-item> -->
-
 					<el-collapse-item title="应收账款信息（附件一）" name="annexOne">
 						<annexOne
 							ref="annexOneRef"
@@ -56,7 +47,12 @@
 					</el-collapse-item>
 
 					<el-collapse-item title="应收账款信息（附件三）" name="annexThree">
-						333
+						<annexThree
+							ref="annexThreeRef"
+							v-model:data="data"
+							:routerQueryObj="props.routerQueryObj"
+							v-model:loading="loading"
+						/>
 					</el-collapse-item>
 
 					<el-collapse-item title="签收回执（附件四）" name="annexFour">
@@ -70,7 +66,7 @@
 
 <script setup>
 import { ref, computed, onBeforeMount, watch } from "vue";
-import { getContract, updateContract } from "@/api/contract/index.js";
+// import { getContract, updateContract } from "@/api/contract/index.js";
 
 import { addContFileInfo } from "@/api/contract/annex.js";
 import { getDiligence } from "@/api/project/diligence.js";
@@ -78,13 +74,13 @@ import { getDiligence } from "@/api/project/diligence.js";
 import baseInfo from "./baseInfo.vue";
 import annexOne from "./annexOne.vue";
 import annexTwo from "./annexTwo.vue";
+import annexThree from "./annexThree.vue";
 
 // 当前组件对象
 const { proxy } = getCurrentInstance();
 
 // 展开的折叠配置
 const activeCollapseNames = reactive([
-	"baseInfo",
 	"annexOne",
 	"annexTwo",
 	"annexThree",
@@ -154,7 +150,25 @@ const data = ref({
 	paymentsAccountBank: null, //保理融资款收取账户-开户行名称
 
 	// 附件3
+	projDueDiligenceId: null, //项目尽调主键id
+	contractId: null, //保理业务合同主键id
+	contractFileId: null, //保理附件主键id
+
+	conAccountsReceivableId: null, //应收账款转让明细表主键id
+	conReceivableTransferNum: null, //应收账款转让通知书编号
+
+	customerName: null, //债务人名称
+	transferName: null, //转让人名称
+	receivableNumber: null, //应收账款转让明细表编号
+	accountName: null, //户名
+	accountNum: null, //账号
+	accountBank: null, //开户行
+	zbPersonName: null, //主办人名称
+	zbPersonTel: null, //主办人电话
+	payBackGraceDate: null, //还款宽限期-从项目尽调中带入
+
 	crtList: [],
+
 	// 附件4
 	conSignReceiptVo: {
 		projDueDiligenceId: null, //项目尽调主键id
