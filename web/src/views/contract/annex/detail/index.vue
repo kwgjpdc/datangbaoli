@@ -101,6 +101,13 @@ const activeCollapseNames = reactive([
 // 是否显示loading
 const loading = ref(false);
 
+// 尽调详情
+const projectDetail = ref({});
+
+// router参数
+const routerQueryObj = ref(history.state);
+const props = defineProps({ approveId: Number });
+
 // 数据对象
 const data = ref({
 	// 总：
@@ -193,17 +200,6 @@ const data = ref({
 	emial: null, // 联系人电子邮箱
 	foxNum: null // 联系人传真
 });
-
-// 尽调详情
-const projectDetail = ref({});
-
-// router参数
-const routerQueryObj = ref(history.state);
-const props = defineProps({ approveId: Number });
-
-// 基本信息页面
-const basePaneRef = ref(null);
-const specialPaneRef = ref(null);
 
 // 页面是View状态
 const isView = computed(() => {
@@ -303,10 +299,28 @@ function handleParams() {
 	};
 
 	// 附件3
-	const crtList = formData.crtList;
+	const crtList = [
+		{
+			
+		}
+	];
 
 	// 附件4
-	const conSignReceiptVo = formData.conSignReceiptVo;
+	const conSignReceiptVo = {
+		projDueDiligenceId: formData.projDueDiligenceId, // 项目尽调主键id
+		contractId: formData.contractId, // 保理业务合同主键id
+		contractFileId: formData.contractFileId, // 保理附件主键id
+
+		conReceivableTransferNum: formData.formData, //【应收账款转让通知书】编号
+		transactionContNumName: null, // 基础交易合同编号及名称 【？】
+
+		customerName: formData.customerName, // 客户公司名称
+		sendAddress: formData.sendAddress, // 送达地址
+		contactsName: formData.contactsName, // 联系人名称
+		mobilePhone: formData.mobilePhone, // 联系人电话
+		emial: formData.emial, // 联系人电子邮箱
+		foxNum: formData.foxNum // 联系人传真
+	};
 
 	return {
 		contractId: formData.contractId,

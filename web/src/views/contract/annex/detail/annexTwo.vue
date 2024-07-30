@@ -8,11 +8,12 @@
 			label-width="160px"
 			:disabled="isView"
 		>
-			<el-form-item label="编号" prop="contractNum">
+			<el-form-item label="编号" prop="2编号">
 				<div class="form-item__block">
 					<el-input
+						disabled
 						v-model="formData.contractNum"
-						:placeholder="showPlaceholder('请输入编号')"
+						:placeholder="showPlaceholder('自动生成')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"

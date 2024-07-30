@@ -50,14 +50,7 @@
 				<template #header>
 					<span>明细表</span>
 					<el-button
-						style="float: right; padding: 3px 0"
-						type="primary"
-						link
-						@click="handleDelete()"
-						:disabled="single"
-						>删除</el-button
-					>
-					<el-button
+						:disabled="formData.carList.length"
 						style="float: right; padding: 3px 0; margin-right: 20px"
 						type="primary"
 						link
