@@ -27,7 +27,10 @@
 			</div>
 			<div class="content-item-scroll">
 				<el-collapse v-model="activeCollapseNames">
-					<el-collapse-item title="应收账款信息（附件一）" name="annexOne">
+					<el-collapse-item
+						title="应收账款转让明细表（附件一）"
+						name="annexOne"
+					>
 						<annexOne
 							ref="annexOneRef"
 							:proDetail="projectDetail"
@@ -37,7 +40,7 @@
 						/>
 					</el-collapse-item>
 
-					<el-collapse-item title="应收账款信息（附件二）" name="annexTwo">
+					<el-collapse-item title="保理业务同意书（附件二）" name="annexTwo">
 						<annexTwo
 							ref="annexTwoRef"
 							v-model:data="data"
@@ -46,7 +49,10 @@
 						/>
 					</el-collapse-item>
 
-					<el-collapse-item title="应收账款信息（附件三）" name="annexThree">
+					<el-collapse-item
+						title="应收账款转让通知书（附件三）"
+						name="annexThree"
+					>
 						<annexThree
 							ref="annexThreeRef"
 							v-model:data="data"
@@ -56,7 +62,12 @@
 					</el-collapse-item>
 
 					<el-collapse-item title="签收回执（附件四）" name="annexFour">
-						444
+						<annexFour
+							ref="annexFourRef"
+							v-model:data="data"
+							:routerQueryObj="props.routerQueryObj"
+							v-model:loading="loading"
+						/>
 					</el-collapse-item>
 				</el-collapse>
 			</div>
@@ -71,10 +82,10 @@ import { ref, computed, onBeforeMount, watch } from "vue";
 import { addContFileInfo } from "@/api/contract/annex.js";
 import { getDiligence } from "@/api/project/diligence.js";
 
-import baseInfo from "./baseInfo.vue";
 import annexOne from "./annexOne.vue";
 import annexTwo from "./annexTwo.vue";
 import annexThree from "./annexThree.vue";
+import annexFour from "./annexFour.vue";
 
 // 当前组件对象
 const { proxy } = getCurrentInstance();
@@ -167,32 +178,20 @@ const data = ref({
 	zbPersonTel: null, //主办人电话
 	payBackGraceDate: null, //还款宽限期-从项目尽调中带入
 
-	crtList: [],
-
 	// 附件4
-	conSignReceiptVo: {
-		projDueDiligenceId: null, //项目尽调主键id
-		contractNum: null, //保理主合同编号
-		contractId: null, //保理业务合同主键id
-		contractFileId: null, //保理附件主键id
-		financingNum: null, //保理融资本金
-		receivableEndDate: null, //保理融资期限-关联应收账款转让明细表中的应收账款到期
-		receivablePayDate: null, //保理融资款拨付日
-		interestGraceDate: null, //利息宽限期-从项目尽调中带入
-		payBackGraceDate: null, //还款宽限期-从项目尽调中带入
-		manageCost: null, //管理费率
-		financingCost: null, //保理融资利率
-		graceCost: null, //宽限期利率
-		managePayType: null, //管理费支付方式
-		managePayTypeWrite: null, //管理费支付方式填写内容
-		financingCostPayType: null, //保理融资利息支付方式-除了其他方式以外都从尽调
-		defaultInterestRate: null, //违约金利率-从尽调中取值，尽调中的违约利率改为百
-		obligorGuaranteeAmount: null, //应收账款债务人付款担保额度-与保理融资本金
-		paymentsType: null, //保理融资款收取账户选项
-		paymentsAccountName: null, //保理融资款收取账户-户名填写内容
-		paymentsAccount: null, //保理融资款收取账户-账号填写内容
-		paymentsAccountBank: null //保理融资款收取账户-开户行名称
-	}
+	projDueDiligenceId: null, // 项目尽调主键id
+	contractId: null, // 保理业务合同主键id
+	contractFileId: null, // 保理附件主键id
+
+	conReceivableTransferNum: null, //【应收账款转让通知书】编号
+	transactionContNumName: null, // 基础交易合同编号及名称
+
+	customerName: null, // 客户公司名称
+	sendAddress: null, // 送达地址
+	contactsName: null, // 联系人名称
+	mobilePhone: null, // 联系人电话
+	emial: null, // 联系人电子邮箱
+	foxNum: null // 联系人传真
 });
 
 // 尽调详情
