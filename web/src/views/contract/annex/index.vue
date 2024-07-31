@@ -241,6 +241,7 @@ function handleView(row) {
 	});
 }
 
+
 /** 删除按钮操作 */
 function handleDelete(row) {
 	const customerIds = row.customerId;

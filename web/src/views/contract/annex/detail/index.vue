@@ -25,6 +25,7 @@
 					</el-col>
 				</el-row>
 			</div>
+
 			<div class="content-item-scroll">
 				<el-collapse v-model="activeCollapseNames">
 					<el-collapse-item title="附件基本信息" name="baseInfo">

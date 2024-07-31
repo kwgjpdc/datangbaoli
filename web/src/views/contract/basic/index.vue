@@ -239,6 +239,16 @@
 						>
 							删除
 						</el-button>
+
+						<el-button
+							link
+							type="primary"
+							icon="Delete"
+							@click="handleDownload(scope.row)"
+							v-hasPermi="['demo:info:export']"
+							>导出</el-button
+						>
+
 						<el-dropdown v-if="scope.row.status == 3">
 							<el-button type="primary" link>
 								更多<el-icon class="el-icon--right"><arrow-down /></el-icon>
@@ -415,6 +425,15 @@ const propMulti = ref([
 		value: "name"
 	}
 ]);
+
+// 合同导出
+function handleDownload(row) {
+	proxy.download(
+		`/cont/exportWord/${row.contractId}`,
+		{},
+		`info_${new Date().getTime()}.xlsx`
+	);
+}
 
 // 项目查询参数
 const diligenceParamsMulti = ref({
