@@ -384,9 +384,7 @@ function configSelectRow(row) {
 	formData.customerName = row.factoringApplicantName; // 合同申请人
 	formData.projDueDiligenceId = row.projectDueId || 52; // 尽调id
 	formData.otherContractName = row.otherContractName; // 尽调项目名称
-
-	formData.baseItem = row.baseItem; // 标的；
-
+	formData.factoringTarget = row.baseItem; // 标的
 }
 
 // dialog  数据修改

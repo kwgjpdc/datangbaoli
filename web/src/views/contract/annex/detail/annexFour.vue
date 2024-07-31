@@ -40,8 +40,9 @@
 			<el-form-item label="还款期限" prop="payBackGraceDate">
 				<div class="form-item__block">
 					<el-input
+						disabled
 						v-model="formData.payBackGraceDate"
-						:placeholder="showPlaceholder('请输入还款期限')"
+						:placeholder="showPlaceholder('附件二带入')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
@@ -90,7 +91,6 @@
 				<el-form-item label="联系人电话" prop="mobilePhone">
 					<div class="form-item__block">
 						<el-input
-							disabled
 							v-model="formData.mobilePhone"
 							:placeholder="showPlaceholder('选择客户公司带入')"
 							clearable

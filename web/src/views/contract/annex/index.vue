@@ -37,19 +37,8 @@
 			@header-dragend="changeColwidth"
 		>
 			<el-table-column type="index" align="center" width="100" label="序号" />
-
-			<el-table-column label="客户名称" align="center" prop="customerName">
-				<template #default="scope">
-					<el-button link type="primary" @click="handleView(scope.row)">
-						{{ scope.row.customerName }}
-					</el-button>
-				</template>
-			</el-table-column>
-
-			<el-table-column label="客户种类" align="center" prop="customerType" />
-
-			<el-table-column label="债务人名称" align="center" prop="obligorName" />
-
+			<el-table-column label="合同编号" align="center" prop="contractNum" />
+			<el-table-column label="合同名称" align="center" prop="contractName" />
 			<el-table-column label="操作" align="center" class-name="small-padding">
 				<template #default="scope">
 					<div class="button-display" style="justify-content: center">
@@ -73,6 +62,7 @@
 				</template>
 			</el-table-column>
 		</el-table>
+
 		<pagination
 			v-show="total > 0"
 			:total="total"
@@ -84,11 +74,7 @@
 </template>
 
 <script setup name="Info">
-import {
-	customerAcontInfoList, // 客户账号管理-列表
-	delCustomerAcont // 删除
-} from "@/api/customer/customerAccount";
-
+import { getContFileList, delContFileInfo } from "@/api/contract/annex";
 import { deepClone } from "@/utils/index";
 import QueryParams from "@/components/QueryParams";
 
@@ -116,21 +102,15 @@ const data = reactive({
 	paramsItems: [
 		{
 			type: "text",
-			label: "客户名称",
-			prop: "customerName",
-			placeholder: "请输入客户名称"
+			label: "合同编号",
+			prop: "contractNum",
+			placeholder: "请输入合同编号"
 		},
 		{
 			type: "text",
-			label: "债务人名称",
-			prop: "obligorName",
-			placeholder: "请输入债务人名称"
-		},
-		{
-			type: "text",
-			label: "银行账号",
-			prop: "accountInfo",
-			placeholder: "请输入银行账号"
+			label: "合同名称",
+			prop: "contractName",
+			placeholder: "请输入合同名称"
 		}
 	]
 });
@@ -138,6 +118,8 @@ const data = reactive({
 const { queryParams, paramsItems, form } = toRefs(data);
 
 const uniqueId = ref("");
+
+// ------------------------------------------------------------------------
 
 onActivated(() => {
 	const time = route.query.t;
@@ -151,11 +133,11 @@ onActivated(() => {
 	}
 });
 
-/** 查询客户账号管理 - 列表 */
+/* 列表 */
 function getList() {
 	loading.value = true;
 	let paramsData = deepClone(queryParams.value);
-	customerAcontInfoList(paramsData).then(response => {
+	getContFileList(paramsData).then(response => {
 		infoList.value = response.rows;
 		total.value = response.total;
 		loading.value = false;
@@ -164,24 +146,7 @@ function getList() {
 
 // 表单重置
 function reset() {
-	form.value = {
-		customerId: null,
-		deptId: null,
-		customerNo: null,
-		registerCountry: null,
-		customerName: null,
-		customerType: null,
-		customerManagerName: null,
-		customerManagerId: null,
-		parentCustomerId: null,
-		customerCategory: null,
-		isCoreEnterprise: null,
-		createBy: null,
-		updateBy: null,
-		isDeleted: null,
-		updateTime: null,
-		createTime: null
-	};
+	form.value = {};
 	proxy.resetForm("queryRef");
 }
 
@@ -213,13 +178,12 @@ function handleAdd() {
 /** 修改按钮操作 */
 function handleUpdate(row) {
 	reset();
-	const customerId = row.customerId;
-	const obligorId = row.obligorId;
+	const contractFileId = row.id;
 	router.push({
-		path: "/contract/annex/detail",
-		query: {
-			customerId,
-			obligorId,
+		name: "Annex/detail",
+		state: {
+			contractFileId,
+			editFlag: true,
 			pageNum: queryParams.value.pageNum
 		}
 	});
@@ -241,15 +205,13 @@ function handleView(row) {
 	});
 }
 
-
 /** 删除按钮操作 */
 function handleDelete(row) {
-	const customerIds = row.customerId;
-	const obligorId = row.obligorId;
+	const id = row.id;
 	proxy.$modal
 		.confirm("确认是否删除？")
 		.then(function () {
-			return delCustomerAcont(customerIds, obligorId);
+			return delContFileInfo(id);
 		})
 		.then(() => {
 			getList();

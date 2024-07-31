@@ -64,7 +64,7 @@
 					<el-input
 						disabled
 						v-model="formData.accountNum"
-						:placeholder="showPlaceholder('请先选择保理主合同标号')"
+						:placeholder="showPlaceholder('选择户名后带入')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
@@ -77,7 +77,7 @@
 					<el-input
 						disabled
 						v-model="formData.accountBank"
-						:placeholder="showPlaceholder('请先选择保理主合同标号')"
+						:placeholder="showPlaceholder('选择户名后带入')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
@@ -88,7 +88,7 @@
 			<el-form-item label="主办人名称" prop="zbPersonName">
 				<div class="form-item__block">
 					<el-input
-						v-model="formData.customerName"
+						v-model="formData.zbPersonName"
 						:placeholder="showPlaceholder('请先选择保理主合同标号')"
 						clearable
 						:style="formItemContentStyle"
@@ -100,7 +100,7 @@
 			<el-form-item label="主办人电话" prop="zbPersonTel">
 				<div class="form-item__block">
 					<el-input
-						v-model="formData.customerName"
+						v-model="formData.zbPersonTel"
 						:placeholder="showPlaceholder('请先选择保理主合同标号')"
 						clearable
 						:style="formItemContentStyle"
@@ -112,8 +112,9 @@
 			<el-form-item label="还款期限" prop="payBackGraceDate">
 				<div class="form-item__block">
 					<el-input
+						disabled
 						v-model="formData.payBackGraceDate"
-						:placeholder="showPlaceholder('请输入还款期限')"
+						:placeholder="showPlaceholder('附件二带入')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"

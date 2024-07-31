@@ -87,7 +87,10 @@
 
 <script setup>
 import { ref, computed, onBeforeMount, watch } from "vue";
-// import { getContract, updateContract } from "@/api/contract/index.js";
+import {
+	getContFileInfoDetail,
+	editContFileInfo
+} from "@/api/contract/annex.js";
 
 import { addContFileInfo } from "@/api/contract/annex.js";
 import { getDiligence } from "@/api/project/diligence.js";
@@ -123,8 +126,9 @@ const props = defineProps({ approveId: Number });
 // 数据对象
 const data = ref({
 	// 业务数据
-	合同类型: "", // 合同类型
-	baseItem: "", // 标的
+	contractType: null, // 合同类型
+	biaodi: null, //biaodi
+	factoringTarget: null, // 标的 两方合同1 三方合同2 池保理合同3 其他4
 
 	// 总：
 	contractId: null, // 合同主键id
@@ -154,29 +158,36 @@ const data = ref({
 	projDueDiligenceId: null, // 项目尽调主键id
 	contractFileId: null, // 附件id
 
+	receivableNumber: null, // 应收账款转让明细表编号
+
 	financingNum: null, // 保理融资本金
 
-	receivableEndDate: null, //保理融资期限-关联应收账款转让明细表中的应收
-	receivablePayDate: null, //保理融资款拨付日 （解释：其中一个选项）
+	receivableType: null, // 保理融资期限选项
+	receivableEndDate: null, // 保理融资期限-关联应收账款转让明细表中的应收
+	receivablePayDate: null, // 保理融资款拨付日 （解释：其中一个选项）
+	pjEndDate: null, // 保理融资票据日期
 
 	interestGraceDate: null, //利息支付宽限期-从项目尽调中带入 （尽调无）
+
 	payBackGraceDate: null, //还款宽限期-从项目尽调中带入 （尽调有，带入）
 
 	manageCost: null, // 管理费率 （尽调有，可修改）
 	financingCost: null, // 保理融资利率 （尽调无）
 	graceCost: null, // 宽限期利率 （尽调有，可修改）
 
-	managePayType: null, //管理费支付方式
-	//【缺失参数】 每季度末月？日前
-	managePayTypeWrite: null, //管理费支付方式 【其他】选项手写内容
+	managePayType: null, // 管理费支付方式
+	manageMonthEndDate: null, // 每季度末支付日
+	managePayTypeWrite: null, // 管理费支付方式 【其他】选项手写内容
 
-	financingCostPayType: null, //保理融资利息支付方式-除了其他方式以外
-	//【【缺失参数】 每季度末月？日前】
-	// 缺失其他补充参数
+	financingCostPayType: null, // 保理融资利息支付方式-除了其他方式以外
+	lxMonthEndDate: null, // 每季度末支付日
+	financingCostPayTypeOther: null, // 其他
 
 	defaultInterestRate: null, //违约金利率-从尽调中取值，尽调中的违约利 （尽调有）
 
 	obligorGuaranteeAmount: null, //应收账款债务人付款担保额度-与保理融资本金一致
+
+	payType: null, // 支付方式
 
 	paymentsType: null, //保理融资款收取账户选项
 	paymentsAccountName: null, //保理融资款收取账户-户名填写内容
@@ -188,24 +199,25 @@ const data = ref({
 	contractId: null, //保理业务合同主键id
 	contractFileId: null, //保理附件主键id
 
-	conAccountsReceivableId: null, //应收账款转让明细表主键id （暂时没用）
+	// conAccountsReceivableId: null, //应收账款转让明细表主键id （暂时没用）
 
 	conReceivableTransferNum: null, // 编号
-	customerName: null, //债务人名称
-	transferName: null, //转让人名称
-	receivableNumber: null, //应收账款转让明细表编号
-	accountName: null, //户名
-	accountNum: null, //账号
-	accountBank: null, //开户行
-	zbPersonName: null, //主办人名称
-	zbPersonTel: null, //主办人电话
-	payBackGraceDate: null, //还款宽限期-从项目尽调中带入
+	customerName: null, // 债务人名称
+	transferName: null, // 转让人名称
+	receivableNumber: null, // 应收账款转让明细表【编号】
+	accountName: null, // 户名
+	accountNum: null, // 账号
+	accountBank: null, // 开户行
+	zbPersonName: null, // 主办人名称
+	zbPersonTel: null, // 主办人电话
+	payBackGraceDate: null, // 还款宽限期-从项目尽调中带入
 
 	// 附件4
 	projDueDiligenceId: null, // 项目尽调主键id
 	contractId: null, // 保理业务合同主键id
 	contractFileId: null, // 保理附件主键id
 
+	usePerson: null, // 转让人
 	conReceivableTransferNum: null, //【应收账款转让通知书】编号
 	transactionContNumName: null, // 基础交易合同编号及名称
 
@@ -245,12 +257,12 @@ const isEdit = computed(() => {
 	return result;
 });
 
-// watch(
-// 	() => data.value.projDueDiligenceId,
-// 	() => {
-// 		getDiligenceInfo(data.value.projDueDiligenceId);
-// 	}
-// );
+watch(
+	() => data.value.projDueDiligenceId,
+	() => {
+		getDiligenceInfo(data.value.projDueDiligenceId);
+	}
+);
 
 // --------------------以上是 ref watch  computed 等状态数据------------------------------------------------------------------------------------------
 
@@ -286,8 +298,10 @@ function handleParams() {
 
 		financingNum: formData.financingNum, // 保理融资本金
 
+		receivableType: formData.receivableType, // 保理融资期限选项
 		receivableEndDate: formData.receivableEndDate, // 保理融资期限-关联应收账款转让明细表中的应收
 		receivablePayDate: formData.receivablePayDate, // 保理融资款拨付日 （解释：其中一个选项）
+		pjEndDate: formData.pjEndDate, // 保理融资票据日期
 
 		interestGraceDate: formData.interestGraceDate, // 利息支付宽限期-从项目尽调中带入 （尽调无）
 		payBackGraceDate: formData.payBackGraceDate, // 还款宽限期-从项目尽调中带入 （尽调有，带入）
@@ -362,10 +376,11 @@ function handleParams() {
 	return {
 		contractId: formData.contractId,
 		projDueDiligenceId: formData.projDueDiligenceId,
-		carList,
-		contractAgreeFileVo,
-		crtList,
-		conSignReceiptVo
+		factoringTarget: formData.factoringTarget,
+		carList, // 附件1
+		contractAgreeFileVo, // 附件2
+		crtList, // 附件3
+		conSignReceiptVo // 附件4
 	};
 }
 
@@ -405,36 +420,36 @@ function apiAddContFileInfo() {
 // 		});
 // }
 
-// 获取合同数据
-// function getContractData(id) {
-// 	loading.value = true;
-// 	getContract(id).then(response => {
-// 		response.data;
-
-// 		for (const prop in response.data) {
-// 			// 不处理paymentSequenceList
-// 			if (prop === "paymentSequenceList") {
-// 				continue;
-// 			}
-
-// 			if (Array.isArray(data.value[prop])) {
-// 				data.value[prop].length = 0;
-// 				if (Array.isArray(response.data[prop])) {
-// 					response.data[prop].forEach(v => {
-// 						data.value[prop].push(v);
-// 					});
-// 				} else {
-// 					if (prop === "sendType") {
-// 						data.value[prop] = response.data[prop].split(",");
-// 					}
-// 				}
-// 			} else {
-// 				data.value[prop] = response.data[prop];
-// 			}
-// 		}
-// 		loading.value = false;
-// 	});
-// }
+// 获取合同附件数据
+function getDetailData(id) {
+	loading.value = true;
+	getContFileInfoDetail(id)
+		.then(response => {
+			// for (const prop in response.data) {
+			// 	// 不处理paymentSequenceList
+			// 	if (prop === "paymentSequenceList") {
+			// 		continue;
+			// 	}
+			// 	if (Array.isArray(data.value[prop])) {
+			// 		data.value[prop].length = 0;
+			// 		if (Array.isArray(response.data[prop])) {
+			// 			response.data[prop].forEach(v => {
+			// 				data.value[prop].push(v);
+			// 			});
+			// 		} else {
+			// 			if (prop === "sendType") {
+			// 				data.value[prop] = response.data[prop].split(",");
+			// 			}
+			// 		}
+			// 	} else {
+			// 		data.value[prop] = response.data[prop];
+			// 	}
+			// }
+		})
+		.finally(() => {
+			loading.value = false;
+		});
+}
 
 // 提交表单
 function submitForm() {
@@ -499,8 +514,9 @@ onBeforeMount(() => {
 		routerQueryObj.value.viewFlag = true;
 		routerQueryObj.value.approveFlag = true;
 	}
+
 	if (isView.value || isEdit.value) {
-		getContractData(routerQueryObj.value.contractId);
+		getDetailData(routerQueryObj.value.contractFileId);
 	}
 });
 </script>

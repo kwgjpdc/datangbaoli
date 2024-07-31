@@ -8,7 +8,7 @@
 			label-width="160px"
 			:disabled="isView"
 		>
-			<el-form-item label="编号" prop="2编号">
+			<el-form-item label="编号缺失" prop="编号缺失">
 				<div class="form-item__block">
 					<el-input
 						disabled
@@ -21,12 +21,12 @@
 				</div>
 			</el-form-item>
 
-			<el-form-item label="保理主合同标号" prop="contractNum">
+			<el-form-item label="保理主合同编号" prop="contractNum">
 				<div class="form-item__block">
 					<el-input
 						disabled
 						v-model="formData.contractNum"
-						:placeholder="showPlaceholder('请输入保理主合同标号')"
+						:placeholder="showPlaceholder('附件一保理主合同编号带入')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
@@ -39,7 +39,7 @@
 					<el-input
 						disabled
 						v-model="formData.receivableNumber"
-						:placeholder="showPlaceholder('请输入应收账款转让明细表编号')"
+						:placeholder="showPlaceholder('附件一编号自动带入')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
@@ -60,8 +60,8 @@
 			</el-form-item>
 
 			<el-row>
-				<el-form-item label="融资期限" prop="receivableEndDate">
-					<el-radio-group v-model="formData.receivableEndDate">
+				<el-form-item label="融资期限" prop="receivableType">
+					<el-radio-group v-model="formData.receivableType">
 						<el-radio label="1" name="type"
 							>自保理融资款拨付之日至{{
 								(formData.carList[0] &&
@@ -69,6 +69,7 @@
 								"-"
 							}}</el-radio
 						>
+
 						<el-radio label="2" name="type">
 							自保理融资款拨付之日起
 							<el-input
@@ -77,6 +78,18 @@
 								style="width: 80px"
 							/>
 							天
+						</el-radio>
+
+						<el-radio label="3" name="type">
+							保理融资票据日期：
+							<el-date-picker
+								size="small"
+								v-model="formData.pjEndDate"
+								placeholder="请选择日期"
+								type="date"
+								value-format="YYYY-MM-DD"
+								:style="{ width: '80%' }"
+							/>
 						</el-radio>
 					</el-radio-group>
 				</el-form-item>
@@ -98,7 +111,7 @@
 				<div class="form-item__block">
 					<el-input
 						v-model="formData.payBackGraceDate"
-						:placeholder="showPlaceholder('尽调自动获取')"
+						:placeholder="showPlaceholder('请输入还款宽限期')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
@@ -148,7 +161,13 @@
 						<el-radio label="1" name="type"
 							>在甲方支付保理融资前由乙方一次性支付</el-radio
 						>
-						<el-radio label="2" name="type">每季度支付一次</el-radio>
+						<el-radio label="2" name="type"
+							>每季度支付一次（季度末月支付日<el-input
+								v-model="formData.manageMonthEndDate"
+								size="small"
+								style="width: 50px"
+							/>前）</el-radio
+						>
 						<el-radio label="3" name="type" @change="otherChange">
 							其他方式
 							<el-input
@@ -168,7 +187,13 @@
 						<el-radio label="1" name="type"
 							>在甲方支付保理融资前由乙方一次性支付</el-radio
 						>
-						<el-radio label="2" name="type">每季度支付一次</el-radio>
+						<el-radio label="2" name="type"
+							>每季度支付一次（季度末月支付日<el-input
+								v-model="formData.lxMonthEndDate"
+								size="small"
+								style="width: 50px"
+							/>前）</el-radio
+						>
 						<el-radio label="3" name="type"
 							>甲方在收到的应收账款中直接扣收</el-radio
 						>
@@ -177,7 +202,7 @@
 							<el-input
 								size="small"
 								v-if="formData.financingCostPayType === '4'"
-								v-model="formData.managePayTypeWrite"
+								v-model="formData.financingCostPayTypeOther"
 								placeholder="请输入其他方式"
 							/>
 						</el-radio>
@@ -204,13 +229,26 @@
 				<div class="form-item__block">
 					<el-input
 						v-model="formData.obligorGuaranteeAmount"
-						:placeholder="showPlaceholder('请输入应收账款债务人付款担保额度')"
+						:placeholder="showPlaceholder('应收账款债务人付款担保额度')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
 					/>
 				</div>
 			</el-form-item>
+
+			<el-row>
+				<el-form-item label="支付方式" prop="payType">
+					<el-radio-group v-model="formData.payType">
+						<el-radio label="1" name="type"
+							>在甲方支付保理融资前由乙方一次性支付</el-radio
+						>
+						<el-radio label="2" name="type"
+							>甲方在收到的应收账款中直接扣收</el-radio
+						>
+					</el-radio-group>
+				</el-form-item>
+			</el-row>
 
 			<el-row>
 				<el-form-item label="保理融资款收取账户" prop="paymentsType">
@@ -237,11 +275,19 @@
 									</el-form-item>
 
 									<el-form-item label="账号" prop="paymentsAccount">
-										<el-input disabled v-model="formData.paymentsAccount" />
+										<el-input
+											disabled
+											v-model="formData.paymentsAccount"
+											:placeholder="showPlaceholder('选择户名后带入')"
+										/>
 									</el-form-item>
 
 									<el-form-item label="开户行" prop="paymentsAccountBank">
-										<el-input disabled v-model="formData.paymentsAccountBank" />
+										<el-input
+											disabled
+											v-model="formData.paymentsAccountBank"
+											:placeholder="showPlaceholder('选择户名后带入')"
+										/>
 									</el-form-item>
 								</el-row>
 							</div>
