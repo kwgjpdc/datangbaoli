@@ -27,6 +27,15 @@
 			</div>
 			<div class="content-item-scroll">
 				<el-collapse v-model="activeCollapseNames">
+					<el-collapse-item title="附件基本信息" name="baseInfo">
+						<baseInfo
+							ref="baseInfoRef"
+							v-model:data="data"
+							:routerQueryObj="props.routerQueryObj"
+							v-model:loading="loading"
+						/>
+					</el-collapse-item>
+
 					<el-collapse-item
 						title="应收账款转让明细表（附件一）"
 						name="annexOne"
@@ -82,6 +91,7 @@ import { ref, computed, onBeforeMount, watch } from "vue";
 import { addContFileInfo } from "@/api/contract/annex.js";
 import { getDiligence } from "@/api/project/diligence.js";
 
+import baseInfo from "./baseInfo.vue";
 import annexOne from "./annexOne.vue";
 import annexTwo from "./annexTwo.vue";
 import annexThree from "./annexThree.vue";
@@ -92,6 +102,7 @@ const { proxy } = getCurrentInstance();
 
 // 展开的折叠配置
 const activeCollapseNames = reactive([
+	"baseInfo",
 	"annexOne",
 	"annexTwo",
 	"annexThree",
@@ -144,7 +155,7 @@ const data = ref({
 
 	financingNum: null, // 保理融资本金
 
-	receivableEndDate: [], //保理融资期限-关联应收账款转让明细表中的应收
+	receivableEndDate: null, //保理融资期限-关联应收账款转让明细表中的应收
 	receivablePayDate: null, //保理融资款拨付日 （解释：其中一个选项）
 
 	interestGraceDate: null, //利息支付宽限期-从项目尽调中带入 （尽调无）
@@ -154,11 +165,11 @@ const data = ref({
 	financingCost: null, // 保理融资利率 （尽调无）
 	graceCost: null, // 宽限期利率 （尽调有，可修改）
 
-	managePayType: [], //管理费支付方式
+	managePayType: null, //管理费支付方式
 	//【缺失参数】 每季度末月？日前
 	managePayTypeWrite: null, //管理费支付方式 【其他】选项手写内容
 
-	financingCostPayType: [], //保理融资利息支付方式-除了其他方式以外
+	financingCostPayType: null, //保理融资利息支付方式-除了其他方式以外
 	//【【缺失参数】 每季度末月？日前】
 	// 缺失其他补充参数
 
@@ -166,7 +177,7 @@ const data = ref({
 
 	obligorGuaranteeAmount: null, //应收账款债务人付款担保额度-与保理融资本金一致
 
-	paymentsType: [], //保理融资款收取账户选项
+	paymentsType: null, //保理融资款收取账户选项
 	paymentsAccountName: null, //保理融资款收取账户-户名填写内容
 	paymentsAccount: null, //保理融资款收取账户-账号填写内容
 	paymentsAccountBank: null, //保理融资款收取账户-开户行名称
@@ -233,12 +244,12 @@ const isEdit = computed(() => {
 	return result;
 });
 
-watch(
-	() => data.value.projDueDiligenceId,
-	() => {
-		getDiligenceInfo(data.value.projDueDiligenceId);
-	}
-);
+// watch(
+// 	() => data.value.projDueDiligenceId,
+// 	() => {
+// 		getDiligenceInfo(data.value.projDueDiligenceId);
+// 	}
+// );
 
 // --------------------以上是 ref watch  computed 等状态数据------------------------------------------------------------------------------------------
 
@@ -303,7 +314,32 @@ function handleParams() {
 	};
 
 	// 附件3
-	const crtList = [{}];
+	const crtList = [
+		{
+			// projDueDiligenceId: formData.projDueDiligenceId, // 尽调id
+			// contractId: formData.contractId, // 合同id
+			// contractFileId: formData.contractFileId, // 附件id
+
+			// receivableNumber: null, //应收账款转让明细表 【编号】
+			// customerName: null, //保理申请人
+			// contractNum: null, // 保理主合同编号
+
+			projDueDiligenceId: formData.projDueDiligenceId, //项目尽调主键id
+			contractId: formData.contractId, //保理业务合同主键id
+			contractFileId: formData.contractFileId, //保理附件主键id
+
+			conReceivableTransferNum: formData.conReceivableTransferNum, // 编号
+			customerName: formData.customerName, //债务人名称
+			transferName: formData.transferName, //转让人名称
+			receivableNumber: formData.receivableNumber, //应收账款转让明细表编号
+			accountName: formData.accountName, //户名
+			accountNum: formData.accountNum, //账号
+			accountBank: formData.accountBank, //开户行
+			zbPersonName: formData.zbPersonName, //主办人名称
+			zbPersonTel: formData.zbPersonTel, //主办人电话
+			payBackGraceDate: formData.payBackGraceDate //还款宽限期-从项目尽调中带入
+		}
+	];
 
 	// 附件4
 	const conSignReceiptVo = {

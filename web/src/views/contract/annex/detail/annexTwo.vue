@@ -153,7 +153,7 @@
 							其他方式
 							<el-input
 								size="small"
-								v-if="formData.managePayType.includes('3')"
+								v-if="formData.managePayType === '3'"
 								v-model="formData.managePayTypeWrite"
 								placeholder="请输入其他方式"
 							/>
@@ -176,7 +176,7 @@
 							其他方式
 							<el-input
 								size="small"
-								v-if="formData.financingCostPayType.includes('4')"
+								v-if="formData.financingCostPayType === '4'"
 								v-model="formData.managePayTypeWrite"
 								placeholder="请输入其他方式"
 							/>
