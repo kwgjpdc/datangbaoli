@@ -110,6 +110,10 @@ const props = defineProps({ approveId: Number });
 
 // 数据对象
 const data = ref({
+	// 业务数据
+	合同类型: "", // 合同类型
+	baseItem: "", // 标的
+
 	// 总：
 	contractId: null, // 合同主键id
 	projDueDiligenceId: null, // 项目尽调主键id
@@ -172,9 +176,9 @@ const data = ref({
 	contractId: null, //保理业务合同主键id
 	contractFileId: null, //保理附件主键id
 
-	conAccountsReceivableId: null, //应收账款转让明细表主键id
-	conReceivableTransferNum: null, //应收账款转让通知书编号
+	conAccountsReceivableId: null, //应收账款转让明细表主键id （暂时没用）
 
+	conReceivableTransferNum: null, // 编号
 	customerName: null, //债务人名称
 	transferName: null, //转让人名称
 	receivableNumber: null, //应收账款转让明细表编号
@@ -299,11 +303,7 @@ function handleParams() {
 	};
 
 	// 附件3
-	const crtList = [
-		{
-			
-		}
-	];
+	const crtList = [{}];
 
 	// 附件4
 	const conSignReceiptVo = {

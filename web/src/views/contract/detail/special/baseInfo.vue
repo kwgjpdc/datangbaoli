@@ -19,6 +19,25 @@
 					/>
 				</div>
 			</el-form-item>
+
+			<el-form-item label="保理标的" prop="baseItem">
+				<div class="form-item__block">
+					<el-select
+						v-model="formData.baseItem"
+						:placeholder="showPlaceholder('请选择')"
+						filterable
+						clearable
+						:style="formItemContentStyle"
+					>
+						<el-option
+							v-for="item in lend_item"
+							:key="item.value"
+							:label="item.label"
+							:value="item.value"
+						/>
+					</el-select>
+				</div>
+			</el-form-item>
 		</el-form>
 	</el-card>
 </template>
@@ -96,6 +115,11 @@ const dataScope = reactive({
 });
 const { config } = toRefs(dataScope);
 
+// 显示placeholder占位字符
+function showPlaceholder(txt) {
+	return isView.value ? " " : txt;
+}
+
 function configSelectRow(rows) {
 	formData.projectDueId = rows.id;
 	formData.projectNo = rows.dueNo;
@@ -107,23 +131,7 @@ function configSelectRow(rows) {
 const formItemContentStyle = { width: "100%" };
 
 // 系统字典
-const {
-	cont_settlement,
-	day,
-	cont_advance,
-	cont_pay,
-	cont_overrun,
-	proj_dd_type,
-	cont_transfer_part
-} = proxy.useDict(
-	"cont_settlement",
-	"day",
-	"cont_advance",
-	"cont_pay",
-	"cont_overrun",
-	"proj_dd_type",
-	"cont_transfer_part"
-);
+const { lend_item } = proxy.useDict("lend_item");
 
 // 页面是View状态
 const isView = computed(() => {
