@@ -13,7 +13,7 @@
 					<el-input
 						disabled
 						v-model="formData.receivableNumber"
-						:placeholder="showPlaceholder('保存后自动生成')"
+						:placeholder="showPlaceholder('自动生成')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
@@ -38,7 +38,7 @@
 					<el-input
 						disabled
 						v-model="formData.customerName"
-						:placeholder="showPlaceholder('请先选择保理主合同标号')"
+						:placeholder="showPlaceholder('自动生成')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"

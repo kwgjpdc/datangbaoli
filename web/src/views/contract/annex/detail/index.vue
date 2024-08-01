@@ -88,11 +88,11 @@
 <script setup>
 import { ref, computed, onBeforeMount, watch } from "vue";
 import {
-	getContFileInfoDetail,
-	editContFileInfo
-} from "@/api/contract/annex.js";
+	addContFileInfo,
+	editContFileInfo,
+	getContFileInfoDetail
+} from "@/api/contract/annex";
 
-import { addContFileInfo } from "@/api/contract/annex.js";
 import { getDiligence } from "@/api/project/diligence.js";
 
 import baseInfo from "./baseInfo.vue";
@@ -126,18 +126,18 @@ const props = defineProps({ approveId: Number });
 // 数据对象
 const data = ref({
 	// 业务数据
-	contractType: null, // 合同类型
-	biaodi: null, //biaodi
-	factoringTarget: null, // 标的 两方合同1 三方合同2 池保理合同3 其他4
+	contractType: null, // 合同类型 两方合同1 三方合同2 池保理合同3 其他4
+	factoringTarget: null, // 标的 电费补贴2
 
 	// 总：
-	contractId: null, // 合同主键id
-	projDueDiligenceId: null, // 项目尽调主键id
+	contractFileId: null, // 合同附件id
+	contractId: null, // 合同id
+	projDueDiligenceId: null, // 项目尽调id
 
 	// 附件1：
-	contractId: null, // 保理合同主键id
-	projDueDiligenceId: null, // 项目尽调主键id
-	contractFileId: null, //保理附件主键id
+	// contractId: null, // 保理合同主键id
+	// projDueDiligenceId: null, // 项目尽调主键id
+	// contractFileId: null, // 保理附件主键id
 
 	receivableNumber: null, //应收账款转让明细表 【编号】
 	customerName: null, //保理申请人
@@ -153,12 +153,11 @@ const data = ref({
 	],
 
 	// 附件2：
-	contractId: null, // 主合同id
-	contractNum: null, // 主合同编号
-	projDueDiligenceId: null, // 项目尽调主键id
-	contractFileId: null, // 附件id
+	// contractId: null, // 主合同id
+	// projDueDiligenceId: null, // 项目尽调主键id
+	// contractFileId: null, // 附件id
 
-	receivableNumber: null, // 应收账款转让明细表编号
+	contractNum: null, // 合同编号
 
 	financingNum: null, // 保理融资本金
 
@@ -195,30 +194,27 @@ const data = ref({
 	paymentsAccountBank: null, //保理融资款收取账户-开户行名称
 
 	// 附件3
-	projDueDiligenceId: null, //项目尽调主键id
-	contractId: null, //保理业务合同主键id
-	contractFileId: null, //保理附件主键id
+	// projDueDiligenceId: null, //项目尽调主键id
+	// contractId: null, //保理业务合同主键id
+	// contractFileId: null, //保理附件主键id
 
-	// conAccountsReceivableId: null, //应收账款转让明细表主键id （暂时没用）
-
-	conReceivableTransferNum: null, // 编号
+	conReceivableTransferNum: null, // 附件3 【编号】
 	customerName: null, // 债务人名称
 	transferName: null, // 转让人名称
-	receivableNumber: null, // 应收账款转让明细表【编号】
 	accountName: null, // 户名
 	accountNum: null, // 账号
 	accountBank: null, // 开户行
 	zbPersonName: null, // 主办人名称
 	zbPersonTel: null, // 主办人电话
-	payBackGraceDate: null, // 还款宽限期-从项目尽调中带入
+	// payBackGraceDate: null, // 还款宽限期 【附件2从尽调带入，并在这里展示】
 
 	// 附件4
-	projDueDiligenceId: null, // 项目尽调主键id
-	contractId: null, // 保理业务合同主键id
-	contractFileId: null, // 保理附件主键id
+	// projDueDiligenceId: null, // 项目尽调id
+	// contractId: null, // 保理合同id
+	// contractFileId: null, // 保理附件id
 
 	usePerson: null, // 转让人
-	conReceivableTransferNum: null, //【应收账款转让通知书】编号
+	// conReceivableTransferNum: null, //【应收账款转让通知书】编号 （附件三维护）
 	transactionContNumName: null, // 基础交易合同编号及名称
 
 	customerName: null, // 客户公司名称
@@ -278,23 +274,15 @@ function handleParams() {
 
 	// 附件1 处理数据
 	const carList = formData.carList.map(item => ({
-		projDueDiligenceId: formData.projDueDiligenceId, // 尽调id
-		contractId: formData.contractId, // 合同id
-		contractFileId: formData.contractFileId, // 附件id
-
-		receivableNumber: null, //应收账款转让明细表 【编号】
-		customerName: null, //保理申请人
-		contractNum: null, // 保理主合同编号
-
+		receivableNumber: null, // 编号（应收账款转让明细表）
+		customerName: null, // 保理申请人
+		contractNum: null, // 保理合同编号
 		...item
 	}));
 
 	// 附件2 处理数据
 	const contractAgreeFileVo = {
-		contractId: formData.contractId, // 保理合同主键id
 		contractNum: formData.contractNum, // 保理合同编号
-		projDueDiligenceId: formData.projDueDiligenceId, // 项目尽调主键id
-		contractFileId: null, // 保理附件主键id, 编辑才会有
 
 		financingNum: formData.financingNum, // 保理融资本金
 
@@ -310,17 +298,19 @@ function handleParams() {
 		financingCost: formData.financingCost, // 保理融资利率 （尽调无）
 		graceCost: formData.graceCost, // 宽限期利率 （尽调有，可修改）
 
-		managePayType: formData.managePayType, //管理费支付方式
-		//【缺失参数】 每季度末月？日前
-		managePayTypeWrite: null, //管理费支付方式 【其他】选项手写内容
+		managePayType: formData.managePayType, // 管理费支付方式
+		manageMonthEndDate: formData.manageMonthEndDate, // 每季度末支付日
+		managePayTypeWrite: formData.managePayTypeWrite, // 管理费支付方式 【其他】选项手写内容
 
 		financingCostPayType: formData.financingCostPayType, //保理融资利息支付方式-除了其他方式以外
-		//【【缺失参数】 每季度末月？日前】
-		// 缺失其他补充参数
+		lxMonthEndDate: formData.lxMonthEndDate, // 每季度末支付日
+		financingCostPayTypeOther: formData.financingCostPayTypeOther, // 其他 手写内容
 
-		defaultInterestRate: null, //违约金利率-从尽调中取值，尽调中的违约利 （尽调有）
+		defaultInterestRate: formData.defaultInterestRate, //违约金利率-从尽调中取值，尽调中的违约利 （尽调有）
 
-		obligorGuaranteeAmount: null, //应收账款债务人付款担保额度-与保理融资本金一致
+		obligorGuaranteeAmount: formData.obligorGuaranteeAmount, //应收账款债务人付款担保额度-与保理融资本金一致
+
+		payType: formData.payType, // 支付方式
 
 		paymentsType: formData.paymentsType, //保理融资款收取账户选项
 		paymentsAccountName: null, //保理融资款收取账户-户名填写内容
@@ -331,28 +321,15 @@ function handleParams() {
 	// 附件3
 	const crtList = [
 		{
-			// projDueDiligenceId: formData.projDueDiligenceId, // 尽调id
-			// contractId: formData.contractId, // 合同id
-			// contractFileId: formData.contractFileId, // 附件id
-
-			// receivableNumber: null, //应收账款转让明细表 【编号】
-			// customerName: null, //保理申请人
-			// contractNum: null, // 保理主合同编号
-
-			projDueDiligenceId: formData.projDueDiligenceId, //项目尽调主键id
-			contractId: formData.contractId, //保理业务合同主键id
-			contractFileId: formData.contractFileId, //保理附件主键id
-
 			conReceivableTransferNum: formData.conReceivableTransferNum, // 编号
 			customerName: formData.customerName, //债务人名称
 			transferName: formData.transferName, //转让人名称
-			receivableNumber: formData.receivableNumber, //应收账款转让明细表编号
-			accountName: formData.accountName, //户名
-			accountNum: formData.accountNum, //账号
-			accountBank: formData.accountBank, //开户行
-			zbPersonName: formData.zbPersonName, //主办人名称
-			zbPersonTel: formData.zbPersonTel, //主办人电话
-			payBackGraceDate: formData.payBackGraceDate //还款宽限期-从项目尽调中带入
+			accountName: formData.accountName, // 受让人户名
+			accountNum: formData.accountNum, // 受让人账号
+			accountBank: formData.accountBank, // 受让人开户行
+			zbPersonName: formData.zbPersonName, // 主办人名称
+			zbPersonTel: formData.zbPersonTel, // 主办人电话
+			payBackGraceDate: formData.payBackGraceDate // 还款宽限期-从项目尽调中带入
 		}
 	];
 
@@ -377,6 +354,8 @@ function handleParams() {
 		contractId: formData.contractId,
 		projDueDiligenceId: formData.projDueDiligenceId,
 		factoringTarget: formData.factoringTarget,
+		dueNo: formData.dueNo,
+
 		carList, // 附件1
 		contractAgreeFileVo, // 附件2
 		crtList, // 附件3
@@ -385,11 +364,10 @@ function handleParams() {
 }
 
 // 新增附件数据
-function apiAddContFileInfo() {
+function apiAddContFileInfo(data) {
 	loading.value = true;
-	const handleData = handleParams();
 
-	addContFileInfo(handleData)
+	addContFileInfo(data)
 		.then(() => {
 			proxy.$modal.msgSuccess("新增成功");
 			closePage();
@@ -399,52 +377,64 @@ function apiAddContFileInfo() {
 		});
 }
 
-// 更新合同数据
-// function updateContractData(status) {
-// 	data.value.status = status;
-// 	loading.value = true;
-
-// 	// 单独处理 sendType
-// 	data.value.sendType = data.value.sendType.join();
-
-// 	data.value.flowId = proxy.$refs["flowSearchRef"].formData.flowId;
-// 	data.value.userIds = proxy.$refs["flowSearchRef"].formData.userIds;
-// 	// console.log(data.value)
-// 	updateContract(data.value)
-// 		.then(() => {
-// 			proxy.$modal.msgSuccess("更新成功");
-// 			closePage();
-// 		})
-// 		.finally(() => {
-// 			loading.value = false;
-// 		});
-// }
+// 更新附件数据
+function apiEditContFileInfo(data) {
+	loading.value = true;
+	editContFileInfo(data)
+		.then(() => {
+			proxy.$modal.msgSuccess("编辑成功");
+		})
+		.finally(() => {
+			loading.value = false;
+		});
+}
 
 // 获取合同附件数据
 function getDetailData(id) {
 	loading.value = true;
 	getContFileInfoDetail(id)
 		.then(response => {
-			// for (const prop in response.data) {
-			// 	// 不处理paymentSequenceList
-			// 	if (prop === "paymentSequenceList") {
-			// 		continue;
-			// 	}
-			// 	if (Array.isArray(data.value[prop])) {
-			// 		data.value[prop].length = 0;
-			// 		if (Array.isArray(response.data[prop])) {
-			// 			response.data[prop].forEach(v => {
-			// 				data.value[prop].push(v);
-			// 			});
-			// 		} else {
-			// 			if (prop === "sendType") {
-			// 				data.value[prop] = response.data[prop].split(",");
-			// 			}
-			// 		}
-			// 	} else {
-			// 		data.value[prop] = response.data[prop];
-			// 	}
-			// }
+			const repData = response.data;
+			// 附件1
+			const carList = repData.carList;
+
+			const data1 = {
+				receivableNumber: carList[0].receivableNumber, // 附件一编号
+				customerName: carList[0].customerName, //保理申请人
+				contractNum: carList[0].contractNum, // 保理主合同编号
+				carList
+			};
+
+			// 附件2
+			const contractAgreeFileVo = repData.contractAgreeFileVo;
+
+			// 附件3
+			const crtList = repData.crtList;
+			const data3 = {
+				customerName: crtList[0].customerName, // 债务人名称
+				transferName: crtList[0].transferName, // 转让人名称
+				// receivableNumber: null, // 应收账款转让明细表【编号】
+				accountName: crtList[0].accountName, // 户名
+				accountNum: crtList[0].accountNum, // 账号
+				accountBank: crtList[0].accountBank, // 开户行
+				zbPersonName: crtList[0].zbPersonName, // 主办人名称
+				zbPersonTel: crtList[0].zbPersonTel, // 主办人电话
+				crtList
+			};
+
+			// 附件4
+			const conSignReceiptVo = repData.conSignReceiptVo;
+
+			data.value = Object.assign(
+				data.value,
+				data1,
+				contractAgreeFileVo,
+				data3,
+				conSignReceiptVo,
+				{
+					contractFileId: repData.id
+				}
+			);
 		})
 		.finally(() => {
 			loading.value = false;
@@ -453,49 +443,14 @@ function getDetailData(id) {
 
 // 提交表单
 function submitForm() {
-	apiAddContFileInfo();
+	const handleData = handleParams();
 
-	// if (status === 1) {
-	// 	// 暂存
-
-	// 	if (!data.value.projectDueId) {
-	// 		return proxy.$message.error("请选择【项目尽调编号】");
-	// 	}
-
-	// 	if (!isEdit.value) {
-	// 		apiAddContFileInfo(status);
-	// 	} else {
-	// 		updateContractData(status);
-	// 	}
-	// } else {
-	// 	//
-
-	// 	// const contractForm = new Promise((resolve, reject) => {
-	// 	// 	basePaneRef.value.validate(valid => {
-	// 	// 		valid ? resolve(valid) : reject(valid);
-	// 	// 	});
-	// 	// });
-
-	// 	const specialForm = new Promise((resolve, reject) => {
-	// 		specialPaneRef.value.validate(valid => {
-	// 			valid ? resolve(valid) : reject(valid);
-	// 		});
-	// 	});
-
-	// 	const flowForm = new Promise((resolve, reject) => {
-	// 		proxy.$refs["flowSearchRef"].$refs["elForm"].validate(valid => {
-	// 			valid ? resolve(valid) : reject(valid);
-	// 		});
-	// 	});
-
-	// 	Promise.all([flowForm, specialForm]).then(() => {
-	// 		if (!isEdit.value) {
-	// 			apiAddContFileInfo(status);
-	// 		} else {
-	// 			updateContractData(status);
-	// 		}
-	// 	});
-	// }
+	if (isEdit.value) {
+		// 编辑
+		apiEditContFileInfo(handleData);
+	} else {
+		apiAddContFileInfo(handleData);
+	}
 }
 
 // 取消按钮操作

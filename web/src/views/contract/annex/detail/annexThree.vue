@@ -8,11 +8,11 @@
 			label-width="160px"
 			:disabled="isView"
 		>
-			<el-form-item label="编号" prop="receivableNumber">
+			<el-form-item label="编号" prop="conReceivableTransferNum">
 				<div class="form-item__block">
 					<el-input
 						disabled
-						v-model="formData.receivableNumber"
+						v-model="formData.conReceivableTransferNum"
 						:placeholder="showPlaceholder('自动生成')"
 						clearable
 						:style="formItemContentStyle"
@@ -26,7 +26,7 @@
 					<el-input
 						disabled
 						v-model="formData.customerName"
-						:placeholder="showPlaceholder('尽调带入')"
+						:placeholder="showPlaceholder('自动生成')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
@@ -37,7 +37,6 @@
 			<el-form-item label="转让人" prop="transferName">
 				<div class="form-item__block">
 					<el-input
-						disabled
 						v-model="formData.transferName"
 						:placeholder="showPlaceholder('尽调带入')"
 						clearable
@@ -64,7 +63,7 @@
 					<el-input
 						disabled
 						v-model="formData.accountNum"
-						:placeholder="showPlaceholder('选择户名后带入')"
+						:placeholder="showPlaceholder('自动生成')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
@@ -77,7 +76,7 @@
 					<el-input
 						disabled
 						v-model="formData.accountBank"
-						:placeholder="showPlaceholder('选择户名后带入')"
+						:placeholder="showPlaceholder('自动生成')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
@@ -114,7 +113,7 @@
 					<el-input
 						disabled
 						v-model="formData.payBackGraceDate"
-						:placeholder="showPlaceholder('附件二带入')"
+						:placeholder="showPlaceholder('自动生成')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"

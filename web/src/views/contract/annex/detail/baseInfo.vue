@@ -110,6 +110,8 @@ function configSelectRow(row) {
 	formData.projDueDiligenceName = row.name;
 	// 目前没有，需要后端添加到 尽调列表； 合同【类型】
 	formData.contractType = row.contractType;
+	// 尽调No
+	formData.dueNo = row.dueNo;
 }
 
 // Form item 内容的统一宽度

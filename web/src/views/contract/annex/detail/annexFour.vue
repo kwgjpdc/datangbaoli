@@ -29,7 +29,7 @@
 					<el-input
 						disabled
 						v-model="formData.transactionContNumName"
-						:placeholder="showPlaceholder('应收账款转让明细表生成')"
+						:placeholder="showPlaceholder('自动生成')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
@@ -42,7 +42,7 @@
 					<el-input
 						disabled
 						v-model="formData.payBackGraceDate"
-						:placeholder="showPlaceholder('附件二带入')"
+						:placeholder="showPlaceholder('自动生成')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
@@ -67,7 +67,7 @@
 					<div class="form-item__block">
 						<el-input
 							v-model="formData.sendAddress"
-							:placeholder="showPlaceholder('选择客户公司带入')"
+							:placeholder="showPlaceholder('请输入送达地址')"
 							clearable
 							:style="formItemContentStyle"
 							maxlength="32"
@@ -80,7 +80,7 @@
 						<el-input
 							disabled
 							v-model="formData.contactsName"
-							:placeholder="showPlaceholder('选择客户公司带入')"
+							:placeholder="showPlaceholder('自动生成')"
 							clearable
 							:style="formItemContentStyle"
 							maxlength="32"
@@ -91,6 +91,7 @@
 				<el-form-item label="联系人电话" prop="mobilePhone">
 					<div class="form-item__block">
 						<el-input
+							disabled
 							v-model="formData.mobilePhone"
 							:placeholder="showPlaceholder('选择客户公司带入')"
 							clearable
@@ -105,7 +106,7 @@
 						<el-input
 							disabled
 							v-model="formData.emial"
-							:placeholder="showPlaceholder('选择客户公司带入')"
+							:placeholder="showPlaceholder('自动生成')"
 							clearable
 							:style="formItemContentStyle"
 							maxlength="32"
@@ -116,9 +117,8 @@
 				<el-form-item label="联系人传真" prop="foxNum">
 					<div class="form-item__block">
 						<el-input
-							disabled
 							v-model="formData.foxNum"
-							:placeholder="showPlaceholder('选择客户公司带入')"
+							:placeholder="showPlaceholder('请输入联系人传真')"
 							clearable
 							:style="formItemContentStyle"
 							maxlength="32"

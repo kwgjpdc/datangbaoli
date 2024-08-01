@@ -8,7 +8,19 @@
 			label-width="160px"
 			:disabled="isView"
 		>
-			<el-form-item label="编号缺失" prop="编号缺失">
+			<el-form-item label="编号" prop="编号缺失">
+				<div class="form-item__block">
+					<el-input
+						disabled
+						:placeholder="showPlaceholder('编号缺失')"
+						clearable
+						:style="formItemContentStyle"
+						maxlength="32"
+					/>
+				</div>
+			</el-form-item>
+
+			<el-form-item label="保理合同编号" prop="contractNum">
 				<div class="form-item__block">
 					<el-input
 						disabled
@@ -21,25 +33,12 @@
 				</div>
 			</el-form-item>
 
-			<el-form-item label="保理主合同编号" prop="contractNum">
-				<div class="form-item__block">
-					<el-input
-						disabled
-						v-model="formData.contractNum"
-						:placeholder="showPlaceholder('附件一保理主合同编号带入')"
-						clearable
-						:style="formItemContentStyle"
-						maxlength="32"
-					/>
-				</div>
-			</el-form-item>
-
 			<el-form-item label="应收账款转让明细表编号" prop="receivableNumber">
 				<div class="form-item__block">
 					<el-input
 						disabled
 						v-model="formData.receivableNumber"
-						:placeholder="showPlaceholder('附件一编号自动带入')"
+						:placeholder="showPlaceholder('自动生成')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
@@ -278,7 +277,7 @@
 										<el-input
 											disabled
 											v-model="formData.paymentsAccount"
-											:placeholder="showPlaceholder('选择户名后带入')"
+											:placeholder="showPlaceholder('自动生成')"
 										/>
 									</el-form-item>
 
@@ -286,7 +285,7 @@
 										<el-input
 											disabled
 											v-model="formData.paymentsAccountBank"
-											:placeholder="showPlaceholder('选择户名后带入')"
+											:placeholder="showPlaceholder('自动生成')"
 										/>
 									</el-form-item>
 								</el-row>
