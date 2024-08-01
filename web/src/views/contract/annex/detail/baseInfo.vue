@@ -8,10 +8,10 @@
 			label-width="160px"
 			:disabled="isView"
 		>
-			<el-form-item label="尽调id" prop="projDueDiligenceId">
+			<el-form-item label="尽调审议编号" prop="dueNo">
 				<div class="form-item__block">
 					<CustomerSelect
-						:showValue="formData.projDueDiligenceId"
+						:showValue="formData.dueNo"
 						:option="config.option"
 						:queryPropList="config.queryPropList"
 						:tablePropList="config.tablePropList"
@@ -105,11 +105,8 @@ watch(formData, newValue => {
 // ----------------ref,torefs,watch,computed-----------------------------------------------
 
 function configSelectRow(row) {
+	// 尽调Id
 	formData.projDueDiligenceId = row.id;
-	// 附件 数据库 需添加维护；
-	formData.projDueDiligenceName = row.name;
-	// 目前没有，需要后端添加到 尽调列表； 合同【类型】
-	formData.contractType = row.contractType;
 	// 尽调No
 	formData.dueNo = row.dueNo;
 }

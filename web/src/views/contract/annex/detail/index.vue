@@ -126,8 +126,9 @@ const props = defineProps({ approveId: Number });
 // 数据对象
 const data = ref({
 	// 业务数据
-	contractType: null, // 合同类型 两方合同1 三方合同2 池保理合同3 其他4
-	factoringTarget: null, // 标的 电费补贴2
+	dueNo:null, // 尽调编号 --尽调维护
+	contractType: null, // 合同类型 两方合同1 三方合同2 池保理合同3 其他4 --尽调维护
+	factoringTarget: null, // 标的 电费补贴2 --合同维护
 
 	// 总：
 	contractFileId: null, // 合同附件id
@@ -262,13 +263,95 @@ watch(
 
 // --------------------以上是 ref watch  computed 等状态数据------------------------------------------------------------------------------------------
 
-// 获取 尽调详情接口
+// 获取 【尽调详情】接口
 function getDiligenceInfo(id) {
 	getDiligence(id).then(response => {
 		projectDetail.value = response.data;
 	});
 }
 
+// 新增附件数据
+function apiAddContFileInfo(data) {
+	loading.value = true;
+
+	addContFileInfo(data)
+		.then(() => {
+			proxy.$modal.msgSuccess("新增成功");
+			closePage();
+		})
+		.finally(() => {
+			loading.value = false;
+		});
+}
+
+// 更新附件数据
+function apiEditContFileInfo(data) {
+	loading.value = true;
+	editContFileInfo(data)
+		.then(() => {
+			proxy.$modal.msgSuccess("编辑成功");
+		})
+		.finally(() => {
+			loading.value = false;
+		});
+}
+
+// 获取合同附件数据
+function getDetailData(id) {
+	loading.value = true;
+	getContFileInfoDetail(id)
+		.then(response => {
+			// 详情数据
+			const repData = response.data;
+
+			// 附件1
+			const carList = repData.carList;
+
+			const data1 = {
+				receivableNumber: carList[0].receivableNumber, // 附件一编号
+				contractNum: carList[0].contractNum, // 保理主合同编号
+				customerName: carList[0].customerName, //保理申请人
+				carList
+			};
+
+			// 附件2
+			const contractAgreeFileVo = repData.contractAgreeFileVo;
+
+			// 附件3
+			const crtList = repData.crtList;
+			const data3 = {
+				conReceivableTransferNum: crtList[0].conReceivableTransferNum, // 编号
+				customerName: crtList[0].customerName, // 债务人名称
+				transferName: crtList[0].transferName, // 转让人名称
+				accountName: crtList[0].accountName, // 受让人户名
+				accountNum: crtList[0].accountNum, // 受让人账号
+				accountBank: crtList[0].accountBank, // 受让人开户行
+				zbPersonName: crtList[0].zbPersonName, // 主办人名称
+				zbPersonTel: crtList[0].zbPersonTel // 主办人电话
+			};
+
+			// 附件4
+			const conSignReceiptVo = repData.conSignReceiptVo;
+
+			data.value = Object.assign(
+				data.value,
+				data1,
+				contractAgreeFileVo,
+				data3,
+				conSignReceiptVo,
+				{
+					contractFileId: repData.id,
+					contractId: repData.contractId, // 合同id
+					projDueDiligenceId: repData.projDueDiligenceId // 项目尽调id
+				}
+			);
+		})
+		.finally(() => {
+			loading.value = false;
+		});
+}
+
+// 表单字段处理
 function handleParams() {
 	const formData = data.value;
 
@@ -351,94 +434,16 @@ function handleParams() {
 	};
 
 	return {
-		contractId: formData.contractId,
-		projDueDiligenceId: formData.projDueDiligenceId,
-		factoringTarget: formData.factoringTarget,
-		dueNo: formData.dueNo,
+		contractId: formData.contractId, // 合同id
+		projDueDiligenceId: formData.projDueDiligenceId, // 尽调id
+		factoringTarget: formData.factoringTarget, // 标的
+		dueNo: formData.dueNo, // 尽调No
 
 		carList, // 附件1
 		contractAgreeFileVo, // 附件2
 		crtList, // 附件3
 		conSignReceiptVo // 附件4
 	};
-}
-
-// 新增附件数据
-function apiAddContFileInfo(data) {
-	loading.value = true;
-
-	addContFileInfo(data)
-		.then(() => {
-			proxy.$modal.msgSuccess("新增成功");
-			closePage();
-		})
-		.finally(() => {
-			loading.value = false;
-		});
-}
-
-// 更新附件数据
-function apiEditContFileInfo(data) {
-	loading.value = true;
-	editContFileInfo(data)
-		.then(() => {
-			proxy.$modal.msgSuccess("编辑成功");
-		})
-		.finally(() => {
-			loading.value = false;
-		});
-}
-
-// 获取合同附件数据
-function getDetailData(id) {
-	loading.value = true;
-	getContFileInfoDetail(id)
-		.then(response => {
-			const repData = response.data;
-			// 附件1
-			const carList = repData.carList;
-
-			const data1 = {
-				receivableNumber: carList[0].receivableNumber, // 附件一编号
-				customerName: carList[0].customerName, //保理申请人
-				contractNum: carList[0].contractNum, // 保理主合同编号
-				carList
-			};
-
-			// 附件2
-			const contractAgreeFileVo = repData.contractAgreeFileVo;
-
-			// 附件3
-			const crtList = repData.crtList;
-			const data3 = {
-				customerName: crtList[0].customerName, // 债务人名称
-				transferName: crtList[0].transferName, // 转让人名称
-				// receivableNumber: null, // 应收账款转让明细表【编号】
-				accountName: crtList[0].accountName, // 户名
-				accountNum: crtList[0].accountNum, // 账号
-				accountBank: crtList[0].accountBank, // 开户行
-				zbPersonName: crtList[0].zbPersonName, // 主办人名称
-				zbPersonTel: crtList[0].zbPersonTel, // 主办人电话
-				crtList
-			};
-
-			// 附件4
-			const conSignReceiptVo = repData.conSignReceiptVo;
-
-			data.value = Object.assign(
-				data.value,
-				data1,
-				contractAgreeFileVo,
-				data3,
-				conSignReceiptVo,
-				{
-					contractFileId: repData.id
-				}
-			);
-		})
-		.finally(() => {
-			loading.value = false;
-		});
 }
 
 // 提交表单

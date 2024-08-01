@@ -51,3 +51,12 @@ export function insertContractInfo(data) {
 		data: data
 	});
 }
+
+// 下载合同
+export function exportWord(id) {
+	return request({
+		url: `/cont/exportWord/${id}`,
+		method: "get",
+		responseType: "blob"
+	});
+}

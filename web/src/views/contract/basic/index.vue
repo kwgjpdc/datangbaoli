@@ -215,7 +215,7 @@
 				align="center"
 				class-name="small-padding fixed-width"
 				fixed="right"
-				width="150"
+				width="200"
 			>
 				<template #default="scope">
 					<div class="button-display">
@@ -243,7 +243,7 @@
 						<el-button
 							link
 							type="primary"
-							icon="Delete"
+							icon="Download"
 							@click="handleDownload(scope.row)"
 							v-hasPermi="['demo:info:export']"
 							>导出</el-button
@@ -310,10 +310,12 @@
 
 <script setup>
 import { ref, onBeforeMount } from "vue";
-import { listContract, delContract } from "@/api/contract";
+import { listContract, delContract, exportWord } from "@/api/contract";
 import { listDiligence } from "@/api/project/diligence";
 import CustomerSelect from "@/components/CustomerSelect";
 import DialogSuppContract from "./dialogSuppContract";
+
+import { ElMessage } from "element-plus";
 
 const customer = ref({
 	showValueSell: "",
@@ -426,14 +428,14 @@ const propMulti = ref([
 	}
 ]);
 
-// 合同导出
-function handleDownload(row) {
-	proxy.download(
-		`/cont/exportWord/${row.contractId}`,
-		{},
-		`info_${new Date().getTime()}.xlsx`
-	);
-}
+// // 合同导出
+// function handleDownload(row) {
+// 	proxy.download(
+// 		`/cont/exportWord/${row.contractId}`,
+// 		{},
+// 		`info_${new Date().getTime()}.xlsx`
+// 	);
+// }
 
 // 项目查询参数
 const diligenceParamsMulti = ref({
@@ -445,6 +447,39 @@ const diligenceParamsMulti = ref({
 const dialogSuppIsOpen = ref(false);
 // table选中的rows
 const tableSelectedRows = ref([]);
+
+// -----------------------------------------------------
+
+function handleDownload(row) {
+	exportWord(row.contractId).then(res => {
+		if (!res.code) {
+			if (!res || res.size == 0) {
+				ElMessage({
+					message: "无业务合同信息",
+					type: "error"
+				});
+				return;
+			}
+			const elink = document.createElement("a");
+			elink.href = window.URL.createObjectURL(new Blob([res]));
+			elink.style.display = "none";
+			elink.setAttribute("download", "业务合同" + ".docx");
+			document.body.appendChild(elink);
+			elink.click();
+			document.body.removeChild(elink);
+		} else if (res.code == 500) {
+			ElMessage({
+				message: "无业务合同信息",
+				type: "error"
+			});
+		} else {
+			ElMessage({
+				message: "无业务合同信息",
+				type: "error"
+			});
+		}
+	});
+}
 
 // table获取选中的rows
 function handleTableSelectedRows(selectedRows) {
