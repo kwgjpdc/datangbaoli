@@ -42,3 +42,12 @@ export function delContFileInfo(id) {
 		method: "post"
 	});
 }
+
+// 下载合同
+export function contFileExportWord(id) {
+	return request({
+		url: `/contFileInfo/exportWord/${id}`,
+		method: "get",
+		responseType: "blob"
+	});
+}

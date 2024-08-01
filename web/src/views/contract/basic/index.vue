@@ -428,15 +428,6 @@ const propMulti = ref([
 	}
 ]);
 
-// // 合同导出
-// function handleDownload(row) {
-// 	proxy.download(
-// 		`/cont/exportWord/${row.contractId}`,
-// 		{},
-// 		`info_${new Date().getTime()}.xlsx`
-// 	);
-// }
-
 // 项目查询参数
 const diligenceParamsMulti = ref({
 	pageNum: 1,

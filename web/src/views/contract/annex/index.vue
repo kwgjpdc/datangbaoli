@@ -39,7 +39,12 @@
 			<el-table-column type="index" align="center" width="100" label="序号" />
 			<el-table-column label="合同编号" align="center" prop="contractNum" />
 			<el-table-column label="合同名称" align="center" prop="contractName" />
-			<el-table-column label="操作" align="center" class-name="small-padding">
+			<el-table-column
+				label="操作"
+				align="center"
+				class-name="small-padding"
+				width="250"
+			>
 				<template #default="scope">
 					<div class="button-display" style="justify-content: center">
 						<el-button
@@ -58,6 +63,14 @@
 							v-hasPermi="['demo:info:remove']"
 							>删除</el-button
 						>
+						<el-button
+							link
+							type="primary"
+							icon="Download"
+							@click="handleDownload(scope.row)"
+							v-hasPermi="['demo:info:export']"
+							>导出</el-button
+						>
 					</div>
 				</template>
 			</el-table-column>
@@ -74,9 +87,14 @@
 </template>
 
 <script setup name="Info">
-import { getContFileList, delContFileInfo } from "@/api/contract/annex";
+import {
+	getContFileList,
+	delContFileInfo,
+	contFileExportWord
+} from "@/api/contract/annex";
 import { deepClone } from "@/utils/index";
 import QueryParams from "@/components/QueryParams";
+import { ElMessage } from "element-plus";
 
 const { proxy } = getCurrentInstance();
 const route = useRoute();
@@ -85,9 +103,6 @@ const router = useRouter();
 const infoList = ref([]);
 const loading = ref(true);
 const showSearch = ref(true);
-let custSelection = ref({});
-let selectId = ref("");
-let radio = ref("");
 const total = ref(0);
 
 const data = reactive({
@@ -132,6 +147,38 @@ onActivated(() => {
 		getList();
 	}
 });
+
+// 附件导出
+function handleDownload(row) {
+	contFileExportWord(row.id).then(res => {
+		if (!res.code) {
+			if (!res || res.size == 0) {
+				ElMessage({
+					message: "无附件合同信息",
+					type: "error"
+				});
+				return;
+			}
+			const elink = document.createElement("a");
+			elink.href = window.URL.createObjectURL(new Blob([res]));
+			elink.style.display = "none";
+			elink.setAttribute("download", "附件合同" + ".docx");
+			document.body.appendChild(elink);
+			elink.click();
+			document.body.removeChild(elink);
+		} else if (res.code == 500) {
+			ElMessage({
+				message: "无附件合同信息",
+				type: "error"
+			});
+		} else {
+			ElMessage({
+				message: "无附件合同信息",
+				type: "error"
+			});
+		}
+	});
+}
 
 /* 列表 */
 function getList() {
