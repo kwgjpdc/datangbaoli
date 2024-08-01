@@ -126,8 +126,9 @@ const props = defineProps({ approveId: Number });
 // 数据对象
 const data = ref({
 	// 业务数据
-	dueNo:null, // 尽调编号 --尽调维护
-	contractType: null, // 合同类型 两方合同1 三方合同2 池保理合同3 其他4 --尽调维护
+	dueNo: null, // 尽调编号 --尽调维护
+	contractType: null, // 合同类型 两方合同1 三方合同2 池保理合同3 其他4  --尽调维护
+	businessType: null, // 业务产品 --尽调维护
 	factoringTarget: null, // 标的 电费补贴2 --合同维护
 
 	// 总：
@@ -200,7 +201,7 @@ const data = ref({
 	// contractFileId: null, //保理附件主键id
 
 	conReceivableTransferNum: null, // 附件3 【编号】
-	customerName: null, // 债务人名称
+	debtorPerson: null, // 债务人名称
 	transferName: null, // 转让人名称
 	accountName: null, // 户名
 	accountNum: null, // 账号
@@ -266,7 +267,15 @@ watch(
 // 获取 【尽调详情】接口
 function getDiligenceInfo(id) {
 	getDiligence(id).then(response => {
+		if (response.code !== 200) {
+			proxy.$modal.msgSuccess("尽调获取失败！");
+		}
+
 		projectDetail.value = response.data;
+		data.value = Object.assign(data.value, {
+			contractType: response.data.contractType,
+			businessType: response.data.businessType
+		});
 	});
 }
 
@@ -405,7 +414,7 @@ function handleParams() {
 	const crtList = [
 		{
 			conReceivableTransferNum: formData.conReceivableTransferNum, // 编号
-			customerName: formData.customerName, //债务人名称
+			debtorPerson: formData.debtorPerson, //债务人名称
 			transferName: formData.transferName, //转让人名称
 			accountName: formData.accountName, // 受让人户名
 			accountNum: formData.accountNum, // 受让人账号
@@ -418,12 +427,12 @@ function handleParams() {
 
 	// 附件4
 	const conSignReceiptVo = {
-		projDueDiligenceId: formData.projDueDiligenceId, // 项目尽调主键id
-		contractId: formData.contractId, // 保理业务合同主键id
-		contractFileId: formData.contractFileId, // 保理附件主键id
+		// projDueDiligenceId: formData.projDueDiligenceId, // 项目尽调主键id
+		// contractId: formData.contractId, // 保理业务合同主键id
+		// contractFileId: formData.contractFileId, // 保理附件主键id
 
-		conReceivableTransferNum: formData.formData, //【应收账款转让通知书】编号
-		transactionContNumName: null, // 基础交易合同编号及名称 【？】
+		conReceivableTransferNum: formData.conReceivableTransferNum, //【应收账款转让通知书】编号
+		transactionContNumName: formData.transactionContNumName, // 基础交易合同编号及名称 【？】
 
 		customerName: formData.customerName, // 客户公司名称
 		sendAddress: formData.sendAddress, // 送达地址
@@ -434,10 +443,13 @@ function handleParams() {
 	};
 
 	return {
+		contractFileId: formData.contractFileId, // 附件id
 		contractId: formData.contractId, // 合同id
 		projDueDiligenceId: formData.projDueDiligenceId, // 尽调id
-		factoringTarget: formData.factoringTarget, // 标的
-		dueNo: formData.dueNo, // 尽调No
+		factoringTarget: formData.factoringTarget, // 合同-标的
+		dueNo: formData.dueNo, // 尽调-尽调No
+		contractType: formData.contractType, // 尽调-合同类型
+		businessType: formData.businessType, // 尽调-业务产品
 
 		carList, // 附件1
 		contractAgreeFileVo, // 附件2
@@ -449,6 +461,8 @@ function handleParams() {
 // 提交表单
 function submitForm() {
 	const handleData = handleParams();
+
+	debugger;
 
 	if (isEdit.value) {
 		// 编辑

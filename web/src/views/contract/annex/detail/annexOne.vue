@@ -380,10 +380,10 @@ function configSelectRow(row) {
 	// otherContractName  项目尽调名称
 
 	formData.contractId = row.contractId; // 合同id
+
 	formData.contractNum = row.contractNo; // 合同编码；
 	formData.customerName = row.factoringApplicantName; // 合同申请人
-	formData.projDueDiligenceId = row.projectDueId || 52; // 尽调id
-	formData.otherContractName = row.otherContractName; // 尽调项目名称
+
 	formData.factoringTarget = row.baseItem; // 标的
 }
 

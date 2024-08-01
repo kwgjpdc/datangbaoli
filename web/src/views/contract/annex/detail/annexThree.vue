@@ -21,11 +21,10 @@
 				</div>
 			</el-form-item>
 
-			<el-form-item label="债务人" prop="customerName">
+			<el-form-item label="债务人" prop="debtorPerson">
 				<div class="form-item__block">
 					<el-input
-						disabled
-						v-model="formData.customerName"
+						v-model="formData.debtorPerson"
 						:placeholder="showPlaceholder('自动生成')"
 						clearable
 						:style="formItemContentStyle"
@@ -88,7 +87,7 @@
 				<div class="form-item__block">
 					<el-input
 						v-model="formData.zbPersonName"
-						:placeholder="showPlaceholder('请先选择保理主合同标号')"
+						:placeholder="showPlaceholder('请输入主办人名称')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
@@ -100,7 +99,7 @@
 				<div class="form-item__block">
 					<el-input
 						v-model="formData.zbPersonTel"
-						:placeholder="showPlaceholder('请先选择保理主合同标号')"
+						:placeholder="showPlaceholder('请输入主办人电话')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
