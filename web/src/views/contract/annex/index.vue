@@ -150,34 +150,39 @@ onActivated(() => {
 
 // 附件导出
 function handleDownload(row) {
-	contFileExportWord(row.id).then(res => {
-		if (!res.code) {
-			if (!res || res.size == 0) {
+	loading.value = true;
+	contFileExportWord(row.id)
+		.then(res => {
+			if (!res.code) {
+				if (!res || res.size == 0) {
+					ElMessage({
+						message: "无附件合同信息",
+						type: "error"
+					});
+					return;
+				}
+				const elink = document.createElement("a");
+				elink.href = window.URL.createObjectURL(new Blob([res]));
+				elink.style.display = "none";
+				elink.setAttribute("download", "附件合同" + ".docx");
+				document.body.appendChild(elink);
+				elink.click();
+				document.body.removeChild(elink);
+			} else if (res.code == 500) {
 				ElMessage({
 					message: "无附件合同信息",
 					type: "error"
 				});
-				return;
+			} else {
+				ElMessage({
+					message: "无附件合同信息",
+					type: "error"
+				});
 			}
-			const elink = document.createElement("a");
-			elink.href = window.URL.createObjectURL(new Blob([res]));
-			elink.style.display = "none";
-			elink.setAttribute("download", "附件合同" + ".docx");
-			document.body.appendChild(elink);
-			elink.click();
-			document.body.removeChild(elink);
-		} else if (res.code == 500) {
-			ElMessage({
-				message: "无附件合同信息",
-				type: "error"
-			});
-		} else {
-			ElMessage({
-				message: "无附件合同信息",
-				type: "error"
-			});
-		}
-	});
+		})
+		.finally(() => {
+			loading.value = false;
+		});
 }
 
 /* 列表 */

@@ -460,12 +460,12 @@ function handleDownload(row) {
 			document.body.removeChild(elink);
 		} else if (res.code == 500) {
 			ElMessage({
-				message: "无业务合同信息",
+				message: "无附件合同信息",
 				type: "error"
 			});
 		} else {
 			ElMessage({
-				message: "无业务合同信息",
+				message: "无附件合同信息",
 				type: "error"
 			});
 		}

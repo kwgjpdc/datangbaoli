@@ -127,6 +127,10 @@ const projectDetail = ref({});
 const routerQueryObj = ref(history.state);
 const props = defineProps({ approveId: Number });
 
+// temp 临时id处理
+const conSignReceiptVoId = ref(null);
+const contractAgreeFileVoId = ref(null);
+
 // 数据对象
 const data = ref({
 	// 业务数据
@@ -226,7 +230,7 @@ const data = ref({
 	usePerson: null, // 转让人
 	// conReceivableTransferNum: null, //【应收账款转让通知书】编号 （附件三维护）
 	transactionContNumName: null, // 基础交易合同编号及名称
-	customerName: null, // 客户公司名称
+	// customerName: null, // 客户公司名称
 	sendAddress: null, // 送达地址
 	contactsName: null, // 联系人名称
 	mobilePhone: null, // 联系人电话
@@ -322,6 +326,9 @@ function getDetailData(id) {
 			// 详情数据
 			const repData = response.data;
 
+			contractAgreeFileVoId.value = repData.contractAgreeFileVo.id;
+			conSignReceiptVoId.value = repData.conSignReceiptVo.id;
+
 			// 附件1
 			const carList = repData.carList;
 
@@ -373,10 +380,10 @@ function handleParams() {
 
 	// 附件1 处理数据
 	const carList = formData.carList.map(item => ({
-		receivableNumber: null, // 编号（应收账款转让明细表）
-		customerName: null, // 保理申请人
-		contractNum: null, // 保理合同编号
-		...item
+		...item,
+		receivableNumber: formData.receivableNumber, // 编号（应收账款转让明细表）
+		customerName: formData.customerName, // 保理申请人
+		contractNum: formData.contractNum // 保理合同编号
 	}));
 
 	// 附件2 处理数据
@@ -458,8 +465,10 @@ function handleParams() {
 
 // 提交表单
 function submitForm() {
-	debugger;
-	const handleData = handleParams();
+	let handleData = handleParams();
+
+	handleData.contractAgreeFileVo.id = contractAgreeFileVoId.value;
+	handleData.conSignReceiptVo.id = conSignReceiptVoId.value;
 
 	if (isEdit.value) {
 		// 编辑
