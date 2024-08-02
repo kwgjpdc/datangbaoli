@@ -419,9 +419,9 @@ function handleParams() {
 		payType: formData.payType, // 支付方式
 
 		paymentsType: formData.paymentsType, //保理融资款收取账户选项
-		paymentsAccountName: null, //保理融资款收取账户-户名填写内容
-		paymentsAccount: null, //保理融资款收取账户-账号填写内容
-		paymentsAccountBank: null //保理融资款收取账户-开户行名称}
+		paymentsAccountName: formData.paymentsAccountName, //保理融资款收取账户-户名填写内容
+		paymentsAccount: formData.paymentsAccount, //保理融资款收取账户-账号填写内容
+		paymentsAccountBank: formData.paymentsAccountBank //保理融资款收取账户-开户行名称}
 	};
 
 	// 附件3
