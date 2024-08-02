@@ -136,14 +136,12 @@ const data = ref({
 	factoringTarget: null, // 标的 电费补贴2 --合同维护
 
 	// 总：
+
 	contractFileId: null, // 合同附件id
 	contractId: null, // 合同id
 	projDueDiligenceId: null, // 项目尽调id
 
 	// 附件1：
-	// contractId: null, // 保理合同主键id
-	// projDueDiligenceId: null, // 项目尽调主键id
-	// contractFileId: null, // 保理附件主键id
 
 	receivableNumber: null, //应收账款转让明细表 【编号】
 	customerName: null, //保理申请人
@@ -159,9 +157,6 @@ const data = ref({
 	],
 
 	// 附件2：
-	// contractId: null, // 主合同id
-	// projDueDiligenceId: null, // 项目尽调主键id
-	// contractFileId: null, // 附件id
 
 	contractNum: null, // 合同编号
 
@@ -203,9 +198,6 @@ const data = ref({
 
 	crtList: [
 		{
-			// projDueDiligenceId: null, //项目尽调主键id
-			// contractId: null, //保理业务合同主键id
-			// contractFileId: null, //保理附件主键id
 			conReceivableTransferNum: null, // 附件3 【编号】
 			debtorPerson: null, // 债务人名称
 			transferName: null, // 转让人名称
@@ -217,9 +209,6 @@ const data = ref({
 			// payBackGraceDate: null, // 还款宽限期 【附件2从尽调带入，并在这里展示】
 		},
 		{
-			// projDueDiligenceId: null, //项目尽调主键id
-			// contractId: null, //保理业务合同主键id
-			// contractFileId: null, //保理附件主键id
 			conReceivableTransferNum: null, // 附件3 【编号】
 			debtorPerson: null, // 债务人名称
 			transferName: null, // 转让人名称
@@ -233,14 +222,10 @@ const data = ref({
 	],
 
 	// 附件4
-	// projDueDiligenceId: null, // 项目尽调id
-	// contractId: null, // 保理合同id
-	// contractFileId: null, // 保理附件id
 
 	usePerson: null, // 转让人
 	// conReceivableTransferNum: null, //【应收账款转让通知书】编号 （附件三维护）
 	transactionContNumName: null, // 基础交易合同编号及名称
-
 	customerName: null, // 客户公司名称
 	sendAddress: null, // 送达地址
 	contactsName: null, // 联系人名称
@@ -352,17 +337,10 @@ function getDetailData(id) {
 
 			// 附件3
 			const crtList = repData.crtList;
-			// debugger;
-			// const data3 = {
-			// 	conReceivableTransferNum: crtList[0].conReceivableTransferNum, // 编号
-			// 	customerName: crtList[0].customerName, // 债务人名称
-			// 	transferName: crtList[0].transferName, // 转让人名称
-			// 	accountName: crtList[0].accountName, // 受让人户名
-			// 	accountNum: crtList[0].accountNum, // 受让人账号
-			// 	accountBank: crtList[0].accountBank, // 受让人开户行
-			// 	zbPersonName: crtList[0].zbPersonName, // 主办人名称
-			// 	zbPersonTel: crtList[0].zbPersonTel // 主办人电话
-			// };
+
+			const data3 = {
+				crtList
+			};
 
 			// 附件4
 			const conSignReceiptVo = repData.conSignReceiptVo;
@@ -371,7 +349,7 @@ function getDetailData(id) {
 				data.value,
 				data1,
 				contractAgreeFileVo,
-				crtList,
+				data3,
 				conSignReceiptVo,
 				{
 					contractFileId: repData.id, // 附件id
