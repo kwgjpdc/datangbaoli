@@ -467,11 +467,12 @@ function handleParams() {
 function submitForm() {
 	let handleData = handleParams();
 
-	handleData.contractAgreeFileVo.id = contractAgreeFileVoId.value;
-	handleData.conSignReceiptVo.id = conSignReceiptVoId.value;
+	debugger;
 
 	if (isEdit.value) {
 		// 编辑
+		handleData.contractAgreeFileVo.id = contractAgreeFileVoId.value;
+		handleData.conSignReceiptVo.id = conSignReceiptVoId.value;
 		apiEditContFileInfo(handleData);
 	} else {
 		apiAddContFileInfo(handleData);
