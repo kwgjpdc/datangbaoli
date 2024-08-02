@@ -229,7 +229,7 @@
 						>
 							修改
 						</el-button>
-						<el-button
+						<!-- <el-button
 							link
 							type="primary"
 							icon="Delete"
@@ -238,7 +238,7 @@
 							v-if="scope.row.status == 1"
 						>
 							删除
-						</el-button>
+						</el-button> -->
 
 						<el-button
 							link

@@ -55,14 +55,14 @@
 							v-hasPermi="['demo:info:edit']"
 							>修改</el-button
 						>
-						<el-button
+						<!-- <el-button
 							link
 							type="primary"
 							icon="Delete"
 							@click="handleDelete(scope.row)"
 							v-hasPermi="['demo:info:remove']"
 							>删除</el-button
-						>
+						> -->
 						<el-button
 							link
 							type="primary"

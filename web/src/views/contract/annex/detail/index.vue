@@ -59,26 +59,30 @@
 						/>
 					</el-collapse-item>
 
-					<el-collapse-item
-						title="应收账款转让通知书（附件三）"
-						name="annexThree"
-					>
-						<annexThree
-							ref="annexThreeRef"
-							v-model:data="data"
-							:routerQueryObj="props.routerQueryObj"
-							v-model:loading="loading"
-						/>
-					</el-collapse-item>
+					<template v-if="data.contractType && data.contractType !== '2'">
+						<el-collapse-item
+							title="应收账款转让通知书（附件三）"
+							name="annexThree"
+						>
+							<annexThree
+								ref="annexThreeRef"
+								v-model:data="data"
+								:routerQueryObj="props.routerQueryObj"
+								v-model:loading="loading"
+							/>
+						</el-collapse-item>
+					</template>
 
-					<el-collapse-item title="签收回执（附件四）" name="annexFour">
-						<annexFour
-							ref="annexFourRef"
-							v-model:data="data"
-							:routerQueryObj="props.routerQueryObj"
-							v-model:loading="loading"
-						/>
-					</el-collapse-item>
+					<template v-if="data.contractType && data.contractType !== '2'">
+						<el-collapse-item title="签收回执（附件四）" name="annexFour">
+							<annexFour
+								ref="annexFourRef"
+								v-model:data="data"
+								:routerQueryObj="props.routerQueryObj"
+								v-model:loading="loading"
+							/>
+						</el-collapse-item>
+					</template>
 				</el-collapse>
 			</div>
 		</div>
@@ -196,19 +200,37 @@ const data = ref({
 	paymentsAccountBank: null, //保理融资款收取账户-开户行名称
 
 	// 附件3
-	// projDueDiligenceId: null, //项目尽调主键id
-	// contractId: null, //保理业务合同主键id
-	// contractFileId: null, //保理附件主键id
 
-	conReceivableTransferNum: null, // 附件3 【编号】
-	debtorPerson: null, // 债务人名称
-	transferName: null, // 转让人名称
-	accountName: null, // 户名
-	accountNum: null, // 账号
-	accountBank: null, // 开户行
-	zbPersonName: null, // 主办人名称
-	zbPersonTel: null, // 主办人电话
-	// payBackGraceDate: null, // 还款宽限期 【附件2从尽调带入，并在这里展示】
+	crtList: [
+		{
+			// projDueDiligenceId: null, //项目尽调主键id
+			// contractId: null, //保理业务合同主键id
+			// contractFileId: null, //保理附件主键id
+			conReceivableTransferNum: null, // 附件3 【编号】
+			debtorPerson: null, // 债务人名称
+			transferName: null, // 转让人名称
+			accountName: null, // 户名
+			accountNum: null, // 账号
+			accountBank: null, // 开户行
+			zbPersonName: null, // 主办人名称
+			zbPersonTel: null // 主办人电话
+			// payBackGraceDate: null, // 还款宽限期 【附件2从尽调带入，并在这里展示】
+		},
+		{
+			// projDueDiligenceId: null, //项目尽调主键id
+			// contractId: null, //保理业务合同主键id
+			// contractFileId: null, //保理附件主键id
+			conReceivableTransferNum: null, // 附件3 【编号】
+			debtorPerson: null, // 债务人名称
+			transferName: null, // 转让人名称
+			accountName: null, // 户名
+			accountNum: null, // 账号
+			accountBank: null, // 开户行
+			zbPersonName: null, // 主办人名称
+			zbPersonTel: null // 主办人电话
+			// payBackGraceDate: null, // 还款宽限期 【附件2从尽调带入，并在这里展示】
+		}
+	],
 
 	// 附件4
 	// projDueDiligenceId: null, // 项目尽调id
@@ -272,9 +294,10 @@ function getDiligenceInfo(id) {
 		}
 
 		projectDetail.value = response.data;
+
 		data.value = Object.assign(data.value, {
-			contractType: response.data.contractType,
-			businessType: response.data.businessType
+			contractType: response.data.contractType, // 合同类型
+			businessType: response.data.businessType // 业务产品
 		});
 	});
 }
@@ -299,6 +322,7 @@ function apiEditContFileInfo(data) {
 	editContFileInfo(data)
 		.then(() => {
 			proxy.$modal.msgSuccess("编辑成功");
+			closePage();
 		})
 		.finally(() => {
 			loading.value = false;
@@ -328,16 +352,17 @@ function getDetailData(id) {
 
 			// 附件3
 			const crtList = repData.crtList;
-			const data3 = {
-				conReceivableTransferNum: crtList[0].conReceivableTransferNum, // 编号
-				customerName: crtList[0].customerName, // 债务人名称
-				transferName: crtList[0].transferName, // 转让人名称
-				accountName: crtList[0].accountName, // 受让人户名
-				accountNum: crtList[0].accountNum, // 受让人账号
-				accountBank: crtList[0].accountBank, // 受让人开户行
-				zbPersonName: crtList[0].zbPersonName, // 主办人名称
-				zbPersonTel: crtList[0].zbPersonTel // 主办人电话
-			};
+			// debugger;
+			// const data3 = {
+			// 	conReceivableTransferNum: crtList[0].conReceivableTransferNum, // 编号
+			// 	customerName: crtList[0].customerName, // 债务人名称
+			// 	transferName: crtList[0].transferName, // 转让人名称
+			// 	accountName: crtList[0].accountName, // 受让人户名
+			// 	accountNum: crtList[0].accountNum, // 受让人账号
+			// 	accountBank: crtList[0].accountBank, // 受让人开户行
+			// 	zbPersonName: crtList[0].zbPersonName, // 主办人名称
+			// 	zbPersonTel: crtList[0].zbPersonTel // 主办人电话
+			// };
 
 			// 附件4
 			const conSignReceiptVo = repData.conSignReceiptVo;
@@ -346,12 +371,16 @@ function getDetailData(id) {
 				data.value,
 				data1,
 				contractAgreeFileVo,
-				data3,
+				crtList,
 				conSignReceiptVo,
 				{
-					contractFileId: repData.id,
+					contractFileId: repData.id, // 附件id
 					contractId: repData.contractId, // 合同id
-					projDueDiligenceId: repData.projDueDiligenceId // 项目尽调id
+					projDueDiligenceId: repData.projDueDiligenceId, // 项目尽调id
+					factoringTarget: repData.factoringTarget, // 合同-标的
+					dueNo: repData.dueNo, // 尽调-尽调No
+					contractType: repData.contractType, // 尽调-合同类型
+					businessType: repData.businessType // 尽调-业务产品
 				}
 			);
 		})
@@ -411,19 +440,10 @@ function handleParams() {
 	};
 
 	// 附件3
-	const crtList = [
-		{
-			conReceivableTransferNum: formData.conReceivableTransferNum, // 编号
-			debtorPerson: formData.debtorPerson, //债务人名称
-			transferName: formData.transferName, //转让人名称
-			accountName: formData.accountName, // 受让人户名
-			accountNum: formData.accountNum, // 受让人账号
-			accountBank: formData.accountBank, // 受让人开户行
-			zbPersonName: formData.zbPersonName, // 主办人名称
-			zbPersonTel: formData.zbPersonTel, // 主办人电话
-			payBackGraceDate: formData.payBackGraceDate // 还款宽限期-从项目尽调中带入
-		}
-	];
+	const crtList =
+		formData.factoringTarget && formData.factoringTarget === "2"
+			? formData.crtList
+			: [formData.crtList[0]];
 
 	// 附件4
 	const conSignReceiptVo = {
@@ -460,9 +480,8 @@ function handleParams() {
 
 // 提交表单
 function submitForm() {
-	const handleData = handleParams();
-
 	debugger;
+	const handleData = handleParams();
 
 	if (isEdit.value) {
 		// 编辑
@@ -475,7 +494,7 @@ function submitForm() {
 // 取消按钮操作
 function closePage() {
 	const obj = {
-		path: "/contract/contract/basic/index",
+		path: "/contract/annex",
 		query: { t: Date.now(), pageNum: history.state.pageNum }
 	};
 	proxy.$tab.closeOpenPage(obj);
