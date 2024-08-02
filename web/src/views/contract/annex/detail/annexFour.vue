@@ -12,7 +12,7 @@
 				<div class="form-item__block">
 					<el-input
 						disabled
-						v-model="formData.conReceivableTransferNum"
+						v-model="formData.conSignReceiptVo.conReceivableTransferNum"
 						:placeholder="showPlaceholder('自动生成')"
 						clearable
 						:style="formItemContentStyle"
@@ -28,7 +28,7 @@
 				<div class="form-item__block">
 					<el-input
 						disabled
-						v-model="formData.transactionContNumName"
+						v-model="formData.conSignReceiptVo.transactionContNumName"
 						:placeholder="showPlaceholder('自动生成')"
 						clearable
 						:style="formItemContentStyle"
@@ -41,7 +41,7 @@
 				<div class="form-item__block">
 					<el-input
 						disabled
-						v-model="formData.payBackGraceDate"
+						v-model="formData.conSignReceiptVo.payBackGraceDate"
 						:placeholder="showPlaceholder('自动生成')"
 						clearable
 						:style="formItemContentStyle"
@@ -54,7 +54,7 @@
 				<el-form-item label="客户公司名称" prop="customerName">
 					<div class="form-item__block">
 						<CustomerSelect
-							:showValue="formData.customerName"
+							:showValue="formData.conSignReceiptVo.customerName"
 							:option="configSelect.option"
 							:queryPropList="configSelect.queryPropList"
 							:tablePropList="configSelect.tablePropList"
@@ -66,7 +66,7 @@
 				<el-form-item label="送达地址" prop="sendAddress">
 					<div class="form-item__block">
 						<el-input
-							v-model="formData.sendAddress"
+							v-model="formData.conSignReceiptVo.sendAddress"
 							:placeholder="showPlaceholder('请输入送达地址')"
 							clearable
 							:style="formItemContentStyle"
@@ -79,7 +79,7 @@
 					<div class="form-item__block">
 						<el-input
 							disabled
-							v-model="formData.contactsName"
+							v-model="formData.conSignReceiptVo.contactsName"
 							:placeholder="showPlaceholder('自动生成')"
 							clearable
 							:style="formItemContentStyle"
@@ -92,7 +92,7 @@
 					<div class="form-item__block">
 						<el-input
 							disabled
-							v-model="formData.mobilePhone"
+							v-model="formData.conSignReceiptVo.mobilePhone"
 							:placeholder="showPlaceholder('选择客户公司带入')"
 							clearable
 							:style="formItemContentStyle"
@@ -105,7 +105,7 @@
 					<div class="form-item__block">
 						<el-input
 							disabled
-							v-model="formData.emial"
+							v-model="formData.conSignReceiptVo.emial"
 							:placeholder="showPlaceholder('自动生成')"
 							clearable
 							:style="formItemContentStyle"
@@ -117,7 +117,7 @@
 				<el-form-item label="联系人传真" prop="foxNum">
 					<div class="form-item__block">
 						<el-input
-							v-model="formData.foxNum"
+							v-model="formData.conSignReceiptVo.foxNum"
 							:placeholder="showPlaceholder('请输入联系人传真')"
 							clearable
 							:style="formItemContentStyle"
@@ -277,93 +277,15 @@ watch(
 //----------------------- ref, recative, watch --------------------------------------------------------
 
 function configSelectRow(row) {
-	formData.customerName = row.customerName; // 客户名称
-	formData.sendAddress = row.applySendAddress; // 地址
-	formData.contactsName = row.applyPersonName; // 联系人
-	formData.mobilePhone = row.applyPersonMobileNumber; // 联系电话
-	formData.emial = row.applyPersonEmail; // 传真
+	formData.conSignReceiptVo.customerName = row.customerName; // 客户名称
+	formData.conSignReceiptVo.sendAddress = row.applySendAddress; // 地址
+	formData.conSignReceiptVo.contactsName = row.applyPersonName; // 联系人
+	formData.conSignReceiptVo.mobilePhone = row.applyPersonMobileNumber; // 联系电话
+	formData.conSignReceiptVo.emial = row.applyPersonEmail; // 传真
 }
 
-// dialog  数据修改
-function handleUpdate(rows) {
-	dialogAdd(rows);
-}
-
-// dialog 数据移除
-function handleDelete(rows) {
-	proxy.$modal
-		.confirm("是否确认数据项？")
-		.then(function () {
-			formData.carList = formData.carList.filter(item => {
-				return item.transactionContNumName !== rows.transactionContNumName;
-			});
-		})
-		.catch(e => {
-			console.log(e);
-		});
-}
-
-// dialog打开
-function dialogAdd(row) {
-	openAccountAdd.value = true;
-
-	// 根据row 判断 是 【编辑】还是 【新增】
-	if (row) {
-		dialogType.value = "edit";
-
-		dialogFormData.value = deepClone(row);
-	} else {
-		dialogType.value = "add";
-	}
-}
 // Form item 内容的统一宽度
 const formItemContentStyle = { width: "100%" };
-
-// 重置添加联系人
-function resetDialogForm() {
-	dialogFormData.value = {
-		accountType: null,
-		currencyType: null,
-		accountBankInfo: null,
-		accountName: null,
-		accountInfo: null,
-		remark: null
-	};
-	proxy.$refs["formInput"].clearValidate();
-}
-
-// dialog 保存
-function saveDialog() {
-	proxy.$refs["formInput"].validate(valid => {
-		if (valid) {
-			if (dialogType.value === "edit") {
-				// 修改
-				formData.carList = formData.carList.map(item => {
-					if (
-						item.transactionContNumName ==
-						dialogFormData.value.transactionContNumName
-					) {
-						return dialogFormData.value;
-					} else {
-						return item;
-					}
-				});
-			} else {
-				// 新增
-				formData.carList.push(dialogFormData.value);
-			}
-
-			openAccountAdd.value = false;
-			resetDialogForm();
-		}
-	});
-}
-
-// dialog 关闭
-function closeAccountAdd() {
-	resetDialogForm();
-	openAccountAdd.value = false;
-}
 
 // 显示placeholder占位字符
 function showPlaceholder(txt) {

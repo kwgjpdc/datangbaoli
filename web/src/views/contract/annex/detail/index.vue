@@ -147,8 +147,8 @@ const data = ref({
 
 	// 附件1：
 
-	receivableNumber: null, //应收账款转让明细表 【编号】
-	customerName: null, //保理申请人
+	receivableNumber: null, // 应收账款转让明细表 【编号】
+	customerName: null, // 保理申请人
 	contractNum: null, // 保理主合同编号
 
 	carList: [
@@ -162,46 +162,51 @@ const data = ref({
 
 	// 附件2：
 
-	contractNum: null, // 合同编号
+	contractAgreeFileVo: {
+		id: null,
 
-	financingNum: null, // 保理融资本金
+		contractNum: null, // 合同编号
 
-	receivableType: null, // 保理融资期限选项
-	receivableEndDate: null, // 保理融资期限-关联应收账款转让明细表中的应收
-	receivablePayDate: null, // 保理融资款拨付日 （解释：其中一个选项）
-	pjEndDate: null, // 保理融资票据日期
+		financingNum: null, // 保理融资本金
 
-	interestGraceDate: null, //利息支付宽限期-从项目尽调中带入 （尽调无）
+		receivableType: null, // 保理融资期限选项
+		receivableEndDate: null, // 保理融资期限-关联应收账款转让明细表中的应收
+		receivablePayDate: null, // 保理融资款拨付日 （解释：其中一个选项）
+		pjEndDate: null, // 保理融资票据日期
 
-	payBackGraceDate: null, //还款宽限期-从项目尽调中带入 （尽调有，带入）
+		interestGraceDate: null, //利息支付宽限期-从项目尽调中带入 （尽调无）
 
-	manageCost: null, // 管理费率 （尽调有，可修改）
-	financingCost: null, // 保理融资利率 （尽调无）
-	graceCost: null, // 宽限期利率 （尽调有，可修改）
+		payBackGraceDate: null, //还款宽限期-从项目尽调中带入 （尽调有，带入）
 
-	managePayType: null, // 管理费支付方式
-	manageMonthEndDate: null, // 每季度末支付日
-	managePayTypeWrite: null, // 管理费支付方式 【其他】选项手写内容
+		manageCost: null, // 管理费率 （尽调有，可修改）
+		financingCost: null, // 保理融资利率 （尽调无）
+		graceCost: null, // 宽限期利率 （尽调有，可修改）
 
-	financingCostPayType: null, // 保理融资利息支付方式-除了其他方式以外
-	lxMonthEndDate: null, // 每季度末支付日
-	financingCostPayTypeOther: null, // 其他
+		managePayType: null, // 管理费支付方式
+		manageMonthEndDate: null, // 每季度末支付日
+		managePayTypeWrite: null, // 管理费支付方式 【其他】选项手写内容
 
-	defaultInterestRate: null, //违约金利率-从尽调中取值，尽调中的违约利 （尽调有）
+		financingCostPayType: null, // 保理融资利息支付方式-除了其他方式以外
+		lxMonthEndDate: null, // 每季度末支付日
+		financingCostPayTypeOther: null, // 其他
 
-	obligorGuaranteeAmount: null, //应收账款债务人付款担保额度-与保理融资本金一致
+		defaultInterestRate: null, //违约金利率-从尽调中取值，尽调中的违约利 （尽调有）
 
-	payType: null, // 支付方式
+		obligorGuaranteeAmount: null, //应收账款债务人付款担保额度-与保理融资本金一致
 
-	paymentsType: null, //保理融资款收取账户选项
-	paymentsAccountName: null, //保理融资款收取账户-户名填写内容
-	paymentsAccount: null, //保理融资款收取账户-账号填写内容
-	paymentsAccountBank: null, //保理融资款收取账户-开户行名称
+		payType: null, // 支付方式
+
+		paymentsType: null, //保理融资款收取账户选项
+		paymentsAccountName: null, //保理融资款收取账户-户名填写内容
+		paymentsAccount: null, //保理融资款收取账户-账号填写内容
+		paymentsAccountBank: null //保理融资款收取账户-开户行名称
+	},
 
 	// 附件3
 
 	crtList: [
 		{
+			id: null,
 			conReceivableTransferNum: null, // 附件3 【编号】
 			debtorPerson: null, // 债务人名称
 			transferName: null, // 转让人名称
@@ -209,10 +214,11 @@ const data = ref({
 			accountNum: null, // 账号
 			accountBank: null, // 开户行
 			zbPersonName: null, // 主办人名称
-			zbPersonTel: null // 主办人电话
-			// payBackGraceDate: null, // 还款宽限期 【附件2从尽调带入，并在这里展示】
+			zbPersonTel: null, // 主办人电话
+			payBackGraceDate: null // 还款宽限期 【附件2从尽调带入，并在这里展示】
 		},
 		{
+			id: null,
 			conReceivableTransferNum: null, // 附件3 【编号】
 			debtorPerson: null, // 债务人名称
 			transferName: null, // 转让人名称
@@ -220,22 +226,25 @@ const data = ref({
 			accountNum: null, // 账号
 			accountBank: null, // 开户行
 			zbPersonName: null, // 主办人名称
-			zbPersonTel: null // 主办人电话
-			// payBackGraceDate: null, // 还款宽限期 【附件2从尽调带入，并在这里展示】
+			zbPersonTel: null, // 主办人电话
+			payBackGraceDate: null // 还款宽限期 【附件2从尽调带入，并在这里展示】
 		}
 	],
 
 	// 附件4
 
-	usePerson: null, // 转让人
-	// conReceivableTransferNum: null, //【应收账款转让通知书】编号 （附件三维护）
-	transactionContNumName: null, // 基础交易合同编号及名称
-	// customerName: null, // 客户公司名称
-	sendAddress: null, // 送达地址
-	contactsName: null, // 联系人名称
-	mobilePhone: null, // 联系人电话
-	emial: null, // 联系人电子邮箱
-	foxNum: null // 联系人传真
+	conSignReceiptVo: {
+		id: null,
+		usePerson: null, // 转让人
+		conReceivableTransferNum: null, //【应收账款转让通知书】编号 （附件三编号）
+		transactionContNumName: null, // 基础交易合同编号及名称
+		customerName: null, // 客户公司名称
+		sendAddress: null, // 送达地址
+		contactsName: null, // 联系人名称
+		mobilePhone: null, // 联系人电话
+		emial: null, // 联系人电子邮箱
+		foxNum: null // 联系人传真
+	}
 });
 
 // 页面是View状态
@@ -378,6 +387,7 @@ function getDetailData(id) {
 function handleParams() {
 	const formData = data.value;
 
+	debugger;
 	// 附件1 处理数据
 	const carList = formData.carList.map(item => ({
 		...item,

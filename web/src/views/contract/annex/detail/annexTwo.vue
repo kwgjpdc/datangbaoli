@@ -24,7 +24,7 @@
 				<div class="form-item__block">
 					<el-input
 						disabled
-						v-model="formData.contractNum"
+						v-model="formData.contractAgreeFileVo.contractNum"
 						:placeholder="showPlaceholder('自动生成')"
 						clearable
 						:style="formItemContentStyle"
@@ -37,7 +37,7 @@
 				<div class="form-item__block">
 					<el-input
 						disabled
-						v-model="formData.receivableNumber"
+						v-model="formData.contractAgreeFileVo.receivableNumber"
 						:placeholder="showPlaceholder('自动生成')"
 						clearable
 						:style="formItemContentStyle"
@@ -49,7 +49,7 @@
 			<el-form-item label="保理融资本金" prop="financingNum">
 				<div class="form-item__block">
 					<el-input
-						v-model="formData.financingNum"
+						v-model="formData.contractAgreeFileVo.financingNum"
 						:placeholder="showPlaceholder('请输入保理融资本金')"
 						clearable
 						:style="formItemContentStyle"
@@ -60,12 +60,10 @@
 
 			<el-row>
 				<el-form-item label="融资期限" prop="receivableType">
-					<el-radio-group v-model="formData.receivableType">
+					<el-radio-group v-model="formData.contractAgreeFileVo.receivableType">
 						<el-radio label="1" name="type"
 							>自保理融资款拨付之日至{{
-								(formData.carList[0] &&
-									formData.carList[0].receivableEndDate) ||
-								"-"
+								formData.contractAgreeFileVo.receivableEndDate || "-"
 							}}</el-radio
 						>
 
@@ -73,7 +71,7 @@
 							自保理融资款拨付之日起
 							<el-input
 								size="small"
-								v-model="formData.receivablePayDate"
+								v-model="formData.contractAgreeFileVo.receivablePayDate"
 								style="width: 80px"
 							/>
 							天
@@ -83,7 +81,7 @@
 							保理融资票据日期：
 							<el-date-picker
 								size="small"
-								v-model="formData.pjEndDate"
+								v-model="formData.contractAgreeFileVo.pjEndDate"
 								placeholder="请选择日期"
 								type="date"
 								value-format="YYYY-MM-DD"
@@ -97,7 +95,7 @@
 			<el-form-item label="利息支付宽限期" prop="interestGraceDate">
 				<div class="form-item__block">
 					<el-input
-						v-model="formData.interestGraceDate"
+						v-model="formData.contractAgreeFileVo.interestGraceDate"
 						:placeholder="showPlaceholder('请输入利息支付宽限期')"
 						clearable
 						:style="formItemContentStyle"
@@ -109,7 +107,7 @@
 			<el-form-item label="还款宽限期" prop="payBackGraceDate">
 				<div class="form-item__block">
 					<el-input
-						v-model="formData.payBackGraceDate"
+						v-model="formData.contractAgreeFileVo.payBackGraceDate"
 						:placeholder="showPlaceholder('请输入还款宽限期')"
 						clearable
 						:style="formItemContentStyle"
@@ -121,7 +119,7 @@
 			<el-form-item label="管理费率" prop="manageCost">
 				<div class="form-item__block">
 					<el-input
-						v-model="formData.manageCost"
+						v-model="formData.contractAgreeFileVo.manageCost"
 						:placeholder="showPlaceholder('请输入管理费率')"
 						clearable
 						:style="formItemContentStyle"
@@ -133,7 +131,7 @@
 			<el-form-item label="保理融资利率" prop="financingCost">
 				<div class="form-item__block">
 					<el-input
-						v-model="formData.financingCost"
+						v-model="formData.contractAgreeFileVo.financingCost"
 						:placeholder="showPlaceholder('请输入保理融资利率')"
 						clearable
 						:style="formItemContentStyle"
@@ -145,7 +143,7 @@
 			<el-form-item label="宽限期利率" prop="graceCost">
 				<div class="form-item__block">
 					<el-input
-						v-model="formData.graceCost"
+						v-model="formData.contractAgreeFileVo.graceCost"
 						:placeholder="showPlaceholder('请输入宽限期利率')"
 						clearable
 						:style="formItemContentStyle"
@@ -156,13 +154,13 @@
 
 			<el-row>
 				<el-form-item label="管理费支付方式" prop="managePayType">
-					<el-radio-group v-model="formData.managePayType">
+					<el-radio-group v-model="formData.contractAgreeFileVo.managePayType">
 						<el-radio label="1" name="type"
 							>在甲方支付保理融资前由乙方一次性支付</el-radio
 						>
 						<el-radio label="2" name="type"
 							>每季度支付一次（季度末月支付日<el-input
-								v-model="formData.manageMonthEndDate"
+								v-model="formData.contractAgreeFileVo.manageMonthEndDate"
 								size="small"
 								style="width: 50px"
 							/>前）</el-radio
@@ -171,8 +169,8 @@
 							其他方式
 							<el-input
 								size="small"
-								v-if="formData.managePayType === '3'"
-								v-model="formData.managePayTypeWrite"
+								v-if="formData.contractAgreeFileVo.managePayType === '3'"
+								v-model="formData.contractAgreeFileVo.managePayTypeWrite"
 								placeholder="请输入其他方式"
 							/>
 						</el-radio>
@@ -182,13 +180,15 @@
 
 			<el-row>
 				<el-form-item label="保理融资利息支付方式" prop="financingCostPayType">
-					<el-radio-group v-model="formData.financingCostPayType">
+					<el-radio-group
+						v-model="formData.contractAgreeFileVo.financingCostPayType"
+					>
 						<el-radio label="1" name="type"
 							>在甲方支付保理融资前由乙方一次性支付</el-radio
 						>
 						<el-radio label="2" name="type"
 							>每季度支付一次（季度末月支付日<el-input
-								v-model="formData.lxMonthEndDate"
+								v-model="formData.contractAgreeFileVo.lxMonthEndDate"
 								size="small"
 								style="width: 50px"
 							/>前）</el-radio
@@ -200,8 +200,8 @@
 							其他方式
 							<el-input
 								size="small"
-								v-if="formData.financingCostPayType === '4'"
-								v-model="formData.financingCostPayTypeOther"
+								v-if="formData.contractAgreeFileVo.financingCostPayType === '4'"
+								v-model="formData.contractAgreeFileVo.financingCostPayTypeOther"
 								placeholder="请输入其他方式"
 							/>
 						</el-radio>
@@ -212,7 +212,7 @@
 			<el-form-item label="违约金利率" prop="defaultInterestRate">
 				<div class="form-item__block">
 					<el-input
-						v-model="formData.defaultInterestRate"
+						v-model="formData.contractAgreeFileVo.defaultInterestRate"
 						:placeholder="showPlaceholder('请输入违约金利率')"
 						clearable
 						:style="formItemContentStyle"
@@ -227,7 +227,7 @@
 			>
 				<div class="form-item__block">
 					<el-input
-						v-model="formData.obligorGuaranteeAmount"
+						v-model="formData.contractAgreeFileVo.obligorGuaranteeAmount"
 						:placeholder="showPlaceholder('应收账款债务人付款担保额度')"
 						clearable
 						:style="formItemContentStyle"
@@ -238,7 +238,7 @@
 
 			<el-row>
 				<el-form-item label="支付方式" prop="payType">
-					<el-radio-group v-model="formData.payType">
+					<el-radio-group v-model="formData.contractAgreeFileVo.payType">
 						<el-radio label="1" name="type"
 							>在甲方支付保理融资前由乙方一次性支付</el-radio
 						>
@@ -252,7 +252,7 @@
 			<el-row>
 				<el-form-item label="保理融资款收取账户" prop="paymentsType">
 					<div class="radio-column">
-						<el-radio-group v-model="formData.paymentsType">
+						<el-radio-group v-model="formData.contractAgreeFileVo.paymentsType">
 							<el-radio label="1" name="type"
 								>乙方确认，本次保理融资款收取账户为本合同专用条款约定的收款账户</el-radio
 							>
@@ -264,7 +264,9 @@
 								<el-row>
 									<el-form-item label="户名" prop="paymentsAccountName">
 										<BankAccountSelect
-											:showValue="formData.paymentsAccountName"
+											:showValue="
+												formData.contractAgreeFileVo.paymentsAccountName
+											"
 											:option="customerConfig.option"
 											:queryPropList="customerConfig.queryPropList"
 											:tablePropList="customerConfig.tablePropList"
@@ -276,7 +278,7 @@
 									<el-form-item label="账号" prop="paymentsAccount">
 										<el-input
 											disabled
-											v-model="formData.paymentsAccount"
+											v-model="formData.contractAgreeFileVo.paymentsAccount"
 											:placeholder="showPlaceholder('自动生成')"
 										/>
 									</el-form-item>
@@ -284,7 +286,7 @@
 									<el-form-item label="开户行" prop="paymentsAccountBank">
 										<el-input
 											disabled
-											v-model="formData.paymentsAccountBank"
+											v-model="formData.contractAgreeFileVo.paymentsAccountBank"
 											:placeholder="showPlaceholder('自动生成')"
 										/>
 									</el-form-item>
@@ -301,8 +303,6 @@
 <script setup>
 import { ref, reactive, computed } from "vue";
 import BankAccountSelect from "@/components/BankAccountSelect";
-import { StrUtil } from "@/utils/StrUtil";
-import { deepClone } from "@/utils/index";
 
 // 组件属性
 const props = defineProps({
@@ -420,21 +420,21 @@ const formItemContentStyle = { width: "100%" };
 // 管理费支付方式 【其他】选项逻辑处理；
 function otherChange(val) {
 	if (!val) {
-		formData.managePayTypeWrite = null;
+		formData.contractAgreeFileVo.managePayTypeWrite = null;
 	}
 }
 
 // 管理费支付方式 【其他】选项逻辑处理；
 function otherChange2(val) {
 	if (!val) {
-		formData.managePayTypeWrite = null;
+		formData.contractAgreeFileVo.managePayTypeWrite = null;
 	}
 }
 
 function customerConfigSelectRow(row) {
-	formData.paymentsAccountBank = row.accountBankInfo;
-	formData.paymentsAccountName = row.accountName;
-	formData.paymentsAccount = row.accountInfo;
+	formData.contractAgreeFileVo.paymentsAccountBank = row.accountBankInfo;
+	formData.contractAgreeFileVo.paymentsAccountName = row.accountName;
+	formData.contractAgreeFileVo.paymentsAccount = row.accountInfo;
 }
 
 // 显示placeholder占位字符
