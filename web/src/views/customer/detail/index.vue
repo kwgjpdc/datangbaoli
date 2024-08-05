@@ -89,14 +89,14 @@
 				></customer-info>
 
 				<!-- 客户账号管理 -->
-				<bank-info
+				<!-- <bank-info
 					id="bankInfo"
 					ref="bankInfoRef"
 					v-if="infoMsg"
 					:infoData="customerDetailInfo.bankInfoList"
 					:customerId="customerId"
 					:routerQueryObj="routerQueryObj"
-				></bank-info>
+				></bank-info> -->
 
 				<!-- 客户纳税信息 -->
 				<tax-info

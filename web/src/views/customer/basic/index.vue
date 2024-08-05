@@ -44,6 +44,19 @@
 					>发起授信</el-button
 				>
 			</el-col>
+
+			<el-col :span="1.5">
+				<el-button
+					type="success"
+					plain
+					icon="Edit"
+					:disabled="radio === ''"
+					@click="handleCredit(custSelection)"
+					v-hasPermi="['customer:credit:edit']"
+					>三重一大额度</el-button
+				>
+			</el-col>
+
 			<!-- <el-col :span="1.5">
         <el-button
           type="danger"
