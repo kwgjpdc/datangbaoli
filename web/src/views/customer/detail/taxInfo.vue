@@ -143,6 +143,7 @@
 								</el-form-item>
 							</el-col>
 						</el-row>
+
 						<el-row>
 							<el-col :span="11">
 								<el-form-item label="电话" prop="taxpayerPhoneNo">
@@ -156,16 +157,18 @@
 								</el-form-item>
 							</el-col>
 							<el-col :span="11" :offset="2">
-								<el-form-item label="地址" prop="taxpayerAddr">
+								<el-form-item label="邮箱" prop="taxpayerEmail">
 									<el-input
-										v-model="dialogFormData.taxpayerAddr"
-										maxlength="64"
-										:placeholder="showPlaceholder('请输入地址')"
+										v-model="dialogFormData.taxpayerEmail"
+										:placeholder="showPlaceholder('请输入纳税人邮箱')"
 										:style="formItemContentStyle"
+										maxlength="64"
+										oninput="value=value.replace(/[^0-9A-Za-z.@]/g,'')"
 									/>
 								</el-form-item>
 							</el-col>
 						</el-row>
+
 						<el-row>
 							<el-col :span="11">
 								<el-form-item label="开户行" prop="bankName">
@@ -201,14 +204,17 @@
 									/>
 								</el-form-item>
 							</el-col>
-							<el-col :span="11" :offset="2">
-								<el-form-item label="邮箱" prop="taxpayerEmail">
+						</el-row>
+
+						<el-row :span="24">
+							<el-col :span="24">
+								<el-form-item label="地址" prop="taxpayerAddr">
 									<el-input
-										v-model="dialogFormData.taxpayerEmail"
-										:placeholder="showPlaceholder('请输入纳税人邮箱')"
-										:style="formItemContentStyle"
+										type="textarea"
+										v-model="dialogFormData.taxpayerAddr"
 										maxlength="64"
-										oninput="value=value.replace(/[^0-9A-Za-z.@]/g,'')"
+										:placeholder="showPlaceholder('请输入地址')"
+										:style="formItemContentStyle"
 									/>
 								</el-form-item>
 							</el-col>
@@ -311,11 +317,6 @@ const rules = ref({
 		}
 	],
 	taxpayerEmail: [
-		{
-			required: true,
-			message: "纳税人邮箱不能为空",
-			trigger: "blur"
-		},
 		{
 			// pattern: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/,
 			pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
