@@ -266,10 +266,17 @@ const formData = reactive(props.data);
 
 // 表单验证规则
 const rules = ref({
-	projectNo: [
+	contractNum: [
 		{
 			required: true,
-			message: "尽调编号不能为空",
+			message: "保理合同编号不能为空",
+			trigger: "change"
+		}
+	],
+	customerName: [
+		{
+			required: true,
+			message: "保理申请人不能为空",
 			trigger: "change"
 		}
 	]

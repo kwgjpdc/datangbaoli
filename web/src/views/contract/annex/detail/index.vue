@@ -477,8 +477,6 @@ function handleParams() {
 function submitForm() {
 	let handleData = handleParams();
 
-	debugger;
-
 	if (isEdit.value) {
 		// 编辑
 		handleData.contractAgreeFileVo.id = contractAgreeFileVoId.value;

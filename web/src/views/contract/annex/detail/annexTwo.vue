@@ -304,6 +304,101 @@
 import { ref, reactive, computed } from "vue";
 import BankAccountSelect from "@/components/BankAccountSelect";
 
+// 表单验证规则
+const rules = ref({
+	contractNum: [
+		{
+			required: true,
+			message: "保理合同编号不能为空",
+			trigger: "change"
+		}
+	],
+	financingNum: [
+		{
+			required: true,
+			message: "保理融资本金不能为空",
+			trigger: "change"
+		}
+	],
+	receivableType: [
+		{
+			required: true,
+			message: "融资期限不能为空",
+			trigger: "change"
+		}
+	],
+	interestGraceDate: [
+		{
+			required: true,
+			message: "利息支付宽限期不能为空",
+			trigger: "change"
+		}
+	],
+	payBackGraceDate: [
+		{
+			required: true,
+			message: "还款宽限期不能为空",
+			trigger: "change"
+		}
+	],
+	manageCost: [
+		{
+			required: true,
+			message: "管理费率不能为空",
+			trigger: "change"
+		}
+	],
+	graceCost: [
+		{
+			required: true,
+			message: "宽限期利率不能为空",
+			trigger: "change"
+		}
+	],
+	managePayType: [
+		{
+			required: true,
+			message: "管理费支付方式不能为空",
+			trigger: "change"
+		}
+	],
+	financingCostPayType: [
+		{
+			required: true,
+			message: "保理融资利息支付方式不能为空",
+			trigger: "change"
+		}
+	],
+	defaultInterestRate: [
+		{
+			required: true,
+			message: "违约金利率不能为空",
+			trigger: "change"
+		}
+	],
+	obligorGuaranteeAmount: [
+		{
+			required: true,
+			message: "应收账款债务人付款担保额度不能为空",
+			trigger: "change"
+		}
+	],
+	payType: [
+		{
+			required: true,
+			message: "支付方式不能为空",
+			trigger: "change"
+		}
+	],
+	paymentsType: [
+		{
+			required: true,
+			message: "保理融资款收取账户不能为空",
+			trigger: "change"
+		}
+	]
+});
+
 // 组件属性
 const props = defineProps({
 	data: {
@@ -377,17 +472,6 @@ const dataScope = reactive({
 });
 
 const { customerConfig } = toRefs(dataScope);
-
-// 表单验证规则
-const rules = ref({
-	projectNo: [
-		{
-			required: true,
-			message: "尽调编号不能为空",
-			trigger: "change"
-		}
-	]
-});
 
 // 页面是View状态
 const isView = computed(() => {
