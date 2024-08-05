@@ -63,12 +63,6 @@
 							</el-table-column>
 							<el-table-column label="户名" align="center" prop="accountName">
 							</el-table-column>
-							<el-table-column
-								label="流水余额"
-								align="center"
-								prop="accountCapitalInfo"
-							>
-							</el-table-column>
 
 							<el-table-column
 								label="操作"
@@ -183,7 +177,7 @@
 						</el-form-item>
 					</el-col>
 
-					<el-col :span="12">
+					<!-- <el-col :span="12">
 						<el-form-item label="流水余额" prop="accountCapitalInfo">
 							<ElPriceInput
 								v-model:form="accountFormInput"
@@ -201,7 +195,7 @@
 								</template>
 							</ElPriceInput>
 						</el-form-item>
-					</el-col>
+					</el-col> -->
 
 					<el-col :span="24">
 						<el-form-item>
@@ -230,6 +224,10 @@ const props = defineProps({
 		type: String,
 		default: ""
 	},
+	baseInfoRef: {
+		type: Object,
+		default: {}
+	},
 	routerQueryObj: {
 		type: Object,
 		default: null
@@ -257,9 +255,6 @@ const dataScope = reactive({
 		],
 		accountName: [
 			{ required: true, message: "户名不能为空", trigger: "change" }
-		],
-		accountCapitalInfo: [
-			{ required: true, message: "流水余额不能为空", trigger: "change" }
 		]
 	}
 });
@@ -295,14 +290,15 @@ watch(
 function addAccount(row) {
 	openAccountAdd.value = true;
 	if (!row) {
-		//   初始化表单数据
+		// 初始化表单数据
 		accountFormInput.value.accountType = cust_account_type.value[0].value;
 		accountFormInput.value.currencyType = sys_currency_type.value[0].value;
 	} else {
-		accountFormInput.value = row;
+		accountFormInput.value = deepClone(row);
 		accountFormInput.value.type = "1";
 	}
 }
+
 // 多选框选中数据
 function handleSelectionChange(selection) {
 	ids.value = selection.map(item => item.accountName);
@@ -318,13 +314,14 @@ function saveAccount() {
 		} else {
 			// TODO 提交表单
 			if (accountFormInput.value.type) {
-				// x修改
+				// 修改
 				formData.value.bankInfoList.map(list => {
 					if (list.accountName == accountFormInput.value.accountName) {
 						list = accountFormInput.value;
 					}
 				});
 			} else {
+				// 新增
 				formData.value.bankInfoList.push(accountFormInput.value);
 			}
 			resetAccountFormInput();
@@ -332,6 +329,7 @@ function saveAccount() {
 		}
 	});
 }
+
 // 重置添加联系人
 function resetAccountFormInput() {
 	accountFormInput.value = {
@@ -349,10 +347,12 @@ function closeAccountAdd() {
 	resetAccountFormInput();
 	openAccountAdd.value = false;
 }
+
 // 账号表单修改
 function handleUpdate(rows) {
 	addAccount(rows);
 }
+
 // 账号从bankInfoList中移除
 function handleDelete(rows) {
 	const accountNames = rows ? [rows.accountName] : ids.value;

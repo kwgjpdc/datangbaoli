@@ -37,6 +37,7 @@
 					id="bankInfo"
 					ref="bankInfoRef"
 					:infoData="customerBankInfo.bankInfoList"
+					:baseInfoRef="basicInformationRef"
 					:customerId="customerId"
 					:routerQueryObj="routerQueryObj"
 				></bank-info>
