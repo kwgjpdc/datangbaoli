@@ -51,7 +51,7 @@
 					plain
 					icon="Edit"
 					:disabled="radio === ''"
-					@click="handleCredit(custSelection)"
+					@click="handleSanyi(custSelection)"
 					v-hasPermi="['customer:credit:edit']"
 					>三重一大额度</el-button
 				>
@@ -553,6 +553,24 @@ function handleUpdate(row) {
 		}
 	});
 }
+
+// 三重一大额度
+function handleSanyi(row) {
+	// if (!(getCreditNo(row) && row.status === "4")) {
+	// 	return proxy.$modal.msgWarning("当前客户未完成授信");
+	// }
+
+	const _customerId = row.customerId;
+	router.push({
+		path: "/customer/customer/creditDetail",
+		query: {
+			customerId: _customerId,
+			pageNum: queryParams.value.pageNum,
+			isSanyi: true
+		}
+	});
+}
+
 // 发起授信
 function handleCredit(row) {
 	reset();
