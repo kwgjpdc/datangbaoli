@@ -46,7 +46,11 @@
 				</template>
 			</el-table-column>
 
-			<el-table-column label="客户种类" align="center" prop="customerType" />
+			<el-table-column label="客户种类" align="center" prop="customerType">
+				<template #default="scope">
+					<dict-tag :options="customer_type" :value="scope.row.customerType" />
+				</template>
+			</el-table-column>
 
 			<el-table-column label="债务人名称" align="center" prop="obligorName" />
 
@@ -95,7 +99,11 @@ import { deepClone } from "@/utils/index";
 import QueryParams from "@/components/QueryParams";
 
 const { proxy } = getCurrentInstance();
+
+const { customer_type } = proxy.useDict("customer_type");
+
 const route = useRoute();
+
 const router = useRouter();
 
 const infoList = ref([]);

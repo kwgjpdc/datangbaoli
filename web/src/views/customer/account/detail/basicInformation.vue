@@ -25,13 +25,19 @@
 
 					<el-col :xl="6" :lg="8" :sm="12" :xs="24">
 						<el-form-item label="客户种类" prop="customerType">
-							<el-input
-								class="fixed-width-input"
+							<el-select
 								v-model="formData.customerType"
-								placeholder="请输入客户种类"
-								clearable
-								maxlength="32"
-							></el-input>
+								filterable
+								placeholder="请选择"
+								:style="{ width: '240px' }"
+							>
+								<el-option
+									v-for="item in customer_type"
+									:key="item.value"
+									:label="item.label"
+									:value="item.value"
+								/>
+							</el-select>
 						</el-form-item>
 					</el-col>
 
@@ -84,6 +90,9 @@ const props = defineProps({
 		default: null
 	}
 });
+
+const { customer_type } = proxy.useDict("customer_type");
+
 const activeNames = ref(["1"]); //tab打开状态
 const loading = ref(false);
 const businessTermDate = ref([]);

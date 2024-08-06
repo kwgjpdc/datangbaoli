@@ -3,16 +3,14 @@
 		<el-form ref="elForm" :model="formData" label-width="140px">
 			<el-collapse v-model="activeNames" style="border-top: 0">
 				<el-collapse-item title="客户银行账号信息" name="8">
-					<!--  联系方式表格-->
 					<el-card class="box-card">
 						<template #header v-if="!props.routerQueryObj.viewFlag">
-							<!-- <span>联系方式</span> -->
 							<el-button
 								style="float: right; padding: 3px 0"
 								type="primary"
 								link
 								@click="handleDelete()"
-								:disabled="single"
+								:disabled="!ids.length"
 								>删除</el-button
 							>
 							<el-button
@@ -244,10 +242,6 @@ let openAccountAdd = ref(false); //新增账号弹窗
 
 const ids = ref([]);
 
-const single = ref(true);
-
-const multiple = ref(true);
-
 const dataScope = reactive({
 	accountAddrules: {
 		accountType: [
@@ -373,9 +367,7 @@ function resetAccountFormInput() {
 
 // 多选框选中数据
 function handleSelectionChange(selection) {
-	ids.value = selection.map(item => item.accountName);
-	single.value = selection.length != 1;
-	multiple.value = !selection.length;
+	ids.value = selection.map(item => item.accountInfo);
 }
 
 // 关闭联系人弹窗
@@ -388,14 +380,11 @@ function closeAccountAdd() {
 function handleDelete(rows) {
 	const accountInfos = rows ? [rows.accountInfo] : ids.value;
 	proxy.$modal
-		.confirm("是否确认删除账号？")
+		.confirm("确认删除账号？")
 		.then(() => {
 			formData.value.bankInfoList = formData.value.bankInfoList.filter(
 				item => !accountInfos.some(info => info === item.accountInfo)
 			);
-
-			single.value = false;
-			multiple.value = false;
 		})
 		.catch(e => {
 			console.log(e);
