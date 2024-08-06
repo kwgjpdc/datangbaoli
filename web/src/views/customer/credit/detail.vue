@@ -7,7 +7,10 @@
 		<div class="content">
 			<div class="operate-button" v-if="!routerQueryObj.approveFlag">
 				<el-row :gutter="10" justify="end">
-					<el-col :span="1.5" v-if="!routerQueryObj.viewFlag">
+					<el-col
+						:span="1.5"
+						v-if="!routerQueryObj.viewFlag && !routerQueryObj.isSanyi"
+					>
 						<el-button type="primary" icon="List" @click="submitForm(1)"
 							>暂存</el-button
 						>
@@ -459,6 +462,7 @@ const data = reactive({
 const { creditDetailInfo, rules } = toRefs(data);
 let formData = ref({
 	threeImportant: null, // 三重一大额度
+	threeImportantStatus: null, // 三重一大 状态
 	createBy: null,
 	createById: "",
 	createTime: "",
@@ -604,15 +608,31 @@ function submitForm(statusFlag) {
 					});
 			} else {
 				//修改
-				updateInfo(creditInfoSave)
-					.then(response => {
-						proxy.$modal.msgSuccess("授信修改成功");
-						loading.value = false;
-						closePage();
-					})
-					.catch(() => {
-						loading.value = false;
+
+				if (routerQueryObj.value.isSanyi) {
+					const parmas = Object.assign(creditInfoSave, {
+						threeImportantStatus: "2"
 					});
+					updateInfo(parmas)
+						.then(response => {
+							proxy.$modal.msgSuccess("授信修改成功");
+							loading.value = false;
+							closePage();
+						})
+						.catch(() => {
+							loading.value = false;
+						});
+				} else {
+					updateInfo(creditInfoSave)
+						.then(response => {
+							proxy.$modal.msgSuccess("授信修改成功");
+							loading.value = false;
+							closePage();
+						})
+						.catch(() => {
+							loading.value = false;
+						});
+				}
 			}
 		})
 		.catch(() => {

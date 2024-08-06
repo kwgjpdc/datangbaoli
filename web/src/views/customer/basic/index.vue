@@ -184,6 +184,28 @@
 					</el-button>
 				</template>
 			</el-table-column>
+
+			<el-table-column
+				label="三重一大授信状态"
+				align="center"
+				prop="threeImportantStatus"
+			>
+				<template #default="scope">
+					<dict-tag
+						:options="sys_pass_status"
+						:value="scope.row.threeImportantStatus"
+					/>
+				</template>
+			</el-table-column>
+
+			<el-table-column label="三重一大授信审议编号" align="center" width="180">
+				<template #default="scope">
+					<el-button link type="primary" @click="handleSanyiView(scope.row)">
+						{{ scope.row.threeImportantNum || "wwwwwHHHHH" }}
+					</el-button>
+				</template>
+			</el-table-column>
+
 			<el-table-column
 				label="授信额度（千万）"
 				align="center"
@@ -554,7 +576,7 @@ function handleUpdate(row) {
 	});
 }
 
-// 三重一大额度
+// 发起 三重一大额度
 function handleSanyi(row) {
 	// if (!(getCreditNo(row) && row.status === "4")) {
 	// 	return proxy.$modal.msgWarning("当前客户未完成授信");
@@ -608,6 +630,20 @@ function handleCredit(row) {
 	// 		pageNum: queryParams.value.pageNum
 	// 	}
 	// });
+}
+
+function handleSanyiView(row) {
+	reset();
+	const _customerId = row.customerId;
+	router.push({
+		path: "/customer/customer/creditDetail",
+		query: {
+			customerId: _customerId,
+			viewFlag: true,
+			pageNum: queryParams.value.pageNum,
+			isSanyi: true
+		}
+	});
 }
 
 function handleCreditView(row) {
