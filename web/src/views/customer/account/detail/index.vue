@@ -37,18 +37,10 @@
 					id="bankInfo"
 					ref="bankInfoRef"
 					:infoData="customerBankInfo.bankInfoList"
+					:baseInfoRef="basicInformationRef"
 					:customerId="customerId"
 					:routerQueryObj="routerQueryObj"
 				></bank-info>
-
-				<!-- 上传附件 -->
-				<!-- <client-file
-					id="clientFile"
-					ref="clientFileRef"
-					:infoData="customerBankInfo.commonFileList2"
-					:customerId="customerId"
-					:routerQueryObj="routerQueryObj"
-				></client-file> -->
 			</div>
 		</div>
 	</div>
@@ -65,7 +57,6 @@ import { onMounted } from "vue";
 
 import basicInformation from "./basicInformation";
 import bankInfo from "./bankInfo";
-// import clientFile from "./clientFile";
 
 const { proxy } = getCurrentInstance();
 const route = useRoute();
@@ -74,8 +65,8 @@ const active = ref(0);
 const customerId = ref(""); //客户信息id
 const loading = ref(false);
 let routerQueryObj = ref({}); //路由地址所带参数
+
 const basicInformationRef = ref(null);
-const invoiceInfoRef = ref(null);
 
 const data = reactive({
 	customerBankInfo: {
@@ -105,21 +96,6 @@ watch(
 	},
 	{ immediate: true }
 );
-
-/* 修改的时候查询客户基本信息列表 */
-// function getInfoPage() {
-// 	// 原代码留，不知道做什么，看上去有点重要！
-// 	if (!customerId.value) {
-// 		customerBankInfo.value.deptId = useUserStore().dept.deptId;
-// 		customerBankInfo.value.deptName = useUserStore().dept.deptName;
-// 		return;
-// 	}
-// 	loading.value = true;
-// 	getInfo(customerId.value).then(response => {
-// 		customerBankInfo.value = response.data;
-// 		loading.value = false;
-// 	});
-// }
 
 function submitForm() {
 	if (!proxy.$refs["bankInfoRef"].formData.bankInfoList.length) {

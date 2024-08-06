@@ -58,6 +58,34 @@
 						</el-form-item>
 					</el-col>
 				</el-row>
+
+				<el-row :gutter="15" style="margin-right: 30px">
+					<el-col :xl="8" :lg="8" :sm="12" :xs="24">
+						<el-form-item label="大唐云端登陆人名称" prop="loginName">
+							<el-input
+								class="fixed-width-input"
+								v-model="formData.loginName"
+								placeholder="请输入大唐云端登陆人名称"
+								clearable
+								maxlength="32"
+								style="width: 80%"
+							></el-input>
+						</el-form-item>
+					</el-col>
+					<el-col :xl="8" :lg="8" :sm="12" :xs="24">
+						<el-form-item label="大唐云端登录手机号" prop="phone">
+							<el-input
+								class="fixed-width-input"
+								v-model="formData.phone"
+								placeholder="请输入大唐云端登录手机号"
+								oninput="value=value.replace(/[^0-9]/g,'')"
+								clearable
+								style="width: 80%"
+								maxlength="11"
+							></el-input>
+						</el-form-item>
+					</el-col>
+				</el-row>
 			</el-collapse-item>
 		</el-collapse>
 	</el-form>
@@ -86,21 +114,21 @@ const activeNames = ref(["2"]);
 const dataScope = reactive({
 	rules: {
 		applyPersonName: [
-			{ required: true, message: "联系人不能为空", trigger: "blur" }
+			{ required: true, message: "联系人不能为空", trigger: "change" }
 		],
 		applyPersonMobileNumber: [
-			{ required: true, message: "联系电话不能为空", trigger: "blur" }
+			{ required: true, message: "联系电话不能为空", trigger: "change" }
 		],
 		applyPersonEmail: [
-			{ required: true, message: "邮箱不能为空", trigger: "blur" },
-			{
-				pattern: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/,
-				message: " 请输入正确的邮箱格式",
-				trigger: "blur"
-			}
+			{ required: true, message: "邮箱不能为空", trigger: "change" },
+			// {
+			// 	pattern: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/,
+			// 	message: " 请输入正确的邮箱格式",
+			// 	trigger: "change"
+			// }
 		],
 		applySendAddress: [
-			{ required: true, message: "送达地址不能为空", trigger: "blur" }
+			{ required: true, message: "送达地址不能为空", trigger: "change" }
 		]
 	} //验证规律
 });
@@ -108,11 +136,13 @@ const dataScope = reactive({
 const { rules } = toRefs(dataScope);
 
 let formData = ref({
-	applyPersonName: "",
-	applyPersonMobileNumber: "",
-	applyPersonEmail: "",
-	applySendAddress: ""
-}); //不能修改const 定义的数据
+	applyPersonName: null,
+	applyPersonMobileNumber: null,
+	applyPersonEmail: null,
+	applySendAddress: null,
+	loginName: null,
+	phone: null
+});
 
 watch(
 	() => props.infoData,
@@ -121,6 +151,8 @@ watch(
 		formData.value.applyPersonMobileNumber = newValue.applyPersonMobileNumber;
 		formData.value.applyPersonEmail = newValue.applyPersonEmail;
 		formData.value.applySendAddress = newValue.applySendAddress;
+		formData.value.loginName = newValue.loginName;
+		formData.value.phone = newValue.phone;
 	},
 	{ immediate: true, deep: true }
 );

@@ -44,6 +44,19 @@
 					>发起授信</el-button
 				>
 			</el-col>
+
+			<el-col :span="1.5">
+				<el-button
+					type="success"
+					plain
+					icon="Edit"
+					:disabled="radio === ''"
+					@click="handleSanyi(custSelection)"
+					v-hasPermi="['customer:credit:edit']"
+					>三重一大额度</el-button
+				>
+			</el-col>
+
 			<!-- <el-col :span="1.5">
         <el-button
           type="danger"
@@ -133,7 +146,7 @@
 				fixed
 				width="180"
 			/>
-			<el-table-column label="简称" align="center" prop="name" />
+			<el-table-column label="简称" align="center" prop="name" width="130" />
 			<el-table-column
 				label="所属机构"
 				align="center"
@@ -171,6 +184,32 @@
 					</el-button>
 				</template>
 			</el-table-column>
+
+			<el-table-column
+				label="三重一大授信状态"
+				align="center"
+				prop="threeImportantStatus"
+			>
+				<template #default="scope">
+					<dict-tag
+						:options="sys_pass_status"
+						:value="scope.row.threeImportantStatus"
+					/>
+				</template>
+			</el-table-column>
+
+			<el-table-column label="三重一大授信审议编号" align="center" width="180">
+				<template #default="scope">
+					<el-button link type="primary" @click="handleSanyiView(scope.row)">
+						{{
+							scope.row.threeImportantStatus
+								? scope.row.threeImportantNum || "审批后生成编号"
+								: ""
+						}}
+					</el-button>
+				</template>
+			</el-table-column>
+
 			<el-table-column
 				label="授信额度（千万）"
 				align="center"
@@ -540,6 +579,24 @@ function handleUpdate(row) {
 		}
 	});
 }
+
+// 发起 三重一大额度
+function handleSanyi(row) {
+	// if (!(getCreditNo(row) && row.status === "4")) {
+	// 	return proxy.$modal.msgWarning("当前客户未完成授信");
+	// }
+
+	const _customerId = row.customerId;
+	router.push({
+		path: "/customer/customer/creditDetail",
+		query: {
+			customerId: _customerId,
+			pageNum: queryParams.value.pageNum,
+			isSanyi: true
+		}
+	});
+}
+
 // 发起授信
 function handleCredit(row) {
 	reset();
@@ -579,6 +636,22 @@ function handleCredit(row) {
 	// });
 }
 
+// 三重一大预览
+function handleSanyiView(row) {
+	reset();
+	const _customerId = row.customerId;
+	router.push({
+		path: "/customer/customer/creditDetail",
+		query: {
+			customerId: _customerId,
+			pageNum: queryParams.value.pageNum,
+			viewFlag: true, // 预览标识
+			isSanyi: true // 是三重一大维护
+		}
+	});
+}
+
+// 授信预览
 function handleCreditView(row) {
 	reset();
 	const _customerId = row.customerId;

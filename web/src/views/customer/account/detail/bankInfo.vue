@@ -3,16 +3,14 @@
 		<el-form ref="elForm" :model="formData" label-width="140px">
 			<el-collapse v-model="activeNames" style="border-top: 0">
 				<el-collapse-item title="客户银行账号信息" name="8">
-					<!--  联系方式表格-->
 					<el-card class="box-card">
 						<template #header v-if="!props.routerQueryObj.viewFlag">
-							<!-- <span>联系方式</span> -->
 							<el-button
 								style="float: right; padding: 3px 0"
 								type="primary"
 								link
 								@click="handleDelete()"
-								:disabled="single"
+								:disabled="!ids.length"
 								>删除</el-button
 							>
 							<el-button
@@ -63,12 +61,6 @@
 							</el-table-column>
 							<el-table-column label="户名" align="center" prop="accountName">
 							</el-table-column>
-							<el-table-column
-								label="流水余额"
-								align="center"
-								prop="accountCapitalInfo"
-							>
-							</el-table-column>
 
 							<el-table-column
 								label="操作"
@@ -83,7 +75,7 @@
 										link
 										type="primary"
 										icon="Edit"
-										@click="handleUpdate(scope.row)"
+										@click="handleUpdate(scope.row, scope.$index)"
 										v-hasPermi="['cust:contact:edit']"
 										title="修改"
 									></el-button>
@@ -106,7 +98,7 @@
 		<el-dialog
 			title="客户账户"
 			:model-value="openAccountAdd"
-			width="800px"
+			width="1000px"
 			@closed="closeAccountAdd(false)"
 		>
 			<el-form
@@ -182,35 +174,13 @@
 							></el-input>
 						</el-form-item>
 					</el-col>
+				</el-row>
 
-					<el-col :span="12">
-						<el-form-item label="流水余额" prop="accountCapitalInfo">
-							<ElPriceInput
-								v-model:form="accountFormInput"
-								prop="accountCapitalInfo"
-								:rules="rules"
-								:disabled="props.routerQueryObj.viewFlag"
-								:placeholder="'请输入'"
-								:width="240"
-							>
-								<template #prefix>
-									<span> ￥ </span>
-								</template>
-								<template #suffix>
-									<span> 元 </span>
-								</template>
-							</ElPriceInput>
-						</el-form-item>
-					</el-col>
-
-					<el-col :span="24">
-						<el-form-item>
-							<el-button type="primary" @click="saveAccount">保存</el-button>
-							<el-button type="primary" @click="closeAccountAdd(false)"
-								>取消</el-button
-							>
-						</el-form-item>
-					</el-col>
+				<el-row justify="center">
+					<el-button type="primary" @click="saveAccount">保存</el-button>
+					<el-button type="primary" @click="closeAccountAdd(false)"
+						>取消</el-button
+					>
 				</el-row>
 			</el-form>
 		</el-dialog>
@@ -219,6 +189,7 @@
 
 <script setup>
 import { deepClone } from "@/utils/index";
+
 const { proxy } = getCurrentInstance();
 
 const props = defineProps({
@@ -230,18 +201,28 @@ const props = defineProps({
 		type: String,
 		default: ""
 	},
+	baseInfoRef: {
+		type: Object,
+		default: {}
+	},
 	routerQueryObj: {
 		type: Object,
 		default: null
 	}
 });
+
+const { sys_currency_type, cust_account_type } = proxy.useDict(
+	"sys_currency_type",
+	"cust_account_type"
+);
+
 const activeNames = ref(["8"]); //tab打开状态
-const ids = ref([]);
+
 let openAccountAdd = ref(false); //新增账号弹窗
-const single = ref(true);
-const multiple = ref(true);
+
+const ids = ref([]);
+
 const dataScope = reactive({
-	//验证规律
 	accountAddrules: {
 		accountType: [
 			{ required: true, message: "账号种类不能为空", trigger: "change" }
@@ -257,30 +238,25 @@ const dataScope = reactive({
 		],
 		accountName: [
 			{ required: true, message: "户名不能为空", trigger: "change" }
-		],
-		accountCapitalInfo: [
-			{ required: true, message: "流水余额不能为空", trigger: "change" }
 		]
 	}
 });
 
 const { accountAddrules } = toRefs(dataScope);
 
-let formData = ref({}); //不能修改const 定义的数据
+const formData = ref({}); //不能修改const 定义的数据
 
-let accountFormInput = ref({
+const accountFormInput = ref({
 	accountType: null,
 	currencyType: null,
 	accountBankInfo: null,
 	accountName: null,
-	accountInfo: null,
+	accountInfo: null, // 账号
 	accountCapitalInfo: null
 }); //后面要进行修改的对象用let定义
 
-const { sys_currency_type, cust_account_type } = proxy.useDict(
-	"sys_currency_type",
-	"cust_account_type"
-); //下拉框字典
+const curtIndex = ref(-1);
+
 watch(
 	() => props.infoData,
 	newValue => {
@@ -291,40 +267,44 @@ watch(
 	{ immediate: true }
 );
 
-// 联系人弹窗打开
-function addAccount(row) {
-	openAccountAdd.value = true;
-	if (!row) {
-		//   初始化表单数据
-		accountFormInput.value.accountType = cust_account_type.value[0].value;
-		accountFormInput.value.currencyType = sys_currency_type.value[0].value;
-	} else {
-		accountFormInput.value = row;
-		accountFormInput.value.type = "1";
-	}
-}
-// 多选框选中数据
-function handleSelectionChange(selection) {
-	ids.value = selection.map(item => item.accountName);
-	single.value = selection.length != 1;
-	multiple.value = !selection.length;
-}
+/*-----------------------------------------------------------------------------------*/
 
 // 保存账号到contactList
 function saveAccount() {
 	proxy.$refs["formInput"].validate(valid => {
-		if (!valid) {
-			// proxy.$message("")
-		} else {
-			// TODO 提交表单
+		// accountFormInput.value.accountInfo 账号
+
+		if (valid) {
 			if (accountFormInput.value.type) {
-				// x修改
-				formData.value.bankInfoList.map(list => {
-					if (list.accountName == accountFormInput.value.accountName) {
-						list = accountFormInput.value;
+				if (
+					formData.value.bankInfoList
+						.filter((item, index) => index !== curtIndex.value)
+						.some(
+							item => item.accountInfo === accountFormInput.value.accountInfo
+						)
+				) {
+					return proxy.$message.warning("【账号】已存在！");
+				}
+
+				// 修改
+				formData.value.bankInfoList = formData.value.bankInfoList.map(
+					(list, index) => {
+						if (index === curtIndex.value) {
+							list = accountFormInput.value;
+						}
+						return list;
 					}
-				});
+				);
 			} else {
+				if (
+					formData.value.bankInfoList.some(
+						item => item.accountInfo === accountFormInput.value.accountInfo
+					)
+				) {
+					return proxy.$message.warning("【账号】已存在！");
+				}
+
+				// 新增
 				formData.value.bankInfoList.push(accountFormInput.value);
 			}
 			resetAccountFormInput();
@@ -332,7 +312,31 @@ function saveAccount() {
 		}
 	});
 }
-// 重置添加联系人
+
+// 联系人弹窗打开
+function addAccount(row) {
+	console.log(1111111666666, props.baseInfoRef.formData.customerName);
+
+	openAccountAdd.value = true;
+	if (!row) {
+		// 初始化表单数据
+		accountFormInput.value.accountName =
+			props.baseInfoRef.formData.customerName;
+		accountFormInput.value.accountType = cust_account_type.value[0].value;
+		accountFormInput.value.currencyType = sys_currency_type.value[0].value;
+	} else {
+		accountFormInput.value = deepClone(row);
+		accountFormInput.value.type = "1";
+	}
+}
+
+// 修改账号表单
+function handleUpdate(rows, index) {
+	addAccount(rows);
+	curtIndex.value = index;
+}
+
+// 重置
 function resetAccountFormInput() {
 	accountFormInput.value = {
 		accountType: null,
@@ -344,32 +348,27 @@ function resetAccountFormInput() {
 	};
 	proxy.$refs["formInput"].clearValidate();
 }
+
+// 多选框选中数据
+function handleSelectionChange(selection) {
+	ids.value = selection.map(item => item.accountInfo);
+}
+
 // 关闭联系人弹窗
 function closeAccountAdd() {
 	resetAccountFormInput();
 	openAccountAdd.value = false;
 }
-// 账号表单修改
-function handleUpdate(rows) {
-	addAccount(rows);
-}
+
 // 账号从bankInfoList中移除
 function handleDelete(rows) {
-	const accountNames = rows ? [rows.accountName] : ids.value;
-	console.log(accountNames);
+	const accountInfos = rows ? [rows.accountInfo] : ids.value;
 	proxy.$modal
-		.confirm('是否确认删除户名为"' + accountNames + '"的数据项？')
-		.then(function () {
-			accountNames.forEach(names => {
-				console.log(names);
-				formData.value.bankInfoList = formData.value.bankInfoList.filter(
-					item => {
-						return item.accountName != names;
-					}
-				);
-			});
-			single.value = false;
-			multiple.value = false;
+		.confirm("确认删除账号？")
+		.then(() => {
+			formData.value.bankInfoList = formData.value.bankInfoList.filter(
+				item => !accountInfos.some(info => info === item.accountInfo)
+			);
 		})
 		.catch(e => {
 			console.log(e);
@@ -381,11 +380,3 @@ defineExpose({
 	formData
 });
 </script>
-
-<!-- <style lang="scss" scoped>
-.el-form {
-	:deep(.price-item .el-input) {
-		width: 238px !important;
-	}
-}
-</style> -->
