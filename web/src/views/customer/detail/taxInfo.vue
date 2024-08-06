@@ -4,25 +4,21 @@
 			<el-card>
 				<!-- 操控区 -->
 				<template #header v-if="!isView">
-					<!-- 新增按钮 -->
-					<el-button
-						style="float: right; padding: 3px 0"
-						type="primary"
-						link
-						@click="openAddDialog()"
-					>
-						新增
-					</el-button>
-					<!-- 删除按钮 -->
-					<el-button
-						style="float: right; padding: 3px 0; margin-right: 20px"
-						type="primary"
-						link
-						@click="handleBatchDelete()"
-						:disabled="deleteIsDisabled"
-					>
-						删除
-					</el-button>
+					<div style="text-align: right">
+						<!-- 新增按钮 -->
+						<el-button type="primary" link @click="openAddDialog()">
+							新增
+						</el-button>
+						<!-- 删除按钮 -->
+						<el-button
+							type="primary"
+							link
+							@click="handleBatchDelete()"
+							:disabled="deleteIsDisabled"
+						>
+							删除
+						</el-button>
+					</div>
 				</template>
 				<!-- 表格 -->
 				<el-table
