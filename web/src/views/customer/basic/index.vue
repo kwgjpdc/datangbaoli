@@ -146,7 +146,7 @@
 				fixed
 				width="180"
 			/>
-			<el-table-column label="简称" align="center" prop="name" />
+			<el-table-column label="简称" align="center" prop="name" width="130" />
 			<el-table-column
 				label="所属机构"
 				align="center"
@@ -201,7 +201,11 @@
 			<el-table-column label="三重一大授信审议编号" align="center" width="180">
 				<template #default="scope">
 					<el-button link type="primary" @click="handleSanyiView(scope.row)">
-						{{ scope.row.threeImportantNum || "testNo" }}
+						{{
+							scope.row.threeImportantStatus
+								? scope.row.threeImportantNum || "审批后生成编号"
+								: ""
+						}}
 					</el-button>
 				</template>
 			</el-table-column>
