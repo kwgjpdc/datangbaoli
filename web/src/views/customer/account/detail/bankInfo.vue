@@ -98,7 +98,7 @@
 		<el-dialog
 			title="客户账户"
 			:model-value="openAccountAdd"
-			width="800px"
+			width="1000px"
 			@closed="closeAccountAdd(false)"
 		>
 			<el-form
@@ -174,26 +174,6 @@
 							></el-input>
 						</el-form-item>
 					</el-col>
-
-					<!-- <el-col :span="12">
-						<el-form-item label="流水余额" prop="accountCapitalInfo">
-							<ElPriceInput
-								v-model:form="accountFormInput"
-								prop="accountCapitalInfo"
-								:rules="rules"
-								:disabled="props.routerQueryObj.viewFlag"
-								:placeholder="'请输入'"
-								:width="240"
-							>
-								<template #prefix>
-									<span> ￥ </span>
-								</template>
-								<template #suffix>
-									<span> 元 </span>
-								</template>
-							</ElPriceInput>
-						</el-form-item>
-					</el-col> -->
 				</el-row>
 
 				<el-row justify="center">
@@ -335,9 +315,13 @@ function saveAccount() {
 
 // 联系人弹窗打开
 function addAccount(row) {
+	console.log(1111111666666, props.baseInfoRef.formData.customerName);
+
 	openAccountAdd.value = true;
 	if (!row) {
 		// 初始化表单数据
+		accountFormInput.value.accountName =
+			props.baseInfoRef.formData.customerName;
 		accountFormInput.value.accountType = cust_account_type.value[0].value;
 		accountFormInput.value.currencyType = sys_currency_type.value[0].value;
 	} else {
