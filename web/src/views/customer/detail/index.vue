@@ -35,13 +35,13 @@
 				></basic-information>
 
 				<!-- 移动端登录认证 -->
-				<mobile-login-info
+				<!-- <mobile-login-info
 					id="mobileLoginInfo"
 					:infoData="customerDetailInfo"
 					ref="mobileLoginInfoRef"
 					:customerId="customerId"
 					:routerQueryObj="routerQueryObj"
-				></mobile-login-info>
+				></mobile-login-info> -->
 
 				<!-- 授信评级信息 -->
 				<credit-rating-info
@@ -206,12 +206,12 @@ const data = reactive({
 			worth: "",
 			remark: ""
 		},
-		loginName: "", // 大唐云端登陆人名称
-		phone: "", // 大唐云端登录手机号
 		applyPersonName: "", // 保理申请人-联系人名称
 		applyPersonMobileNumber: "", // 保理申请人电话
 		applyPersonEmail: "", // 保理申请人电子邮箱
 		applySendAddress: "", // 保理申请人送达地址
+		loginName: "", // 大唐云端登陆人名称
+		phone: "", // 大唐云端登录手机号
 		flowld: "1",
 		userIds: "2",
 		bankInfoList: [],
@@ -267,8 +267,6 @@ function getInfoPage() {
 }
 
 function submitForm(statusFlag) {
-	// handleSave();
-	// return;
 	loading.value = true;
 	const basicInformationForm = new Promise((resolve, reject) => {
 		proxy.$refs["basicInformationRef"].$refs["elForm"].validate(valid => {
@@ -290,17 +288,12 @@ function submitForm(statusFlag) {
 			valid ? resolve(valid) : reject(valid);
 		});
 	});
+	// 保理申请人模块
 	const applicationInfoForm = new Promise((resolve, reject) => {
 		proxy.$refs["applicationInfoRef"].$refs["elForm"].validate(valid => {
 			valid ? resolve(valid) : reject(valid);
 		});
 	});
-
-	// const clientFileForm = new Promise((resolve, reject) => {
-	//   proxy.$refs['clientFileRef'].$refs['elForm'].validate(valid => {
-	//     valid ? resolve(valid) : reject(valid)
-	//   })
-	// })
 
 	// 账户管理不需要在外层校验；
 	Promise.all([
@@ -316,10 +309,8 @@ function submitForm(statusFlag) {
 				"companyInfoRef",
 				"customerInfoRef",
 				"clientFileRef",
-				"bankInfoRef",
 				"taxInfoRef", // 纳税信息
-				"mobileLoginInfoRef", // 移动端登录认证
-				"applicationInfoRef" // 保理申请人信息
+				"applicationInfoRef" // 保理申请人信息 和 移动端登录
 			];
 			let custCustomerlnfoSave = customerDetailInfo;
 			let companyInfo = {};
