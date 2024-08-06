@@ -261,6 +261,10 @@ const props = defineProps({
 	routerQueryObj: {
 		type: Object,
 		default: {}
+	},
+	basicInfoRef: {
+		type: Object,
+		default: {}
 	}
 });
 
@@ -286,12 +290,12 @@ const elFormRef = ref(null);
 const dialogFormData = ref({
 	taxpayerIdNo: null,
 	taxpayerType: null,
-	taxpayerPhoneNo: null,
-	taxpayerAddr: null,
+	taxpayerPhoneNo: null, // 电话
+	taxpayerEmail: null, // 邮箱
+	taxpayerAddr: null, // 地址
 	bankName: null,
 	bankAccountNo: null,
-	invoiceTitle: null,
-	taxpayerEmail: null,
+	invoiceTitle: null, // 发票抬头
 	remark: null
 });
 
@@ -476,11 +480,24 @@ function openAddDialog() {
 		taxpayerIdNo: null,
 		taxpayerType: null,
 		taxpayerPhoneNo: null,
-		taxpayerAddr: null,
+		taxpayerAddr: null, // 地址
 		bankName: null,
 		bankAccountNo: null,
 		remark: null
 	};
+
+	const basicFormData = props.basicInfoRef.formData;
+
+	const registerCountry = basicFormData.companyInfo.registerCountry;
+	const registerProvince = basicFormData.companyInfo.registerProvince;
+	const registerCity = basicFormData.companyInfo.registerCity;
+	const registerAddr = basicFormData.companyInfo.registerAddr;
+
+	dialogFormData.value.taxpayerPhoneNo = basicFormData.companyInfo.companyPhone;
+	dialogFormData.value.taxpayerEmail = basicFormData.companyInfo.companyMail;
+	dialogFormData.value.taxpayerAddr = `${registerCountry}${registerProvince}${registerCity}${registerAddr}`;
+	dialogFormData.value.invoiceTitle = basicFormData.customerName;
+
 	dialogStatus.type = "create";
 	dialogTitle.value = "新增客户税务信息";
 	dialogVisible.value = true;
