@@ -327,19 +327,12 @@ function getContractData(id) {
 function submitForm(status) {
 	if (status === 1) {
 		// 暂存
-
-		if (!data.value.projectDueId) {
-			return proxy.$message.error("请选择【项目尽调编号】");
-		}
-
 		if (!isEdit.value) {
 			addContractData(status);
 		} else {
 			updateContractData(status);
 		}
 	} else {
-		//
-
 		// const contractForm = new Promise((resolve, reject) => {
 		// 	basePaneRef.value.validate(valid => {
 		// 		valid ? resolve(valid) : reject(valid);

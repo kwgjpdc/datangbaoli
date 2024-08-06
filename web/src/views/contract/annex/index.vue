@@ -43,7 +43,7 @@
 				label="操作"
 				align="center"
 				class-name="small-padding"
-				width="250"
+				width="200"
 			>
 				<template #default="scope">
 					<div class="button-display" style="justify-content: center">
@@ -55,14 +55,7 @@
 							v-hasPermi="['demo:info:edit']"
 							>修改</el-button
 						>
-						<!-- <el-button
-							link
-							type="primary"
-							icon="Delete"
-							@click="handleDelete(scope.row)"
-							v-hasPermi="['demo:info:remove']"
-							>删除</el-button
-						> -->
+
 						<el-button
 							link
 							type="primary"

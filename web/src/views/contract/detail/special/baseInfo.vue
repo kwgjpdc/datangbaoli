@@ -8,7 +8,7 @@
 			label-width="160px"
 			:disabled="isView"
 		>
-			<el-form-item label="项目尽调编号" prop="projectNo">
+			<!-- <el-form-item label="项目尽调编号" prop="projectNo">
 				<div class="form-item__block">
 					<CustomerSelect
 						:showValue="formData.projectNo"
@@ -18,7 +18,7 @@
 						@selectRow="configSelectRow"
 					/>
 				</div>
-			</el-form-item>
+			</el-form-item> -->
 
 			<el-form-item label="保理标的" prop="baseItem">
 				<div class="form-item__block">

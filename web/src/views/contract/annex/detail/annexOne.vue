@@ -23,12 +23,13 @@
 
 			<el-form-item label="保理合同编号" prop="contractNum">
 				<div class="form-item__block">
-					<CustomerSelect
-						:showValue="formData.contractNum"
-						:option="config.option"
-						:queryPropList="config.queryPropList"
-						:tablePropList="config.tablePropList"
-						@selectRow="configSelectRow"
+					<el-input
+						disabled
+						v-model="formData.contractNum"
+						:placeholder="showPlaceholder('自动生成')"
+						clearable
+						:style="formItemContentStyle"
+						maxlength="32"
 					/>
 				</div>
 			</el-form-item>

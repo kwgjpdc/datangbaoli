@@ -8,6 +8,18 @@
 			label-width="160px"
 			:disabled="isView"
 		>
+			<el-form-item label="合同编号" prop="dueNo">
+				<div class="form-item__block">
+					<CustomerSelect
+						:showValue="formData.contractNum"
+						:option="contractConfig.option"
+						:queryPropList="contractConfig.queryPropList"
+						:tablePropList="contractConfig.tablePropList"
+						@selectRow="contractConfigSelectRow"
+					/>
+				</div>
+			</el-form-item>
+
 			<el-form-item label="尽调审议编号" prop="dueNo">
 				<div class="form-item__block">
 					<CustomerSelect
@@ -93,9 +105,46 @@ const dataScope = reactive({
 				label: "项目名称"
 			}
 		]
+	},
+	contractConfig: {
+		option: {
+			inputW: "100%",
+			dialogW: "1000px",
+			placeholder: "请选择合同信息",
+			dialogTitle: "合同信息",
+			queryUrl: "/cont/list"
+		},
+		queryPropList: [
+			{
+				prop: "contractNo",
+				label: "合同编号"
+			},
+			{
+				prop: "otherContractName",
+				label: "合同名称"
+			},
+			{
+				prop: "factoringApplicantName",
+				label: "申请人"
+			}
+		],
+		tablePropList: [
+			{
+				prop: "contractNo",
+				label: "合同编号"
+			},
+			{
+				prop: "otherContractName",
+				label: "合同名称"
+			},
+			{
+				prop: "factoringApplicantName",
+				label: "申请人"
+			}
+		]
 	}
 });
-const { config } = toRefs(dataScope);
+const { config, contractConfig } = toRefs(dataScope);
 
 // 侦听表单数据变化
 watch(formData, newValue => {
@@ -109,6 +158,13 @@ function configSelectRow(row) {
 	formData.projDueDiligenceId = row.id;
 	// 尽调No
 	formData.dueNo = row.dueNo;
+}
+
+function contractConfigSelectRow(row) {
+	formData.contractId = row.contractId; // 合同id
+	formData.contractNum = row.contractNo; // 合同编码；
+	formData.customerName = row.factoringApplicantName; // 合同申请人
+	formData.factoringTarget = row.baseItem; // 标的
 }
 
 // Form item 内容的统一宽度
