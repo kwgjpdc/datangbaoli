@@ -299,16 +299,19 @@ watch(
 function saveAccount() {
 	proxy.$refs["formInput"].validate(valid => {
 		// accountFormInput.value.accountInfo 账号
-		// if (
-		// 	formData.value.bankInfoList.some(
-		// 		item => item.accountInfo === accountFormInput.value.accountInfo
-		// 	)
-		// ) {
-		// 	return proxy.$message.warning("【账号】已存在！");
-		// }
 
 		if (valid) {
 			if (accountFormInput.value.type) {
+				if (
+					formData.value.bankInfoList
+						.filter((item, index) => index !== curtIndex.value)
+						.some(
+							item => item.accountInfo === accountFormInput.value.accountInfo
+						)
+				) {
+					return proxy.$message.warning("【账号】已存在！");
+				}
+
 				// 修改
 				formData.value.bankInfoList = formData.value.bankInfoList.map(
 					(list, index) => {
@@ -319,6 +322,14 @@ function saveAccount() {
 					}
 				);
 			} else {
+				if (
+					formData.value.bankInfoList.some(
+						item => item.accountInfo === accountFormInput.value.accountInfo
+					)
+				) {
+					return proxy.$message.warning("【账号】已存在！");
+				}
+
 				// 新增
 				formData.value.bankInfoList.push(accountFormInput.value);
 			}
