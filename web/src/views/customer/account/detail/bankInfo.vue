@@ -211,6 +211,7 @@
 
 <script setup>
 import { deepClone } from "@/utils/index";
+
 const { proxy } = getCurrentInstance();
 
 const props = defineProps({
@@ -235,15 +236,19 @@ const props = defineProps({
 const { sys_currency_type, cust_account_type } = proxy.useDict(
 	"sys_currency_type",
 	"cust_account_type"
-); //下拉框字典
+);
 
 const activeNames = ref(["8"]); //tab打开状态
-const ids = ref([]);
+
 let openAccountAdd = ref(false); //新增账号弹窗
+
+const ids = ref([]);
+
 const single = ref(true);
+
 const multiple = ref(true);
+
 const dataScope = reactive({
-	//验证规律
 	accountAddrules: {
 		accountType: [
 			{ required: true, message: "账号种类不能为空", trigger: "change" }
@@ -265,14 +270,14 @@ const dataScope = reactive({
 
 const { accountAddrules } = toRefs(dataScope);
 
-let formData = ref({}); //不能修改const 定义的数据
+const formData = ref({}); //不能修改const 定义的数据
 
-let accountFormInput = ref({
+const accountFormInput = ref({
 	accountType: null,
 	currencyType: null,
 	accountBankInfo: null,
 	accountName: null,
-	accountInfo: null,
+	accountInfo: null, // 账号
 	accountCapitalInfo: null
 }); //后面要进行修改的对象用let定义
 
@@ -293,6 +298,15 @@ watch(
 // 保存账号到contactList
 function saveAccount() {
 	proxy.$refs["formInput"].validate(valid => {
+		// accountFormInput.value.accountInfo 账号
+		// if (
+		// 	formData.value.bankInfoList.some(
+		// 		item => item.accountInfo === accountFormInput.value.accountInfo
+		// 	)
+		// ) {
+		// 	return proxy.$message.warning("【账号】已存在！");
+		// }
+
 		if (valid) {
 			if (accountFormInput.value.type) {
 				// 修改
@@ -333,7 +347,7 @@ function handleUpdate(rows, index) {
 	curtIndex.value = index;
 }
 
-// 重置添加联系人
+// 重置
 function resetAccountFormInput() {
 	accountFormInput.value = {
 		accountType: null,
@@ -347,7 +361,7 @@ function resetAccountFormInput() {
 }
 
 // 多选框选中数据
-function handleSelectionChange(selection, a, b) {
+function handleSelectionChange(selection) {
 	ids.value = selection.map(item => item.accountName);
 	single.value = selection.length != 1;
 	multiple.value = !selection.length;
@@ -361,18 +375,14 @@ function closeAccountAdd() {
 
 // 账号从bankInfoList中移除
 function handleDelete(rows) {
-	const accountNames = rows ? [rows.accountName] : ids.value;
+	const accountInfos = rows ? [rows.accountInfo] : ids.value;
 	proxy.$modal
-		.confirm('是否确认删除户名为"' + accountNames + '"的数据项？')
-		.then(function () {
-			accountNames.forEach(names => {
-				console.log(names);
-				formData.value.bankInfoList = formData.value.bankInfoList.filter(
-					item => {
-						return item.accountName != names;
-					}
-				);
-			});
+		.confirm("是否确认删除账号？")
+		.then(() => {
+			formData.value.bankInfoList = formData.value.bankInfoList.filter(
+				item => !accountInfos.some(info => info === item.accountInfo)
+			);
+
 			single.value = false;
 			multiple.value = false;
 		})
