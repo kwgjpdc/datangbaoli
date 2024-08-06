@@ -77,7 +77,7 @@
 										link
 										type="primary"
 										icon="Edit"
-										@click="handleUpdate(scope.row)"
+										@click="handleUpdate(scope.row, scope.$index)"
 										v-hasPermi="['cust:contact:edit']"
 										title="修改"
 									></el-button>
@@ -196,15 +196,13 @@
 							</ElPriceInput>
 						</el-form-item>
 					</el-col> -->
+				</el-row>
 
-					<el-col :span="24">
-						<el-form-item>
-							<el-button type="primary" @click="saveAccount">保存</el-button>
-							<el-button type="primary" @click="closeAccountAdd(false)"
-								>取消</el-button
-							>
-						</el-form-item>
-					</el-col>
+				<el-row justify="center">
+					<el-button type="primary" @click="saveAccount">保存</el-button>
+					<el-button type="primary" @click="closeAccountAdd(false)"
+						>取消</el-button
+					>
 				</el-row>
 			</el-form>
 		</el-dialog>
@@ -233,6 +231,12 @@ const props = defineProps({
 		default: null
 	}
 });
+
+const { sys_currency_type, cust_account_type } = proxy.useDict(
+	"sys_currency_type",
+	"cust_account_type"
+); //下拉框字典
+
 const activeNames = ref(["8"]); //tab打开状态
 const ids = ref([]);
 let openAccountAdd = ref(false); //新增账号弹窗
@@ -272,10 +276,8 @@ let accountFormInput = ref({
 	accountCapitalInfo: null
 }); //后面要进行修改的对象用let定义
 
-const { sys_currency_type, cust_account_type } = proxy.useDict(
-	"sys_currency_type",
-	"cust_account_type"
-); //下拉框字典
+const curtIndex = ref(-1);
+
 watch(
 	() => props.infoData,
 	newValue => {
@@ -285,6 +287,32 @@ watch(
 	},
 	{ immediate: true }
 );
+
+/*-----------------------------------------------------------------------------------*/
+
+// 保存账号到contactList
+function saveAccount() {
+	proxy.$refs["formInput"].validate(valid => {
+		if (valid) {
+			if (accountFormInput.value.type) {
+				// 修改
+				formData.value.bankInfoList = formData.value.bankInfoList.map(
+					(list, index) => {
+						if (index === curtIndex.value) {
+							list = accountFormInput.value;
+						}
+						return list;
+					}
+				);
+			} else {
+				// 新增
+				formData.value.bankInfoList.push(accountFormInput.value);
+			}
+			resetAccountFormInput();
+			openAccountAdd.value = false;
+		}
+	});
+}
 
 // 联系人弹窗打开
 function addAccount(row) {
@@ -299,35 +327,10 @@ function addAccount(row) {
 	}
 }
 
-// 多选框选中数据
-function handleSelectionChange(selection) {
-	ids.value = selection.map(item => item.accountName);
-	single.value = selection.length != 1;
-	multiple.value = !selection.length;
-}
-
-// 保存账号到contactList
-function saveAccount() {
-	proxy.$refs["formInput"].validate(valid => {
-		if (!valid) {
-			// proxy.$message("")
-		} else {
-			// TODO 提交表单
-			if (accountFormInput.value.type) {
-				// 修改
-				formData.value.bankInfoList.map(list => {
-					if (list.accountName == accountFormInput.value.accountName) {
-						list = accountFormInput.value;
-					}
-				});
-			} else {
-				// 新增
-				formData.value.bankInfoList.push(accountFormInput.value);
-			}
-			resetAccountFormInput();
-			openAccountAdd.value = false;
-		}
-	});
+// 修改账号表单
+function handleUpdate(rows, index) {
+	addAccount(rows);
+	curtIndex.value = index;
 }
 
 // 重置添加联系人
@@ -342,21 +345,23 @@ function resetAccountFormInput() {
 	};
 	proxy.$refs["formInput"].clearValidate();
 }
+
+// 多选框选中数据
+function handleSelectionChange(selection, a, b) {
+	ids.value = selection.map(item => item.accountName);
+	single.value = selection.length != 1;
+	multiple.value = !selection.length;
+}
+
 // 关闭联系人弹窗
 function closeAccountAdd() {
 	resetAccountFormInput();
 	openAccountAdd.value = false;
 }
 
-// 账号表单修改
-function handleUpdate(rows) {
-	addAccount(rows);
-}
-
 // 账号从bankInfoList中移除
 function handleDelete(rows) {
 	const accountNames = rows ? [rows.accountName] : ids.value;
-	console.log(accountNames);
 	proxy.$modal
 		.confirm('是否确认删除户名为"' + accountNames + '"的数据项？')
 		.then(function () {
@@ -381,11 +386,3 @@ defineExpose({
 	formData
 });
 </script>
-
-<!-- <style lang="scss" scoped>
-.el-form {
-	:deep(.price-item .el-input) {
-		width: 238px !important;
-	}
-}
-</style> -->
