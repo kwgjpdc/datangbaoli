@@ -201,7 +201,7 @@
 			<el-table-column label="三重一大授信审议编号" align="center" width="180">
 				<template #default="scope">
 					<el-button link type="primary" @click="handleSanyiView(scope.row)">
-						{{ scope.row.threeImportantNum || "wwwwwHHHHH" }}
+						{{ scope.row.threeImportantNum || "testNo" }}
 					</el-button>
 				</template>
 			</el-table-column>
@@ -632,6 +632,7 @@ function handleCredit(row) {
 	// });
 }
 
+// 三重一大预览
 function handleSanyiView(row) {
 	reset();
 	const _customerId = row.customerId;
@@ -639,13 +640,14 @@ function handleSanyiView(row) {
 		path: "/customer/customer/creditDetail",
 		query: {
 			customerId: _customerId,
-			viewFlag: true,
 			pageNum: queryParams.value.pageNum,
-			isSanyi: true
+			viewFlag: true, // 预览标识
+			isSanyi: true // 是三重一大维护
 		}
 	});
 }
 
+// 授信预览
 function handleCreditView(row) {
 	reset();
 	const _customerId = row.customerId;

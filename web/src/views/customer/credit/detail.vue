@@ -45,6 +45,9 @@
 									<el-col :xl="6" :lg="8" :sm="12" :xs="24">
 										<el-form-item label="三重一大额度" prop="threeImportant">
 											<ElPriceInput
+												:disabled="
+													routerQueryObj.viewFlag && routerQueryObj.isSanyi
+												"
 												v-model:form="formData"
 												prop="threeImportant"
 												:rules="rules"
