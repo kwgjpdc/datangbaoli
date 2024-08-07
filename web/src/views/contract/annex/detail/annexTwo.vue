@@ -104,7 +104,7 @@
 				</div>
 			</el-form-item>
 
-			<el-form-item label="还款宽限期" prop="payBackGraceDate">
+			<el-form-item label="还款宽限期" prop="formData.contractAgreeFileVo.payBackGraceDate">
 				<div class="form-item__block">
 					<el-input
 						v-model="formData.contractAgreeFileVo.payBackGraceDate"

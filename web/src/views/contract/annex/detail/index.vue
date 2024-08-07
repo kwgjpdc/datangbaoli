@@ -139,6 +139,8 @@ const data = ref({
 	businessType: null, // 业务产品 --尽调维护
 	factoringTarget: null, // 标的 电费补贴2 --合同维护
 
+	pddId: null,
+
 	// 总：
 
 	contractFileId: null, // 合同附件id
@@ -275,6 +277,14 @@ const isEdit = computed(() => {
 	return result;
 });
 
+// 尽调列表
+// watch(
+// 	() => data.value.pddId,
+// 	val => {
+// 		apiContPddList(val);
+// 	}
+// );
+
 watch(
 	() => data.value.projDueDiligenceId,
 	() => {
@@ -293,9 +303,26 @@ function getDiligenceInfo(id) {
 
 		projectDetail.value = response.data;
 
+		// 附件2
+		const _contractAgreeFileVo = {
+			...data.value.contractAgreeFileVo,
+			payBackGraceDate: response.data.gracePeriod, // 还款宽限期
+			manageCost: response.data.managementRate, // 管理费率
+			graceCost: response.data.gracePeriodInterestRate // 宽限期利率
+		};
+
+		// 附件3
+		const _crtList = data.value.crtList.map(item => {
+			item.payBackGraceDate = response.data.gracePeriod;
+			item.zbPersonName = response.data.sponsor;
+			return item;
+		});
+
 		data.value = Object.assign(data.value, {
 			contractType: response.data.contractType, // 合同类型
-			businessType: response.data.businessType // 业务产品
+			businessType: response.data.businessType, // 业务产品
+			contractAgreeFileVo: _contractAgreeFileVo,
+			crtList: _crtList
 		});
 	});
 }
@@ -386,8 +413,6 @@ function getDetailData(id) {
 // 表单字段处理
 function handleParams() {
 	const formData = data.value;
-
-	debugger;
 	// 附件1 处理数据
 	const carList = formData.carList.map(item => ({
 		...item,

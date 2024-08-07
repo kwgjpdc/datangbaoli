@@ -162,6 +162,7 @@
 					<el-col :span="12">
 						<el-form-item label="债务人名称" prop="debtName">
 							<el-input
+								disabled
 								v-model="dialogFormData.debtName"
 								maxlength="100"
 								placeholder="请输入债务人名称"
@@ -382,18 +383,18 @@ watch(
 
 //----------------------- ref, recative, watch --------------------------------------------------------
 
-function configSelectRow(row) {
-	// projectDueId  尽调id
-	// contractId  合同id
-	// otherContractName  项目尽调名称
+// function configSelectRow(row) {
+// 	// projectDueId  尽调id
+// 	// contractId  合同id
+// 	// otherContractName  项目尽调名称
 
-	formData.contractId = row.contractId; // 合同id
+// 	formData.contractId = row.contractId; // 合同id
 
-	formData.contractNum = row.contractNo; // 合同编码；
-	formData.customerName = row.factoringApplicantName; // 合同申请人
+// 	formData.contractNum = row.contractNo; // 合同编码；
+// 	formData.customerName = row.factoringApplicantName; // 合同申请人
 
-	formData.factoringTarget = row.baseItem; // 标的
-}
+// 	formData.factoringTarget = row.baseItem; // 标的
+// }
 
 // dialog  数据修改
 function handleUpdate(rows) {
@@ -425,6 +426,7 @@ function dialogAdd(row) {
 		dialogFormData.value = deepClone(row);
 	} else {
 		dialogType.value = "add";
+		dialogFormData.value.debtName = props.proDetail.debtorName;
 	}
 }
 // Form item 内容的统一宽度

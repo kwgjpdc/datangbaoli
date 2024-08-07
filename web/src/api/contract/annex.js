@@ -51,3 +51,11 @@ export function contFileExportWord(id) {
 		responseType: "blob"
 	});
 }
+
+export function contPddList(query) {
+	return request({
+		url: `/cont/pddList`,
+		method: "get",
+		params: query
+	});
+}
