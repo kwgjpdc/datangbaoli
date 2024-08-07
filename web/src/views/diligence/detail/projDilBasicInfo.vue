@@ -119,7 +119,7 @@
 
 							<el-form-item label="主办人联系方式" prop="sponsorPhone">
 								<el-input
-									clearable
+									disabled
 									v-model="formData.sponsorPhone"
 									placeholder="自动生成"
 									:style="{ width: '240px' }"
@@ -784,6 +784,9 @@ import { deepClone } from "@/utils/index";
 const { proxy } = getCurrentInstance();
 import { listUser } from "@/api/system/user";
 import { listInfo as getUserList } from "@/api/customer/index";
+
+import { getUser } from "@/api/system/user";
+
 import { listAgroup } from "@/api/project/diligence.js";
 
 const props = defineProps({
@@ -1318,8 +1321,19 @@ const paramsZhuban = reactive({
 
 // Dialog表格选中方法
 function selectRowZhuban(rows) {
-	formData.value.sponsorName = rows.mainUserName + "," + rows.minorUserName;
-	formData.value.sponsor = rows.mainUserId + "," + rows.minorUserId;
+	// 根据用户id 获取 用户手机号，单独处理！
+
+	getUser(rows.mainUserId).then(res => {
+		if (res.code === 200) {
+			formData.value.sponsorPhone = res.data.phonenumber; // 存储主办人电话
+		} else {
+			proxy.$message.error(res.msg);
+		}
+	});
+
+	formData.value.sponsorName = rows.mainUserName; // 存储主办人信息
+
+	formData.value.sponsor = rows.mainUserId + "," + rows.minorUserId; // 主办和副办 id1,id2
 }
 
 // Dialog表格分页方法
