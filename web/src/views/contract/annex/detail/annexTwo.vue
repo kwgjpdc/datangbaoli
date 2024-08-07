@@ -2,7 +2,7 @@
 	<el-card>
 		<el-form
 			ref="elFormRef"
-			:model="formData"
+			:model="formData.contractAgreeFileVo"
 			:rules="isView ? {} : rules"
 			:inline="true"
 			label-width="160px"
@@ -104,7 +104,7 @@
 				</div>
 			</el-form-item>
 
-			<el-form-item label="还款宽限期" prop="formData.contractAgreeFileVo.payBackGraceDate">
+			<el-form-item label="还款宽限期" prop="payBackGraceDate">
 				<div class="form-item__block">
 					<el-input
 						v-model="formData.contractAgreeFileVo.payBackGraceDate"

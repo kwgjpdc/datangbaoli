@@ -1,21 +1,42 @@
 <template>
-	<div class="mb-2 flex items-center text-sm">
-		<span>{{ haha[2] || "没数据啊" }}</span>
+	<div style="margin: 10px" class="mb-2 flex items-center text-sm">
+		<span>{{ haha.c || "没数据啊" }}</span>
 
 		<div>
 			<el-button @click="btnClick">点击</el-button>
 		</div>
+
+		<el-input
+			value="111"
+			placeholder="请输入"
+			@click="inputClick"
+			readonly
+			suffix-icon="el-icon-search"
+			disabled
+			style="width: 200px"
+		/>
 	</div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, toRefs } from "vue";
+import { ref, reactive, onMounted, toRefs, getCurrentInstance } from "vue";
 
-function btnClick() {
-	haha.value[2] = 3;
+const { proxy } = getCurrentInstance();
+
+console.log(proxy);
+
+function inputClick() {
+	alert(1111);
 }
 
-const haha = ref(["1", "2"]);
+function btnClick() {
+	haha.c = 3;
+}
+
+const haha = reactive({
+	a: 1,
+	b: 2
+});
 
 // const data = reactive({
 // 	haha: 1

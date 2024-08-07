@@ -134,12 +134,12 @@ const contractAgreeFileVoId = ref(null);
 // 数据对象
 const data = ref({
 	// 业务数据
+
 	dueNo: null, // 尽调编号 --尽调维护
 	contractType: null, // 合同类型 两方合同1 三方合同2 池保理合同3 其他4  --尽调维护
 	businessType: null, // 业务产品 --尽调维护
 	factoringTarget: null, // 标的 电费补贴2 --合同维护
-
-	pddId: null,
+	pddId: null, // 合同关联的 尽调ids
 
 	// 总：
 
@@ -176,13 +176,13 @@ const data = ref({
 		receivablePayDate: null, // 保理融资款拨付日 （解释：其中一个选项）
 		pjEndDate: null, // 保理融资票据日期
 
-		interestGraceDate: null, //利息支付宽限期-从项目尽调中带入 （尽调无）
+		interestGraceDate: null, //利息支付宽限期-从项目尽调中带入
 
-		payBackGraceDate: null, //还款宽限期-从项目尽调中带入 （尽调有，带入）
+		payBackGraceDate: null, //还款宽限期-从项目尽调中带入
 
-		manageCost: null, // 管理费率 （尽调有，可修改）
-		financingCost: null, // 保理融资利率 （尽调无）
-		graceCost: null, // 宽限期利率 （尽调有，可修改）
+		manageCost: null, // 管理费率
+		financingCost: null, // 保理融资利率
+		graceCost: null, // 宽限期利率
 
 		managePayType: null, // 管理费支付方式
 		manageMonthEndDate: null, // 每季度末支付日
@@ -192,9 +192,9 @@ const data = ref({
 		lxMonthEndDate: null, // 每季度末支付日
 		financingCostPayTypeOther: null, // 其他
 
-		defaultInterestRate: null, //违约金利率-从尽调中取值，尽调中的违约利 （尽调有）
+		defaultInterestRate: null, //违约金利率
 
-		obligorGuaranteeAmount: null, //应收账款债务人付款担保额度-与保理融资本金一致
+		obligorGuaranteeAmount: null, //应收账款债务人付款担保额度
 
 		payType: null, // 支付方式
 
@@ -277,14 +277,6 @@ const isEdit = computed(() => {
 	return result;
 });
 
-// 尽调列表
-// watch(
-// 	() => data.value.pddId,
-// 	val => {
-// 		apiContPddList(val);
-// 	}
-// );
-
 watch(
 	() => data.value.projDueDiligenceId,
 	() => {
@@ -303,26 +295,40 @@ function getDiligenceInfo(id) {
 
 		projectDetail.value = response.data;
 
+		const resData = response.data;
+
 		// 附件2
 		const _contractAgreeFileVo = {
 			...data.value.contractAgreeFileVo,
-			payBackGraceDate: response.data.gracePeriod, // 还款宽限期
-			manageCost: response.data.managementRate, // 管理费率
-			graceCost: response.data.gracePeriodInterestRate // 宽限期利率
+
+			// 保理融资利率
+			financingCost: resData.normalTermInterestRate,
+			// 违约金
+			defaultInterestRate: resData.defaultInterestRate,
+			// 应收账款债务人付款担保额度
+			obligorGuaranteeAmount: resData.financeLimitAmount,
+			// 还款宽限期
+			payBackGraceDate: resData.gracePeriod,
+			// 管理费率
+			manageCost: resData.managementRate,
+			// 宽限期利率
+			graceCost: resData.gracePeriodInterestRate
 		};
 
 		// 附件3
 		const _crtList = data.value.crtList.map(item => {
-			item.payBackGraceDate = response.data.gracePeriod;
-			item.zbPersonName = response.data.sponsor;
+			item.payBackGraceDate = resData.gracePeriod;
+			item.zbPersonName = resData.sponsorName; // 主办人
+			item.zbPersonTel = resData.sponsorPhone; // 主办人联系方式
 			return item;
 		});
 
 		data.value = Object.assign(data.value, {
-			contractType: response.data.contractType, // 合同类型
-			businessType: response.data.businessType, // 业务产品
-			contractAgreeFileVo: _contractAgreeFileVo,
-			crtList: _crtList
+			contractType: resData.contractType, // 合同类型
+			businessType: resData.businessType, // 业务产品
+			factoringTarget: resData.baseItem, // 标的
+			contractAgreeFileVo: _contractAgreeFileVo, // 附件2
+			crtList: _crtList // 附件3
 		});
 	});
 }
