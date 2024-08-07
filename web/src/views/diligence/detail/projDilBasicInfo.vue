@@ -766,7 +766,7 @@
 			@pageChange="pageChangeMulti"
 		/>
 
-		<!-- Dialog -->
+		<!-- Dialog 主办 -->
 		<DialogTableMulti
 			v-model:multiQuery="zhubanQuery"
 			v-model:open="zhubanQuery.open"

@@ -1,16 +1,21 @@
 <template>
 	<div class="mb-2 flex items-center text-sm">
-		{{ haha.a }}
+		<span>{{ haha[2] || "没数据啊" }}</span>
+
+		<div>
+			<el-button @click="btnClick">点击</el-button>
+		</div>
 	</div>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted, toRefs } from "vue";
 
-const haha = ref({
-	a: 1,
-	b: 2
-});
+function btnClick() {
+	haha.value[2] = 3;
+}
+
+const haha = ref(["1", "2"]);
 
 // const data = reactive({
 // 	haha: 1
@@ -20,7 +25,7 @@ const haha = ref({
 
 onMounted(() => {
 	haha.value = {
-		a: 1111,
+		a: 1111
 	};
 });
 </script>
