@@ -133,8 +133,11 @@ const contractAgreeFileVoId = ref(null);
 
 // 数据对象
 const data = ref({
-	// 业务数据
+	// 前端自需 数据
+	loanList: [], // 放款接点列表
+	loanRatio: null, // 比例
 
+	// 业务数据
 	dueNo: null, // 尽调编号 --尽调维护
 	contractType: null, // 合同类型 两方合同1 三方合同2 池保理合同3 其他4  --尽调维护
 	businessType: null, // 业务产品 --尽调维护

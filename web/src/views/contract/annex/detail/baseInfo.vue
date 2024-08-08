@@ -22,24 +22,197 @@
 
 			<el-form-item label="尽调审议编号" prop="dueNo">
 				<div class="form-item__block">
-					<CustomerSelect
-						:showValue="formData.dueNo"
-						:option="config.option"
-						:queryPropList="config.queryPropList"
-						:tablePropList="config.tablePropList"
-						@selectRow="configSelectRow"
+					<el-input
+						v-model="formData.dueNo"
+						readonly
+						placeholder="请选择"
+						@click="dueDiliClick"
+					/>
+				</div>
+			</el-form-item>
+
+			<el-form-item label="放款节点" prop="fkjdmc">
+				<div class="form-item__block">
+					<el-input
+						v-model="formData.dueNo"
+						readonly
+						placeholder="请选择"
+						@click="loanClick"
 					/>
 				</div>
 			</el-form-item>
 		</el-form>
 	</el-card>
+
+	<!-- 尽调 -->
+	<XyDialogSelect
+		v-model:open="dueDiliSelect.dialogConfig.open"
+		:dialogConfig="dueDiliSelect.dialogConfig"
+		:tableConfig="dueDiliSelect.tableConfig"
+		:queryConfig="dueDiliSelect.queryConfig"
+		@pageChange="pageChangeDueDili"
+		@querySearch="querySearchDueDili"
+		@selectRow="selectRowDueDili"
+	/>
+
+	<!-- 放款节点 -->
+
+	<XyDialogSelect
+		v-model:open="loanSelect.dialogConfig.open"
+		:dialogConfig="loanSelect.dialogConfig"
+		:tableConfig="loanSelect.tableConfig"
+		:queryConfig="loanSelect.queryConfig"
+		@selectRow="selectRowLoanSelect"
+	/>
 </template>
 
 <script setup>
 import { ref, reactive, computed } from "vue";
+
 import { StrUtil } from "@/utils/StrUtil";
 
+import { listContract } from "@/api/contract/index";
+
+import { contPddList } from "@/api/contract/annex";
+
 import CustomerSelect from "@/components/CustomerSelect";
+
+import XyDialogSelect from "@/components/XyDialogSelect";
+
+// ----------------
+
+const dueDiliSelect = reactive({
+	dialogConfig: {
+		title: "合同选择",
+		open: false
+	},
+
+	queryConfig: [
+		{
+			label: "尽调编号",
+			prop: "dueNo"
+		},
+		{
+			label: "项目名称",
+			prop: "name"
+		}
+	],
+
+	tableConfig: {
+		total: 0,
+		pageNum: 1,
+		pageSize: 10,
+		tableColunms: [
+			{
+				label: "尽调编号",
+				prop: "dueNo"
+			},
+			{
+				label: "项目名称",
+				prop: "name"
+			}
+		],
+		tableData: []
+	}
+});
+
+// 点击尽调 input
+function dueDiliClick() {
+	dueDiliSelect.dialogConfig.open = true;
+	const params = {
+		pageNum: dueDiliSelect.tableConfig.pageNum,
+		pageSize: dueDiliSelect.tableConfig.pageSize
+	};
+	apiContPddList(params);
+}
+
+// 获取 尽调项目列表
+function apiContPddList(params) {
+	params.pddId = formData.pddId;
+	contPddList(params).then(res => {
+		if (res.code === 200) {
+			dueDiliSelect.tableConfig.tableData = res.rows || [];
+			dueDiliSelect.tableConfig.total = res.total || 0;
+		}
+	});
+}
+
+// 选取尽调
+function selectRowDueDili(row) {
+	// 尽调Id
+	formData.projDueDiligenceId = row.id;
+	// 尽调No
+	formData.dueNo = row.dueNo;
+	// 尽调loanList
+	formData.loanList = row.loanList;
+	debugger;
+}
+
+// 尽调分页
+function pageChangeDueDili(pageNum) {
+	dueDiliSelect.tableConfig.pageNum = pageNum;
+	const params = {
+		pageNum: dueDiliSelect.tableConfig.pageNum,
+		pageSize: dueDiliSelect.tableConfig.pageSize
+	};
+	apiContPddList(params);
+}
+
+// 尽调查询
+function querySearchDueDili(queryParams) {
+	const params = {
+		pageNum: 1,
+		pageSize: 10,
+		...queryParams
+	};
+
+	apiContPddList(params);
+}
+
+//-----------------
+const loanSelect = reactive({
+	dialogConfig: {
+		title: "放款节点",
+		open: false
+	},
+
+	queryConfig: [],
+
+	tableConfig: {
+		total: 0,
+		pageNum: 1,
+		pageSize: 10,
+		hasPagination: false,
+		tableColunms: [
+			{
+				label: "放款节点依据",
+				prop: "loanNodeBasis"
+			},
+			{
+				label: "放款比例",
+				prop: "loanRatio"
+			},
+			{
+				label: "确权章",
+				prop: "confirmationSeal"
+			}
+		],
+		tableData: []
+	}
+});
+
+function loanClick() {
+	loanSelect.dialogConfig.open = true;
+	loanSelect.tableConfig.tableData = formData.loanList;
+}
+
+function selectRowLoanSelect(row) {
+	debugger;
+	// 节点比例
+	formData.loanRatio = row.loanRatio;
+}
+
+// ----------------
 
 // 组件属性
 const props = defineProps({
@@ -113,37 +286,9 @@ const dataScope = reactive({
 				label: "申请人"
 			}
 		]
-	},
-	config: {
-		option: {
-			inputW: "100%",
-			dialogW: "1000px",
-			placeholder: "请选择尽调信息",
-			dialogTitle: "尽调信息",
-			queryUrl: `/cont/pddList?pddId=53,`
-		},
-		queryPropList: [
-			{
-				prop: "dueNo",
-				label: "尽调编号"
-			},
-			{
-				prop: "name",
-				label: "项目名称"
-			}
-		],
-		tablePropList: [
-			{
-				prop: "dueNo",
-				label: "尽调编号"
-			},
-			{
-				prop: "name",
-				label: "项目名称"
-			}
-		]
 	}
 });
+
 const { config, contractConfig } = toRefs(dataScope);
 
 // 侦听表单数据变化
@@ -152,13 +297,6 @@ watch(formData, newValue => {
 });
 
 // ----------------ref,torefs,watch,computed-----------------------------------------------
-
-function configSelectRow(row) {
-	// 尽调Id
-	formData.projDueDiligenceId = row.id;
-	// 尽调No
-	formData.dueNo = row.dueNo;
-}
 
 // 合同选择
 function contractConfigSelectRow(row) {
