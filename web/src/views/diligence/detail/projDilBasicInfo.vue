@@ -195,7 +195,7 @@
 										></span>
 									</template>
 									<template #suffix>
-										<span> 万元 </span>
+										<span> 元 </span>
 									</template>
 								</PriceInput>
 								<el-form-item label="业务产品" prop="businessType">
