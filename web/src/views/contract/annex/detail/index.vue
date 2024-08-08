@@ -135,19 +135,25 @@ const contractAgreeFileVoId = ref(null);
 
 // 数据对象
 const data = ref({
-	// 前端自需 数据
+	// 前端逻辑处理 数据
+	pddId: null, // 合同关联的 尽调ids
 	loanList: [], // 放款接点列表
-	loanRatio: null, // 比例
 
 	// 业务数据
 	dueNo: null, // 尽调编号 --尽调维护
 	contractType: null, // 合同类型 两方合同1 三方合同2 池保理合同3 其他4  --尽调维护
 	businessType: null, // 业务产品 --尽调维护
 	factoringTarget: null, // 标的 电费补贴2 --合同维护
-	pddId: null, // 合同关联的 尽调ids
+
+	loanNodeBasisName: null, // 放款依据名称
+	
+	loanNodeBasis: null, // 放款节点依据
+	oanNodeBasisOther: null, // 放款节点依据-其他
+	loanRatio: null, // 放款比例
+	confirmationSeal: null, // 确权章
+	confirmationSealOther: null, // 确权章其他
 
 	// 总：
-
 	contractFileId: null, // 合同附件id
 	contractId: null, // 合同id
 	projDueDiligenceId: null, // 项目尽调id
@@ -159,6 +165,7 @@ const data = ref({
 	contractNum: null, // 保理主合同编号
 
 	carList: [
+		// id
 		// transactionContNumName: null, //基础交易合同编号及名称
 		// debtName: null, //债务人名称
 		// receivableNum: null, //应收账款金额
@@ -383,9 +390,6 @@ function getDetailData(id) {
 			// 详情数据
 			const repData = response.data;
 
-			contractAgreeFileVoId.value = repData.contractAgreeFileVo.id;
-			conSignReceiptVoId.value = repData.conSignReceiptVo.id;
-
 			// 附件1
 			const carList = repData.carList;
 
@@ -399,6 +403,10 @@ function getDetailData(id) {
 			// 附件2
 			const contractAgreeFileVo = repData.contractAgreeFileVo;
 
+			const data2 = {
+				contractAgreeFileVo
+			};
+
 			// 附件3
 			const crtList = repData.crtList;
 
@@ -409,22 +417,17 @@ function getDetailData(id) {
 			// 附件4
 			const conSignReceiptVo = repData.conSignReceiptVo;
 
-			data.value = Object.assign(
-				data.value,
-				data1,
-				contractAgreeFileVo,
-				data3,
-				conSignReceiptVo,
-				{
-					contractFileId: repData.id, // 附件id
-					contractId: repData.contractId, // 合同id
-					projDueDiligenceId: repData.projDueDiligenceId, // 项目尽调id
-					factoringTarget: repData.factoringTarget, // 合同-标的
-					dueNo: repData.dueNo, // 尽调-尽调No
-					contractType: repData.contractType, // 尽调-合同类型
-					businessType: repData.businessType // 尽调-业务产品
-				}
-			);
+			const data4 = { conSignReceiptVo };
+
+			data.value = Object.assign(data.value, data1, data2, data3, data4, {
+				contractFileId: repData.id, // 附件id
+				contractId: repData.contractId, // 合同id
+				projDueDiligenceId: repData.projDueDiligenceId, // 项目尽调id
+				factoringTarget: repData.factoringTarget, // 合同-标的
+				dueNo: repData.dueNo, // 尽调-尽调No
+				contractType: repData.contractType, // 尽调-合同类型
+				businessType: repData.businessType // 尽调-业务产品
+			});
 		})
 		.finally(() => {
 			loading.value = false;
@@ -443,42 +446,8 @@ function handleParams() {
 	}));
 
 	// 附件2 处理数据
-	const contractAgreeFileVo = {
-		contractNum: formData.contractNum, // 保理合同编号
 
-		financingNum: formData.financingNum, // 保理融资本金
-
-		receivableType: formData.receivableType, // 保理融资期限选项
-		receivableEndDate: formData.receivableEndDate, // 保理融资期限-关联应收账款转让明细表中的应收
-		receivablePayDate: formData.receivablePayDate, // 保理融资款拨付日 （解释：其中一个选项）
-		pjEndDate: formData.pjEndDate, // 保理融资票据日期
-
-		interestGraceDate: formData.interestGraceDate, // 利息支付宽限期-从项目尽调中带入 （尽调无）
-		payBackGraceDate: formData.payBackGraceDate, // 还款宽限期-从项目尽调中带入 （尽调有，带入）
-
-		manageCost: formData.manageCost, // 管理费率 （尽调有，可修改）
-		financingCost: formData.financingCost, // 保理融资利率 （尽调无）
-		graceCost: formData.graceCost, // 宽限期利率 （尽调有，可修改）
-
-		managePayType: formData.managePayType, // 管理费支付方式
-		manageMonthEndDate: formData.manageMonthEndDate, // 每季度末支付日
-		managePayTypeWrite: formData.managePayTypeWrite, // 管理费支付方式 【其他】选项手写内容
-
-		financingCostPayType: formData.financingCostPayType, //保理融资利息支付方式-除了其他方式以外
-		lxMonthEndDate: formData.lxMonthEndDate, // 每季度末支付日
-		financingCostPayTypeOther: formData.financingCostPayTypeOther, // 其他 手写内容
-
-		defaultInterestRate: formData.defaultInterestRate, //违约金利率-从尽调中取值，尽调中的违约利 （尽调有）
-
-		obligorGuaranteeAmount: formData.obligorGuaranteeAmount, //应收账款债务人付款担保额度-与保理融资本金一致
-
-		payType: formData.payType, // 支付方式
-
-		paymentsType: formData.paymentsType, //保理融资款收取账户选项
-		paymentsAccountName: formData.paymentsAccountName, //保理融资款收取账户-户名填写内容
-		paymentsAccount: formData.paymentsAccount, //保理融资款收取账户-账号填写内容
-		paymentsAccountBank: formData.paymentsAccountBank //保理融资款收取账户-开户行名称}
-	};
+	const contractAgreeFileVo = data.value.contractAgreeFileVo;
 
 	// 附件3
 	const crtList =
@@ -487,21 +456,8 @@ function handleParams() {
 			: [formData.crtList[0]];
 
 	// 附件4
-	const conSignReceiptVo = {
-		// projDueDiligenceId: formData.projDueDiligenceId, // 项目尽调主键id
-		// contractId: formData.contractId, // 保理业务合同主键id
-		// contractFileId: formData.contractFileId, // 保理附件主键id
 
-		conReceivableTransferNum: formData.conReceivableTransferNum, //【应收账款转让通知书】编号
-		transactionContNumName: formData.transactionContNumName, // 基础交易合同编号及名称 【？】
-
-		customerName: formData.customerName, // 客户公司名称
-		sendAddress: formData.sendAddress, // 送达地址
-		contactsName: formData.contactsName, // 联系人名称
-		mobilePhone: formData.mobilePhone, // 联系人电话
-		emial: formData.emial, // 联系人电子邮箱
-		foxNum: formData.foxNum // 联系人传真
-	};
+	const conSignReceiptVo = data.value.conSignReceiptVo;
 
 	return {
 		contractFileId: formData.contractFileId, // 附件id
@@ -553,16 +509,10 @@ async function submitForm() {
 		annexFourValid
 	]);
 
-	console.log(haha);
-
-	debugger;
-
 	let handleData = handleParams();
 
 	if (isEdit.value) {
 		// 编辑
-		handleData.contractAgreeFileVo.id = contractAgreeFileVoId.value;
-		handleData.conSignReceiptVo.id = conSignReceiptVoId.value;
 		apiEditContFileInfo(handleData);
 	} else {
 		apiAddContFileInfo(handleData);

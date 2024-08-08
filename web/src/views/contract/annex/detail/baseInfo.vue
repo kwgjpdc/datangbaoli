@@ -31,10 +31,10 @@
 				</div>
 			</el-form-item>
 
-			<el-form-item label="放款节点" prop="loanRatio">
-				<div class="form-item__block">
+			<el-form-item label="放款节点依据" prop="loanNodeBasisName">
+				<div class="form-item__block" style="width: 350px">
 					<el-input
-						v-model="formData.loanRatio"
+						v-model="formData.loanNodeBasisName"
 						readonly
 						placeholder="请选择"
 						@click="loanClick"
@@ -339,6 +339,12 @@ function loanClick() {
 function selectRowLoanSelect(row) {
 	// 节点比例
 	formData.loanRatio = row.loanRatio;
+	formData.loanNodeBasisName = row.loanNodeBasisName;
+
+	formData.loanNodeBasis = row.loanNodeBasis; // 放款节点依据
+	formData.oanNodeBasisOther = row.oanNodeBasisOther; // 放款节点依据-其他
+	formData.confirmationSeal = row.confirmationSeal; // 确权章
+	formData.confirmationSealOther = row.confirmationSealOther; // 确权章其他
 }
 
 /* end*****************放款节点 */
