@@ -108,10 +108,24 @@ const formData = reactive(props.data);
 
 // 表单验证规则
 const rules = ref({
-	projectNo: [
+	contractNum: [
 		{
 			required: true,
-			message: "尽调编号不能为空",
+			message: "合同编号不能为空",
+			trigger: "change"
+		}
+	],
+	dueNo: [
+		{
+			required: true,
+			message: "尽调审议编号不能为空",
+			trigger: "change"
+		}
+	],
+	loanRatio: [
+		{
+			required: true,
+			message: "放款节点不能为空",
 			trigger: "change"
 		}
 	]
