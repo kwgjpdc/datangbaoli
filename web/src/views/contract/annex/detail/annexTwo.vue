@@ -134,7 +134,11 @@
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
-					/>
+					>
+						<template #suffix>
+							<span> %/年 </span>
+						</template>
+					</el-input>
 				</div>
 			</el-form-item>
 
@@ -146,7 +150,11 @@
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
-					/>
+					>
+						<template #suffix>
+							<span> %/年 </span>
+						</template>
+					</el-input>
 				</div>
 			</el-form-item>
 
@@ -158,23 +166,37 @@
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
-					/>
+					>
+						<template #suffix>
+							<span> %/年 </span>
+						</template>
+					</el-input>
 				</div>
 			</el-form-item>
 
 			<el-row>
 				<el-form-item label="管理费支付方式" prop="managePayType">
-					<el-radio-group v-model="formData.contractAgreeFileVo.managePayType">
+					<el-radio-group
+						v-model="formData.contractAgreeFileVo.managePayType"
+						@change="managePayTypeChange"
+					>
 						<el-radio label="1" name="type"
 							>在甲方支付保理融资前由乙方一次性支付</el-radio
 						>
-						<el-radio label="2" name="type"
-							>每季度支付一次（季度末月支付日<el-input
-								v-model="formData.contractAgreeFileVo.manageMonthEndDate"
-								size="small"
-								style="width: 50px"
-							/>前）</el-radio
-						>
+
+						<el-radio label="2" name="type">
+							每季度支付一次
+							<span v-if="formData.contractAgreeFileVo.managePayType === '2'">
+								（每季度末月
+								<el-input
+									v-model="formData.contractAgreeFileVo.manageMonthEndDate"
+									size="small"
+									style="width: 50px"
+								/>
+								日前）
+							</span>
+						</el-radio>
+
 						<el-radio label="3" name="type" @change="otherChange">
 							其他方式
 							<el-input
@@ -192,23 +214,31 @@
 				<el-form-item label="保理融资利息支付方式" prop="financingCostPayType">
 					<el-radio-group
 						v-model="formData.contractAgreeFileVo.financingCostPayType"
+						@change="financingCostPayTypeChange"
 					>
 						<el-radio label="1" name="type"
 							>在甲方支付保理融资前由乙方一次性支付</el-radio
 						>
-						<el-radio label="2" name="type"
-							>每季度支付一次（季度末月支付日
-							<el-form-item>
+
+						<el-radio label="2" name="type">
+							每季度支付一次
+							<span
+								v-if="formData.contractAgreeFileVo.financingCostPayType === '2'"
+							>
+								（每季度末月
 								<el-input
 									v-model="formData.contractAgreeFileVo.lxMonthEndDate"
 									size="small"
 									style="width: 50px"
 								/>
-							</el-form-item>前）
+								日前）
+							</span>
 						</el-radio>
+
 						<el-radio label="3" name="type"
 							>甲方在收到的应收账款中直接扣收</el-radio
 						>
+
 						<el-radio label="4" name="type" @change="otherChange2">
 							其他方式
 							<el-input
@@ -245,6 +275,7 @@
 			>
 				<div class="form-item__block">
 					<el-input
+						disabled
 						v-model="formData.contractAgreeFileVo.obligorGuaranteeAmount"
 						oninput="value=value.replace(/[^0-9]/g,'')"
 						:placeholder="showPlaceholder('应收账款债务人付款担保额度')"
@@ -544,7 +575,19 @@ watch(
 // Form item 内容的统一宽度
 const formItemContentStyle = { width: "100%" };
 
-// 保理融资款收取账户
+// 管理费支付方式 更换
+function managePayTypeChange() {
+	formData.contractAgreeFileVo.manageMonthEndDate = null;
+	formData.contractAgreeFileVo.managePayTypeWrite = null;
+}
+
+// 保理融资利息支付方式 更换
+function financingCostPayTypeChange() {
+	formData.contractAgreeFileVo.lxMonthEndDate = null;
+	formData.contractAgreeFileVo.financingCostPayTypeOther = null;
+}
+
+// 保理融资款收取账户 更换
 function paymentsTypeChange(val) {
 	if (val === "2") {
 		formData.contractAgreeFileVo.paymentsAccountName = null;

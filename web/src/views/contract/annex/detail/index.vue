@@ -287,6 +287,16 @@ watch(
 	}
 );
 
+watch(
+	() => data.value.loanRatio,
+	() => {
+		data.value.contractAgreeFileVo.financingNum =
+			(data.value.contractAgreeFileVo.obligorGuaranteeAmount *
+				data.value.loanRatio) /
+			100;
+	}
+);
+
 // --------------------以上是 ref watch  computed 等状态数据------------------------------------------------------------------------------------------
 
 // 获取 【尽调详情】接口
@@ -306,7 +316,7 @@ function getDiligenceInfo(id) {
 
 			// 保理融资利率
 			financingCost: resData.normalTermInterestRate,
-			// 违约金
+			// 违约金利率
 			defaultInterestRate: resData.defaultInterestRate,
 			// 应收账款债务人付款担保额度
 			obligorGuaranteeAmount: resData.financeLimitAmount,
