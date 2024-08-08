@@ -383,19 +383,6 @@ watch(
 
 //----------------------- ref, recative, watch --------------------------------------------------------
 
-// function configSelectRow(row) {
-// 	// projectDueId  尽调id
-// 	// contractId  合同id
-// 	// otherContractName  项目尽调名称
-
-// 	formData.contractId = row.contractId; // 合同id
-
-// 	formData.contractNum = row.contractNo; // 合同编码；
-// 	formData.customerName = row.factoringApplicantName; // 合同申请人
-
-// 	formData.factoringTarget = row.baseItem; // 标的
-// }
-
 // dialog  数据修改
 function handleUpdate(rows) {
 	dialogAdd(rows);
@@ -516,7 +503,8 @@ async function validate(callback) {
 
 // 父组件可以调用的方法
 defineExpose({
-	validate
+	validate,
+	elFormRef
 });
 </script>
 

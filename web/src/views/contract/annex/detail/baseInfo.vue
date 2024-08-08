@@ -350,6 +350,8 @@ function contractConfigSelectRow(row) {
 	formData.customerName = row.applyInstitutionName; // 合同申请人
 	formData.factoringTarget = row.baseItem; // 标的
 
+	formData.contractAgreeFileVo.contractNum = row.contractNo;
+
 	formData.pddId = row.pddId; // pddId 逻辑修改；
 }
 
@@ -408,7 +410,8 @@ async function validate(callback) {
 
 // 父组件可以调用的方法
 defineExpose({
-	validate
+	validate,
+	elFormRef
 });
 </script>
 

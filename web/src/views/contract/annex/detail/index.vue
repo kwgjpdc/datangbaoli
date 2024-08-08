@@ -117,6 +117,8 @@ const activeCollapseNames = reactive([
 	"annexFour"
 ]);
 
+const annexThreeRef = ref(null);
+
 // 是否显示loading
 const loading = ref(false);
 
@@ -518,7 +520,43 @@ function handleParams() {
 }
 
 // 提交表单
-function submitForm() {
+async function submitForm() {
+	// let baseInfoValid = proxy.$refs["baseInfoRef"].elFormRef.validate();
+	const baseInfoValid = proxy.$refs["baseInfoRef"].elFormRef.validate();
+	const annexOneValid = proxy.$refs["annexOneRef"].elFormRef.validate();
+	const annexTwoValid = proxy.$refs["annexTwoRef"].elFormRef.validate();
+
+	const annexThree1Valid =
+		data.value.contractType && data.value.contractType !== "2"
+			? proxy.$refs["annexThreeRef"].elFormRef1.validate()
+			: true;
+
+	const annexThree2Valid =
+		data.value.contractType &&
+		data.value.contractType !== "2" &&
+		data.value.factoringTarget &&
+		data.value.factoringTarget === "2"
+			? proxy.$refs["annexThreeRef"].elFormRef2.validate()
+			: true;
+
+	const annexFourValid =
+		data.value.contractType && data.value.contractType !== "2"
+			? proxy.$refs["annexFourRef"].elFormRef.validate()
+			: true;
+
+	const haha = await Promise.all([
+		baseInfoValid,
+		annexOneValid,
+		annexTwoValid,
+		annexThree1Valid,
+		annexThree2Valid,
+		annexFourValid
+	]);
+
+	console.log(haha);
+
+	debugger;
+
 	let handleData = handleParams();
 
 	if (isEdit.value) {

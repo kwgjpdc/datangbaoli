@@ -298,7 +298,8 @@ async function validate(callback) {
 
 // 父组件可以调用的方法
 defineExpose({
-	validate
+	validate,
+	elFormRef
 });
 </script>
 

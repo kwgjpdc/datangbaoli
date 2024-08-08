@@ -112,6 +112,7 @@
 			<el-form-item label="还款宽限期" prop="payBackGraceDate">
 				<div class="form-item__block">
 					<el-input
+						disabled
 						v-model="formData.contractAgreeFileVo.payBackGraceDate"
 						oninput="value=value.replace(/[^0-9]/g,'')"
 						:placeholder="showPlaceholder('请输入还款宽限期')"
@@ -638,7 +639,8 @@ async function validate(callback) {
 
 // 父组件可以调用的方法
 defineExpose({
-	validate
+	validate,
+	elFormRef
 });
 </script>
 

@@ -1,7 +1,7 @@
 <template>
 	<el-card>
 		<el-form
-			ref="elFormRef"
+			ref="elFormRef1"
 			:model="formData.crtList[0]"
 			:rules="isView ? {} : rules0"
 			:inline="true"
@@ -176,7 +176,7 @@
 		style="margin-top: 20px"
 	>
 		<el-form
-			ref="elFormRef"
+			ref="elFormRef2"
 			:model="formData.crtList[1]"
 			:rules="isView ? {} : rules1"
 			:inline="true"
@@ -376,7 +376,9 @@ const emit = defineEmits(["update:data"]);
 const { proxy } = getCurrentInstance();
 
 // 表单对象
-const elFormRef = ref(null);
+const elFormRef1 = ref(null);
+
+const elFormRef2 = ref(null);
 
 // 表单数据
 const formData = reactive(props.data);
@@ -607,15 +609,24 @@ function handleInput(value, name, len = 32) {
 }
 
 // 验证表单
-async function validate(callback) {
-	await elFormRef.value.validate((valid, fields) => {
+async function validate1(callback) {
+	await elFormRef1.value.validate((valid, fields) => {
+		callback(valid, fields);
+	});
+}
+
+async function validate2(callback) {
+	await elFormRef2.value.validate((valid, fields) => {
 		callback(valid, fields);
 	});
 }
 
 // 父组件可以调用的方法
 defineExpose({
-	validate
+	validate1,
+	validate2,
+	elFormRef1,
+	elFormRef2
 });
 </script>
 
