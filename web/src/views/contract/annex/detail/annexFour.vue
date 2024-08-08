@@ -2,7 +2,7 @@
 	<el-card>
 		<el-form
 			ref="elFormRef"
-			:model="formData"
+			:model="formData.conSignReceiptVo"
 			:rules="isView ? {} : rules"
 			:inline="true"
 			label-width="160px"
@@ -29,19 +29,6 @@
 					<el-input
 						disabled
 						v-model="formData.conSignReceiptVo.transactionContNumName"
-						:placeholder="showPlaceholder('自动生成')"
-						clearable
-						:style="formItemContentStyle"
-						maxlength="32"
-					/>
-				</div>
-			</el-form-item>
-
-			<el-form-item label="还款期限" prop="payBackGraceDate">
-				<div class="form-item__block">
-					<el-input
-						disabled
-						v-model="formData.conSignReceiptVo.payBackGraceDate"
 						:placeholder="showPlaceholder('自动生成')"
 						clearable
 						:style="formItemContentStyle"
@@ -152,8 +139,6 @@ const props = defineProps({
 	}
 });
 
-let openAccountAdd = ref(false); //新增账号弹窗
-
 // 组件事件
 const emit = defineEmits(["update:data"]);
 
@@ -168,49 +153,37 @@ const formData = reactive(props.data);
 
 // 表单验证规则
 const rules = ref({
-	projectNo: [
+	customerName: [
 		{
 			required: true,
-			message: "尽调编号不能为空",
+			message: "客户公司名称不能为空",
+			trigger: "change"
+		}
+	],
+	sendAddress: [
+		{
+			required: true,
+			message: "送达地址不能为空",
+			trigger: "change"
+		}
+	],
+	contactsName: [
+		{
+			required: true,
+			message: "联系人不能为空",
+			trigger: "change"
+		}
+	],
+	mobilePhone: [
+		{
+			required: true,
+			message: "联系电话不能为空",
 			trigger: "change"
 		}
 	]
 });
 
-// dialog 表单
-let dialogFormData = ref({
-	transactionContNumName: null, // 基础交易合同编号及名称
-	debtName: null, //债务人名称
-	receivableNum: null, //应收账款金额
-	invoiceNum: null, // 发票号码
-	receivableEndDate: null, //应收账款到期日
-	remark: null
-}); //后面要进行修改的对象用let定义
-
-const dialogType = ref("add"); // add新增 edit编辑
-
 const dataScope = reactive({
-	dialogRules: {
-		transactionContNumName: [
-			{
-				required: true,
-				message: "基础交易合同编号及名称不能为空",
-				trigger: "change"
-			}
-		],
-		debtName: [
-			{ required: true, message: "债务人名称不能为空", trigger: "change" }
-		],
-		receivableNum: [
-			{ required: true, message: "应收账款金额不能为空", trigger: "change" }
-		],
-		invoiceNum: [
-			{ required: true, message: "发票号码不能为空", trigger: "change" }
-		],
-		receivableEndDate: [
-			{ required: true, message: "应收账款到期日为空", trigger: "change" }
-		]
-	},
 	configSelect: {
 		option: {
 			inputW: "100%",
@@ -249,7 +222,7 @@ const dataScope = reactive({
 		]
 	}
 });
-const { dialogRules, configSelect } = toRefs(dataScope);
+const { configSelect } = toRefs(dataScope);
 
 // 页面是View状态
 const isView = computed(() => {
