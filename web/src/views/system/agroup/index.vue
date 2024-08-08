@@ -204,7 +204,8 @@ const data = reactive({
 const { queryParams, form, rules, roleUsers, roleUsersMap } = toRefs(data);
 
 function flowTest() {
-  flowStart("flow_dyh1prk9:1:507627",{"id":1,"userList":["100","101","102"]}).then(response => {
+  //客户授信(customerCredit)   业务合同(contract)   "userList":["100","101","102"]
+  flowStart("flow_nsztl4s7:20:145041",{"id":1718085780,"type":"contract"}).then(response => {
     console.log("response",response);
     loading.value = false;
   });
