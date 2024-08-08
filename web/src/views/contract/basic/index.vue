@@ -167,7 +167,7 @@
 				label="保理申请人名称"
 				width="200"
 				align="center"
-				prop="factoringApplicantName"
+				prop="applyInstitutionName"
 			/>
 			<el-table-column
 				label="核心企业名称"

@@ -34,7 +34,7 @@
 			<el-form-item label="放款节点" prop="fkjdmc">
 				<div class="form-item__block">
 					<el-input
-						v-model="formData.dueNo"
+						v-model="formData.fkjdmc"
 						readonly
 						placeholder="请选择"
 						@click="loanClick"
@@ -67,7 +67,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed, getCurrentInstance } from "vue";
 
 import { StrUtil } from "@/utils/StrUtil";
 
@@ -79,140 +79,12 @@ import CustomerSelect from "@/components/CustomerSelect";
 
 import XyDialogSelect from "@/components/XyDialogSelect";
 
-// ----------------
+const { proxy } = getCurrentInstance();
 
-const dueDiliSelect = reactive({
-	dialogConfig: {
-		title: "合同选择",
-		open: false
-	},
-
-	queryConfig: [
-		{
-			label: "尽调编号",
-			prop: "dueNo"
-		},
-		{
-			label: "项目名称",
-			prop: "name"
-		}
-	],
-
-	tableConfig: {
-		total: 0,
-		pageNum: 1,
-		pageSize: 10,
-		tableColunms: [
-			{
-				label: "尽调编号",
-				prop: "dueNo"
-			},
-			{
-				label: "项目名称",
-				prop: "name"
-			}
-		],
-		tableData: []
-	}
-});
-
-// 点击尽调 input
-function dueDiliClick() {
-	dueDiliSelect.dialogConfig.open = true;
-	const params = {
-		pageNum: dueDiliSelect.tableConfig.pageNum,
-		pageSize: dueDiliSelect.tableConfig.pageSize
-	};
-	apiContPddList(params);
-}
-
-// 获取 尽调项目列表
-function apiContPddList(params) {
-	params.pddId = formData.pddId;
-	contPddList(params).then(res => {
-		if (res.code === 200) {
-			dueDiliSelect.tableConfig.tableData = res.rows || [];
-			dueDiliSelect.tableConfig.total = res.total || 0;
-		}
-	});
-}
-
-// 选取尽调
-function selectRowDueDili(row) {
-	// 尽调Id
-	formData.projDueDiligenceId = row.id;
-	// 尽调No
-	formData.dueNo = row.dueNo;
-	// 尽调loanList
-	formData.loanList = row.loanList;
-	debugger;
-}
-
-// 尽调分页
-function pageChangeDueDili(pageNum) {
-	dueDiliSelect.tableConfig.pageNum = pageNum;
-	const params = {
-		pageNum: dueDiliSelect.tableConfig.pageNum,
-		pageSize: dueDiliSelect.tableConfig.pageSize
-	};
-	apiContPddList(params);
-}
-
-// 尽调查询
-function querySearchDueDili(queryParams) {
-	const params = {
-		pageNum: 1,
-		pageSize: 10,
-		...queryParams
-	};
-
-	apiContPddList(params);
-}
-
-//-----------------
-const loanSelect = reactive({
-	dialogConfig: {
-		title: "放款节点",
-		open: false
-	},
-
-	queryConfig: [],
-
-	tableConfig: {
-		total: 0,
-		pageNum: 1,
-		pageSize: 10,
-		hasPagination: false,
-		tableColunms: [
-			{
-				label: "放款节点依据",
-				prop: "loanNodeBasis"
-			},
-			{
-				label: "放款比例",
-				prop: "loanRatio"
-			},
-			{
-				label: "确权章",
-				prop: "confirmationSeal"
-			}
-		],
-		tableData: []
-	}
-});
-
-function loanClick() {
-	loanSelect.dialogConfig.open = true;
-	loanSelect.tableConfig.tableData = formData.loanList;
-}
-
-function selectRowLoanSelect(row) {
-	debugger;
-	// 节点比例
-	formData.loanRatio = row.loanRatio;
-}
-
-// ----------------
+const { proj_dd_loan_basis, proj_dd_confirmation_seal } = proxy.useDict(
+	"proj_dd_loan_basis", // 放款节点
+	"proj_dd_confirmation_seal" // 确权章
+); //下拉框字典
 
 // 组件属性
 const props = defineProps({
@@ -228,9 +100,6 @@ const props = defineProps({
 
 // 组件事件
 const emit = defineEmits(["update:data"]);
-
-// vue实例对象
-const { proxy } = getCurrentInstance();
 
 // 表单对象
 const elFormRef = ref(null);
@@ -268,7 +137,7 @@ const dataScope = reactive({
 				label: "合同名称"
 			},
 			{
-				prop: "factoringApplicantName",
+				prop: "applyInstitutionName",
 				label: "申请人"
 			}
 		],
@@ -282,7 +151,7 @@ const dataScope = reactive({
 				label: "合同名称"
 			},
 			{
-				prop: "factoringApplicantName",
+				prop: "applyInstitutionName",
 				label: "申请人"
 			}
 		]
@@ -291,6 +160,72 @@ const dataScope = reactive({
 
 const { config, contractConfig } = toRefs(dataScope);
 
+const dueDiliSelect = reactive({
+	dialogConfig: {
+		title: "合同选择",
+		open: false
+	},
+
+	queryConfig: [
+		{
+			label: "尽调编号",
+			prop: "dueNo"
+		},
+		{
+			label: "项目名称",
+			prop: "name"
+		}
+	],
+
+	tableConfig: {
+		total: 0,
+		pageNum: 1,
+		pageSize: 10,
+		tableColunms: [
+			{
+				label: "尽调编号",
+				prop: "dueNo"
+			},
+			{
+				label: "项目名称",
+				prop: "name"
+			}
+		],
+		tableData: []
+	}
+});
+
+const loanSelect = reactive({
+	dialogConfig: {
+		title: "放款节点",
+		open: false
+	},
+
+	queryConfig: [],
+
+	tableConfig: {
+		total: 0,
+		pageNum: 1,
+		pageSize: 10,
+		hasPagination: false,
+		tableColunms: [
+			{
+				label: "放款节点依据",
+				prop: "loanNodeBasisName"
+			},
+			{
+				label: "放款比例",
+				prop: "loanRatio"
+			},
+			{
+				label: "确权章",
+				prop: "confirmationSealName"
+			}
+		],
+		tableData: []
+	}
+});
+
 // 侦听表单数据变化
 watch(formData, newValue => {
 	emit("update:data", newValue);
@@ -298,11 +233,108 @@ watch(formData, newValue => {
 
 // ----------------ref,torefs,watch,computed-----------------------------------------------
 
+/* start------------------- 尽调 */
+
+// 点击尽调 input
+function dueDiliClick() {
+	dueDiliSelect.dialogConfig.open = true;
+	const params = {
+		pageNum: dueDiliSelect.tableConfig.pageNum,
+		pageSize: dueDiliSelect.tableConfig.pageSize
+	};
+	apiContPddList(params);
+}
+
+// 获取 尽调项目列表
+function apiContPddList(params) {
+	params.pddId = formData.pddId;
+	contPddList(params).then(res => {
+		if (res.code === 200) {
+			dueDiliSelect.tableConfig.tableData = res.rows || [];
+			dueDiliSelect.tableConfig.total = res.total || 0;
+		}
+	});
+}
+
+// 选取尽调
+function selectRowDueDili(row) {
+	// 尽调Id
+	formData.projDueDiligenceId = row.id;
+	// 尽调No
+	formData.dueNo = row.dueNo;
+	// 尽调loanList
+	formData.loanList = row.loanList.map(item => {
+		// proj_dd_loan_basis 放款节点依据  字典  --》 loanNodeBasis    "15":其他
+		// proj_dd_confirmation_seal 确权章 字典  --》confirmationSeal  "17":其他
+
+		if (item.loanNodeBasis) {
+			item.loanNodeBasisName =
+				item.loanNodeBasis == "15"
+					? item.loanNodeBasisOther
+					: proj_dd_loan_basis.find(
+							basis => basis.loanNodeBasis == item.loanNodeBasis
+					  ).name;
+		} else {
+			item.loanNodeBasisName = "";
+		}
+
+		if (item.confirmationSeal) {
+			item.confirmationSealName =
+				item.confirmationSeal == "17"
+					? item.confirmationSealOther
+					: proj_dd_confirmation_seal.find(
+							seal => seal.confirmationSeal == item.confirmationSeal
+					  ).name;
+		} else {
+			item.confirmationSealName = "";
+		}
+
+		return item;
+	});
+}
+
+// 尽调分页
+function pageChangeDueDili(pageNum) {
+	dueDiliSelect.tableConfig.pageNum = pageNum;
+	const params = {
+		pageNum: dueDiliSelect.tableConfig.pageNum,
+		pageSize: dueDiliSelect.tableConfig.pageSize
+	};
+	apiContPddList(params);
+}
+
+// 尽调查询
+function querySearchDueDili(queryParams) {
+	const params = {
+		pageNum: 1,
+		pageSize: 10,
+		...queryParams
+	};
+
+	apiContPddList(params);
+}
+
+/* end------------------------ 尽调 */
+
+/* start*****************放款节点 */
+
+function loanClick() {
+	loanSelect.dialogConfig.open = true;
+	loanSelect.tableConfig.tableData = formData.loanList;
+}
+
+function selectRowLoanSelect(row) {
+	// 节点比例
+	formData.loanRatio = row.loanRatio;
+}
+
+/* end*****************放款节点 */
+
 // 合同选择
 function contractConfigSelectRow(row) {
 	formData.contractId = row.contractId; // 合同id
 	formData.contractNum = row.contractNo; // 合同编码；
-	formData.customerName = row.factoringApplicantName; // 合同申请人
+	formData.customerName = row.applyInstitutionName; // 合同申请人
 	formData.factoringTarget = row.baseItem; // 标的
 
 	formData.pddId = row.pddId; // pddId 逻辑修改；
