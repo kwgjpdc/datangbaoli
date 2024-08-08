@@ -2,8 +2,8 @@
 	<el-card>
 		<el-form
 			ref="elFormRef"
-			:model="formData"
-			:rules="isView ? {} : rules"
+			:model="formData.crtList[0]"
+			:rules="isView ? {} : rules0"
 			:inline="true"
 			label-width="160px"
 			:disabled="isView"
@@ -21,11 +21,11 @@
 				</div>
 			</el-form-item>
 
-			<el-form-item label="债务人/致" prop="debtorPerson">
+			<el-form-item label="债务人" prop="debtorPerson">
 				<div class="form-item__block">
 					<el-input
 						v-model="formData.crtList[0].debtorPerson"
-						:placeholder="showPlaceholder('请输入债务人/致')"
+						:placeholder="showPlaceholder('请输入债务人')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
@@ -37,7 +37,7 @@
 				<div class="form-item__block">
 					<el-input
 						v-model="formData.crtList[0].transferName"
-						:placeholder="showPlaceholder('尽调带入')"
+						:placeholder="showPlaceholder('请输入转让人')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
@@ -116,7 +116,11 @@
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
-					/>
+					>
+						<template #suffix>
+							<span>日</span>
+						</template>
+					</el-input>
 				</div>
 			</el-form-item>
 
@@ -173,8 +177,8 @@
 	>
 		<el-form
 			ref="elFormRef"
-			:model="formData"
-			:rules="isView ? {} : rules"
+			:model="formData.crtList[1]"
+			:rules="isView ? {} : rules1"
 			:inline="true"
 			label-width="160px"
 			:disabled="isView"
@@ -192,11 +196,11 @@
 				</div>
 			</el-form-item>
 
-			<el-form-item label="债务人/致" prop="debtorPerson">
+			<el-form-item label="债务人" prop="debtorPerson">
 				<div class="form-item__block">
 					<el-input
 						v-model="formData.crtList[1].debtorPerson"
-						:placeholder="showPlaceholder('请输入债务人/致')"
+						:placeholder="showPlaceholder('请输入债务人')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
@@ -208,7 +212,7 @@
 				<div class="form-item__block">
 					<el-input
 						v-model="formData.crtList[1].transferName"
-						:placeholder="showPlaceholder('尽调带入')"
+						:placeholder="showPlaceholder('请输入转让人')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
@@ -287,7 +291,11 @@
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
-					/>
+					>
+						<template #suffix>
+							<span>日</span>
+						</template>
+					</el-input>
 				</div>
 			</el-form-item>
 
@@ -374,11 +382,119 @@ const elFormRef = ref(null);
 const formData = reactive(props.data);
 
 // 表单验证规则
-const rules = ref({
-	projectNo: [
+const rules0 = ref({
+	debtorPerson: [
 		{
 			required: true,
-			message: "尽调编号不能为空",
+			message: "债务人不能为空",
+			trigger: "change"
+		}
+	],
+	transferName: [
+		{
+			required: true,
+			message: "转让人不能为空",
+			trigger: "change"
+		}
+	],
+	accountName: [
+		{
+			required: true,
+			message: "受让人不能为空",
+			trigger: "change"
+		}
+	],
+	accountNum: [
+		{
+			required: true,
+			message: "受让人账号不能为空",
+			trigger: "change"
+		}
+	],
+	accountBank: [
+		{
+			required: true,
+			message: "受让人开户行不能为空",
+			trigger: "change"
+		}
+	],
+	zbPersonName: [
+		{
+			required: true,
+			message: "主办人不能为空",
+			trigger: "change"
+		}
+	],
+	zbPersonTel: [
+		{
+			required: true,
+			message: "主办人电话不能为空",
+			trigger: "change"
+		}
+	],
+	payBackGraceDate: [
+		{
+			required: true,
+			message: "还款期限不能为空",
+			trigger: "change"
+		}
+	]
+});
+
+const rules1 = ref({
+	debtorPerson: [
+		{
+			required: true,
+			message: "债务人不能为空",
+			trigger: "change"
+		}
+	],
+	transferName: [
+		{
+			required: true,
+			message: "转让人不能为空",
+			trigger: "change"
+		}
+	],
+	accountName: [
+		{
+			required: true,
+			message: "受让人不能为空",
+			trigger: "change"
+		}
+	],
+	accountNum: [
+		{
+			required: true,
+			message: "受让人账号不能为空",
+			trigger: "change"
+		}
+	],
+	accountBank: [
+		{
+			required: true,
+			message: "受让人开户行不能为空",
+			trigger: "change"
+		}
+	],
+	zbPersonName: [
+		{
+			required: true,
+			message: "主办人不能为空",
+			trigger: "change"
+		}
+	],
+	zbPersonTel: [
+		{
+			required: true,
+			message: "主办人电话不能为空",
+			trigger: "change"
+		}
+	],
+	payBackGraceDate: [
+		{
+			required: true,
+			message: "还款期限不能为空",
 			trigger: "change"
 		}
 	]
