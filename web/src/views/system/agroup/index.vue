@@ -35,6 +35,16 @@
          </el-form-item>
       </el-form>
       <el-row :gutter="10" class="mb8">
+          <!--
+         <el-col :span="1.5">
+            <el-button
+               type="success"
+               plain
+               icon="Edit"
+               @click="flowTest"
+            >流程测试</el-button>
+         </el-col>
+          -->
          <el-col :span="1.5">
             <el-button
                type="primary"
@@ -44,18 +54,6 @@
                v-hasPermi="['system:agroup:add']"
             >新增</el-button>
          </el-col>
-         <!--
-         <el-col :span="1.5">
-            <el-button
-               type="success"
-               plain
-               icon="Edit"
-               :disabled="single"
-               @click="handleUpdate"
-               v-hasPermi="['system:role:edit']"
-            >修改</el-button>
-         </el-col>
-         -->
          <el-col :span="1.5">
             <el-button
                type="danger"
@@ -153,6 +151,7 @@
 
 <script setup name="agroup">
 import { listAgroup, addAgroup, updateAgroup, delAgroup, getRoleUser } from "@/api/system/agroup";
+import { flowStart } from "@/api/flowable/todo";
 import { pcaTextArr } from "element-china-area-data"
 
 const { proxy } = getCurrentInstance();
@@ -203,6 +202,14 @@ const data = reactive({
 });
 
 const { queryParams, form, rules, roleUsers, roleUsersMap } = toRefs(data);
+
+function flowTest() {
+  flowStart("flow_dyh1prk9:1:507627",{"id":1,"userList":["100","101","102"]}).then(response => {
+    console.log("response",response);
+    loading.value = false;
+  });
+  ;
+}
 
 /** 查询角色列表 */
 function getList() {

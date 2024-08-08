@@ -169,7 +169,8 @@ function saveFormData(statusFlag) {
     })
 
     diligenceInfoSave.status = statusFlag;
-    diligenceInfoSave.flowId = "flow_nsztl4s7:22:167747";//改为固定流程而不是选择流程 167751 145030 
+    diligenceInfoSave.flowId = "flow_nsztl4s7:26:527504";//改为固定流程而不是选择流程 167751 145030 
+    diligenceInfoSave.flowName = "项目尽调审批流程";
 	//diligenceInfoSave.flowId = proxy.$refs['flowSearchRef'].formData.flowId;
 	diligenceInfoSave.userIds = diligenceInfo.value.sponsor;
     
