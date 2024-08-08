@@ -96,11 +96,16 @@
 				<div class="form-item__block">
 					<el-input
 						v-model="formData.contractAgreeFileVo.interestGraceDate"
+						oninput="value=value.replace(/[^0-9]/g,'')"
 						:placeholder="showPlaceholder('请输入利息支付宽限期')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
-					/>
+					>
+						<template #suffix>
+							<span>日</span>
+						</template>
+					</el-input>
 				</div>
 			</el-form-item>
 
@@ -108,11 +113,16 @@
 				<div class="form-item__block">
 					<el-input
 						v-model="formData.contractAgreeFileVo.payBackGraceDate"
+						oninput="value=value.replace(/[^0-9]/g,'')"
 						:placeholder="showPlaceholder('请输入还款宽限期')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
-					/>
+					>
+						<template #suffix>
+							<span> 日 </span>
+						</template>
+					</el-input>
 				</div>
 			</el-form-item>
 
@@ -187,12 +197,15 @@
 							>在甲方支付保理融资前由乙方一次性支付</el-radio
 						>
 						<el-radio label="2" name="type"
-							>每季度支付一次（季度末月支付日<el-input
-								v-model="formData.contractAgreeFileVo.lxMonthEndDate"
-								size="small"
-								style="width: 50px"
-							/>前）</el-radio
-						>
+							>每季度支付一次（季度末月支付日
+							<el-form-item>
+								<el-input
+									v-model="formData.contractAgreeFileVo.lxMonthEndDate"
+									size="small"
+									style="width: 50px"
+								/>
+							</el-form-item>前）
+						</el-radio>
 						<el-radio label="3" name="type"
 							>甲方在收到的应收账款中直接扣收</el-radio
 						>
@@ -213,11 +226,16 @@
 				<div class="form-item__block">
 					<el-input
 						v-model="formData.contractAgreeFileVo.defaultInterestRate"
+						oninput="value=value.replace(/[^0-9]/g,'')"
 						:placeholder="showPlaceholder('请输入违约金利率')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
-					/>
+					>
+						<template #suffix>
+							<span> %/日 </span>
+						</template>
+					</el-input>
 				</div>
 			</el-form-item>
 
@@ -228,11 +246,21 @@
 				<div class="form-item__block">
 					<el-input
 						v-model="formData.contractAgreeFileVo.obligorGuaranteeAmount"
+						oninput="value=value.replace(/[^0-9]/g,'')"
 						:placeholder="showPlaceholder('应收账款债务人付款担保额度')"
+						:formatter="value => value.replace(/(?=(?!^)(\d{3})+$)/g, ',')"
+						:parser="value => value.replace(/(,*)/g, '')"
 						clearable
 						:style="formItemContentStyle"
 						maxlength="32"
-					/>
+					>
+						<template #prefix>
+							<span>¥</span>
+						</template>
+						<template #suffix>
+							<span> 元 </span>
+						</template>
+					</el-input>
 				</div>
 			</el-form-item>
 
@@ -252,7 +280,10 @@
 			<el-row>
 				<el-form-item label="保理融资款收取账户" prop="paymentsType">
 					<div class="radio-column">
-						<el-radio-group v-model="formData.contractAgreeFileVo.paymentsType">
+						<el-radio-group
+							v-model="formData.contractAgreeFileVo.paymentsType"
+							@change="paymentsTypeChange"
+						>
 							<el-radio label="1" name="type"
 								>乙方确认，本次保理融资款收取账户为本合同专用条款约定的收款账户</el-radio
 							>
@@ -260,38 +291,43 @@
 								乙方确认，本次保理融资款收取账户如下：
 							</el-radio>
 
-							<div>
-								<el-row>
-									<el-form-item label="户名" prop="paymentsAccountName">
-										<BankAccountSelect
-											:showValue="
-												formData.contractAgreeFileVo.paymentsAccountName
-											"
-											:option="customerConfig.option"
-											:queryPropList="customerConfig.queryPropList"
-											:tablePropList="customerConfig.tablePropList"
-											:queryDefault="queryDefault"
-											@selectRow="customerConfigSelectRow"
-										/>
-									</el-form-item>
+							<el-row
+								v-if="formData.contractAgreeFileVo.paymentsType === '2'"
+								style="flex-direction: column"
+							>
+								<el-form-item label="户名" prop="paymentsAccountName">
+									<BankAccountSelect
+										:showValue="
+											formData.contractAgreeFileVo.paymentsAccountName
+										"
+										:option="customerConfig.option"
+										:queryPropList="customerConfig.queryPropList"
+										:tablePropList="customerConfig.tablePropList"
+										:queryDefault="queryDefault"
+										@selectRow="customerConfigSelectRow"
+									/>
+								</el-form-item>
 
-									<el-form-item label="账号" prop="paymentsAccount">
-										<el-input
-											disabled
-											v-model="formData.contractAgreeFileVo.paymentsAccount"
-											:placeholder="showPlaceholder('自动生成')"
-										/>
-									</el-form-item>
+								<el-form-item
+									label="账号"
+									prop="paymentsAccount"
+									style="margin: 18px 0"
+								>
+									<el-input
+										disabled
+										v-model="formData.contractAgreeFileVo.paymentsAccount"
+										:placeholder="showPlaceholder('自动生成')"
+									/>
+								</el-form-item>
 
-									<el-form-item label="开户行" prop="paymentsAccountBank">
-										<el-input
-											disabled
-											v-model="formData.contractAgreeFileVo.paymentsAccountBank"
-											:placeholder="showPlaceholder('自动生成')"
-										/>
-									</el-form-item>
-								</el-row>
-							</div>
+								<el-form-item label="开户行" prop="paymentsAccountBank">
+									<el-input
+										disabled
+										v-model="formData.contractAgreeFileVo.paymentsAccountBank"
+										:placeholder="showPlaceholder('自动生成')"
+									/>
+								</el-form-item>
+							</el-row>
 						</el-radio-group>
 					</div>
 				</el-form-item>
@@ -394,6 +430,13 @@ const rules = ref({
 		{
 			required: true,
 			message: "保理融资款收取账户不能为空",
+			trigger: "change"
+		}
+	],
+	paymentsAccountName: [
+		{
+			required: true,
+			message: "户名不能为空",
 			trigger: "change"
 		}
 	]
@@ -500,6 +543,15 @@ watch(
 
 // Form item 内容的统一宽度
 const formItemContentStyle = { width: "100%" };
+
+// 保理融资款收取账户
+function paymentsTypeChange(val) {
+	if (val === "2") {
+		formData.contractAgreeFileVo.paymentsAccountName = null;
+		formData.contractAgreeFileVo.paymentsAccount = null;
+		formData.contractAgreeFileVo.paymentsAccountBank = null;
+	}
+}
 
 // 管理费支付方式 【其他】选项逻辑处理；
 function otherChange(val) {

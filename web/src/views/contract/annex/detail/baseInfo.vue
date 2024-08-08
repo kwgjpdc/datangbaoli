@@ -31,10 +31,10 @@
 				</div>
 			</el-form-item>
 
-			<el-form-item label="放款节点" prop="fkjdmc">
+			<el-form-item label="放款节点" prop="loanRatio">
 				<div class="form-item__block">
 					<el-input
-						v-model="formData.fkjdmc"
+						v-model="formData.loanRatio"
 						readonly
 						placeholder="请选择"
 						@click="loanClick"
@@ -56,7 +56,6 @@
 	/>
 
 	<!-- 放款节点 -->
-
 	<XyDialogSelect
 		v-model:open="loanSelect.dialogConfig.open"
 		:dialogConfig="loanSelect.dialogConfig"
@@ -271,9 +270,9 @@ function selectRowDueDili(row) {
 			item.loanNodeBasisName =
 				item.loanNodeBasis == "15"
 					? item.loanNodeBasisOther
-					: proj_dd_loan_basis.find(
-							basis => basis.loanNodeBasis == item.loanNodeBasis
-					  ).name;
+					: proj_dd_loan_basis.value.find(
+							basis => basis.value == item.loanNodeBasis
+					  ).label;
 		} else {
 			item.loanNodeBasisName = "";
 		}
@@ -282,9 +281,9 @@ function selectRowDueDili(row) {
 			item.confirmationSealName =
 				item.confirmationSeal == "17"
 					? item.confirmationSealOther
-					: proj_dd_confirmation_seal.find(
-							seal => seal.confirmationSeal == item.confirmationSeal
-					  ).name;
+					: proj_dd_confirmation_seal.value.find(
+							seal => seal.value == item.confirmationSeal
+					  ).label;
 		} else {
 			item.confirmationSealName = "";
 		}
