@@ -3,11 +3,11 @@
 		<el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="100px">
 			<el-form-item label="审议编号" prop="dueNo">
 				<el-input v-model="queryParams.dueNo" placeholder="请输入审议编号" clearable @keyup.enter="handleQuery"
-					:style="{ width: '240px' }" />
+					:style="{ width: '220px' }" />
 			</el-form-item>
 			<el-form-item label="项目名称" prop="name">
 				<el-input v-model="queryParams.name" placeholder="请选择项目名称" clearable
-					:style="{ width: '240px' }"></el-input>
+					:style="{ width: '220px' }"></el-input>
 				<!-- <div @click="openDiagMulti('name')">
           <el-input v-model="queryParams.name" placeholder="请选择项目" clearable readonly
             suffix-icon="el-icon-search"></el-input>
@@ -21,28 +21,28 @@
           @keyup.enter="handleQuery"
         />
       </el-form-item> -->
-			<el-form-item label="尽调状态" prop="status">
-				<el-checkbox-group v-model="projectDiligenceStatusList">
-					<el-checkbox v-for="dict in proj_dd_status" :label="dict.value" :name="dict.value"
-						:key="dict.value">{{
-            dict.label }}</el-checkbox>
-				</el-checkbox-group>
-			</el-form-item>
 
 			<el-form-item label="保理申请人" prop="factoringApplicantName">
 				<el-input v-model="queryParams.factoringApplicantName" placeholder="请输入保理申请人" clearable
-					@keyup.enter="handleQuery" :style="{ width: '240px' }" />
+					@keyup.enter="handleQuery" :style="{ width: '220px' }" />
 			</el-form-item>
 			<el-form-item label="是否有效" prop="validFlag">
-				<el-select v-model="queryParams.validFlag" placeholder="请选择是否有效" clearable :style="{ width: '240px' }">
+				<el-select v-model="queryParams.validFlag" placeholder="请选择是否有效" clearable :style="{ width: '220px' }">
 					<el-option v-for="dict in sys_yes_no" :key="dict.value" :label="dict.label" :value="dict.value" />
 				</el-select>
 			</el-form-item>
 			<el-form-item label="录入日期">
 				<el-date-picker v-model="daterangeCreateTime" value-format="YYYY-MM-DD" type="daterange"
 					range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"
-					:style="{ width: '240px' }"></el-date-picker>
+					:style="{ width: '220px' }"></el-date-picker>
 			</el-form-item>
+      			<el-form-item label="尽调状态" prop="status">
+      				<el-checkbox-group v-model="projectDiligenceStatusList">
+      					<el-checkbox v-for="dict in proj_dd_status" :label="dict.value" :name="dict.value"
+      						:key="dict.value">{{
+                  dict.label }}</el-checkbox>
+      				</el-checkbox-group>
+      			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
 				<el-button icon="Refresh" @click="resetQuery">重置</el-button>

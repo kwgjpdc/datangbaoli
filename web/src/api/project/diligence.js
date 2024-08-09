@@ -96,3 +96,23 @@ export function listAgroup(query) {
     params: query
   })
 }
+
+// 查询业务组列表
+export function diligenceCommitOpinion(params) {
+  return request({
+    url: '/project/diligence/commit/opinion',
+    method: 'post',
+    data: params
+  })
+}
+
+
+// 查询业务组列表
+export function diligenceSecretarySummary(params) {
+  return request({
+    url: '/project/diligence/secretary/summary',
+    method: 'post',
+    data: params
+  })
+}
+
