@@ -28,6 +28,12 @@ export default defineConfig(({ mode, command }) => {
 			host: true,
 			open: true,
 			proxy: {
+				"/dev-api/outside": {
+					target: "http://172.16.1.251:8085", // zhubao
+					changeOrigin: true,
+					rewrite: p => p.replace(/^\/dev-api\/outside/, "")
+				},
+
 				// https://cn.vitejs.dev/config/#server-proxy
 				"/dev-api": {
 					target: "http://172.16.1.50:8080", // wzm
@@ -38,12 +44,13 @@ export default defineConfig(({ mode, command }) => {
 
 					changeOrigin: true,
 					rewrite: p => p.replace(/^\/dev-api/, "")
-				},
-				"/zb-api": {
-					target: "http://172.16.1.251:8085", // zhubao
-					changeOrigin: true,
-					rewrite: p => p.replace(/^\/zb-api/, "")
 				}
+
+				// "/outside": {
+				// 	target: "http://172.16.1.251:8085", // zhubao
+				// 	changeOrigin: true,
+				// 	rewrite: p => p.replace(/^\/outside/, "")
+				// }
 			}
 		},
 		//fix:error:stdin>:7356:1: warning: "@charset" must be the first rule in the file
