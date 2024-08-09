@@ -423,7 +423,7 @@ function getDetailData(id) {
 				contractFileId: repData.id, // 附件id
 				contractId: repData.contractId, // 合同id
 				projDueDiligenceId: repData.projDueDiligenceId, // 项目尽调id
-				factoringTarget: repData.factoringTarget, // 合同-标的
+				factoringTarget: repData.factoringTarget, // 尽调-标的
 				dueNo: repData.dueNo, // 尽调-尽调No
 				contractType: repData.contractType, // 尽调-合同类型
 				businessType: repData.businessType // 尽调-业务产品

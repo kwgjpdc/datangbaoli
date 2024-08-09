@@ -295,6 +295,7 @@ function selectRowDueDili(row) {
 	formData.projDueDiligenceId = row.id;
 	// 尽调No
 	formData.dueNo = row.dueNo;
+
 	// 触发 父组件 中 获取尽调详情并回显尽调信息的逻辑；
 	emit("dueDiliChange", row.id);
 }
@@ -354,13 +355,12 @@ function selectRowLoanSelect(row) {
 // 合同选择
 function contractConfigSelectRow(row) {
 	formData.contractId = row.contractId; // 合同id
-	formData.contractNum = row.contractNo; // 合同编码；
+	formData.contractNum = row.contractNo; // 合同编号；
 	formData.customerName = row.applyInstitutionName; // 合同申请人
-	formData.factoringTarget = row.baseItem; // 标的
 
-	formData.contractAgreeFileVo.contractNum = row.contractNo;
+	formData.contractAgreeFileVo.contractNum = row.contractNo; // 附件2维护：合同编号；不能去除
 
-	formData.pddId = row.pddId; // pddId 逻辑修改；
+	formData.pddId = row.pddId; // pddId 获取合同关联尽调（重要）；
 }
 
 // Form item 内容的统一宽度

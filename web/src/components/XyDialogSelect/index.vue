@@ -124,13 +124,11 @@ function handleSizeChange(val) {
 }
 
 function handleCurrentChange(val) {
-	console.log(`current page: ${val}`);
 	emit("pageChange", val);
 }
 
 function resetForm() {
 	proxy.resetForm("queryRef");
-	emit("querySearch", {});
 }
 
 function selececlientRow(row, column, event) {
