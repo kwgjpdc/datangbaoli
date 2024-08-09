@@ -130,3 +130,11 @@ export function flowTaskForm(query) {
     params: query
   })
 }
+// 流程开始测试
+export function flowStart(procDefId,data) {
+  return request({
+    url: '/flowable/instance/startBy/'+procDefId,
+    method: 'post',
+    data: data
+  })
+}
