@@ -70,9 +70,8 @@ import { ref, reactive, computed, getCurrentInstance } from "vue";
 
 import { StrUtil } from "@/utils/StrUtil";
 
-import { listContract } from "@/api/contract/index";
-
 import { contPddList } from "@/api/contract/annex";
+import { getDiligence } from "@/api/project/diligence.js";
 
 import CustomerSelect from "@/components/CustomerSelect";
 
@@ -98,7 +97,7 @@ const props = defineProps({
 });
 
 // 组件事件
-const emit = defineEmits(["update:data"]);
+const emit = defineEmits(["update:data", "dueDiliChange"]);
 
 // 表单对象
 const elFormRef = ref(null);
@@ -269,43 +268,6 @@ function apiContPddList(params) {
 	});
 }
 
-// 选取尽调
-function selectRowDueDili(row) {
-	// 尽调Id
-	formData.projDueDiligenceId = row.id;
-	// 尽调No
-	formData.dueNo = row.dueNo;
-	// 尽调loanList
-	formData.loanList = row.loanList.map(item => {
-		// proj_dd_loan_basis 放款节点依据  字典  --》 loanNodeBasis    "15":其他
-		// proj_dd_confirmation_seal 确权章 字典  --》confirmationSeal  "17":其他
-
-		if (item.loanNodeBasis) {
-			item.loanNodeBasisName =
-				item.loanNodeBasis == "15"
-					? item.loanNodeBasisOther
-					: proj_dd_loan_basis.value.find(
-							basis => basis.value == item.loanNodeBasis
-					  ).label;
-		} else {
-			item.loanNodeBasisName = "";
-		}
-
-		if (item.confirmationSeal) {
-			item.confirmationSealName =
-				item.confirmationSeal == "17"
-					? item.confirmationSealOther
-					: proj_dd_confirmation_seal.value.find(
-							seal => seal.value == item.confirmationSeal
-					  ).label;
-		} else {
-			item.confirmationSealName = "";
-		}
-
-		return item;
-	});
-}
-
 // 尽调分页
 function pageChangeDueDili(pageNum) {
 	dueDiliSelect.tableConfig.pageNum = pageNum;
@@ -327,13 +289,53 @@ function querySearchDueDili(queryParams) {
 	apiContPddList(params);
 }
 
+// 选取尽调
+function selectRowDueDili(row) {
+	// 尽调Id
+	formData.projDueDiligenceId = row.id;
+	// 尽调No
+	formData.dueNo = row.dueNo;
+	// 触发 父组件 中 获取尽调详情并回显尽调信息的逻辑；
+	emit("dueDiliChange", row.id);
+}
+
 /* end------------------------ 尽调 */
 
 /* start*****************放款节点 */
 
 function loanClick() {
 	loanSelect.dialogConfig.open = true;
-	loanSelect.tableConfig.tableData = formData.loanList;
+	// 根据 尽调ID 获取 当前尽调的 【放款节点依据】信息
+	getDiligence(formData.projDueDiligenceId).then(res => {
+		loanSelect.tableConfig.tableData = res.data.loanList.map(item => {
+			// proj_dd_loan_basis 放款节点依据  字典  --》 loanNodeBasis    "15":其他
+			// proj_dd_confirmation_seal 确权章 字典  --》confirmationSeal  "17":其他
+
+			if (item.loanNodeBasis) {
+				item.loanNodeBasisName =
+					item.loanNodeBasis == "15"
+						? item.loanNodeBasisOther
+						: proj_dd_loan_basis.value.find(
+								basis => basis.value == item.loanNodeBasis
+						  ).label;
+			} else {
+				item.loanNodeBasisName = "";
+			}
+
+			if (item.confirmationSeal) {
+				item.confirmationSealName =
+					item.confirmationSeal == "17"
+						? item.confirmationSealOther
+						: proj_dd_confirmation_seal.value.find(
+								seal => seal.value == item.confirmationSeal
+						  ).label;
+			} else {
+				item.confirmationSealName = "";
+			}
+
+			return item;
+		});
+	});
 }
 
 function selectRowLoanSelect(row) {

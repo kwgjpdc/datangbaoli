@@ -3,7 +3,7 @@
 		<span>{{ haha.c || "没数据啊" }}</span>
 
 		<div>
-			<el-button @click="btnClick">点击</el-button>
+			<el-button @click="hehe">点击</el-button>
 		</div>
 
 		<el-input
@@ -23,6 +23,10 @@ import { ref, reactive, onMounted, toRefs, getCurrentInstance } from "vue";
 
 const { proxy } = getCurrentInstance();
 
+const haha = reactive({
+	a: 1,
+	b: 2
+});
 console.log(proxy);
 
 function inputClick() {
@@ -33,16 +37,20 @@ function btnClick() {
 	haha.c = 3;
 }
 
-const haha = reactive({
-	a: 1,
-	b: 2
+const Prom = new Promise(r => {
+	setTimeout(() => {
+		r(666);
+	});
 });
 
-// const data = reactive({
-// 	haha: 1
-// });
-
-// const data2 = toRefs(data);
+function hehe() {
+	Prom.then(res => {
+		return res;
+	}).then(res2 => {
+		debugger;
+		console.log(res2);
+	});
+}
 
 onMounted(() => {
 	haha.value = {

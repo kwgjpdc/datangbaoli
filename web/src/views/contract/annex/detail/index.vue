@@ -34,6 +34,7 @@
 							v-model:data="data"
 							:routerQueryObj="props.routerQueryObj"
 							v-model:loading="loading"
+							@dueDiliChange="getDiligenceInfo"
 						/>
 					</el-collapse-item>
 
@@ -91,11 +92,14 @@
 
 <script setup>
 import { ref, computed, onBeforeMount, watch } from "vue";
+
 import {
 	addContFileInfo,
 	editContFileInfo,
 	getContFileInfoDetail
 } from "@/api/contract/annex";
+
+import { getContract } from "@/api/contract/index";
 
 import { getDiligence } from "@/api/project/diligence.js";
 
@@ -129,10 +133,6 @@ const projectDetail = ref({});
 const routerQueryObj = ref(history.state);
 const props = defineProps({ approveId: Number });
 
-// temp 临时id处理
-const conSignReceiptVoId = ref(null);
-const contractAgreeFileVoId = ref(null);
-
 // 数据对象
 const data = ref({
 	// 前端逻辑处理 数据
@@ -146,7 +146,7 @@ const data = ref({
 	factoringTarget: null, // 标的 电费补贴2 --合同维护
 
 	loanNodeBasisName: null, // 放款依据名称
-	
+
 	loanNodeBasis: null, // 放款节点依据
 	oanNodeBasisOther: null, // 放款节点依据-其他
 	loanRatio: null, // 放款比例
@@ -290,13 +290,6 @@ const isEdit = computed(() => {
 });
 
 watch(
-	() => data.value.projDueDiligenceId,
-	() => {
-		getDiligenceInfo(data.value.projDueDiligenceId);
-	}
-);
-
-watch(
 	() => data.value.loanRatio,
 	() => {
 		data.value.contractAgreeFileVo.financingNum =
@@ -305,6 +298,13 @@ watch(
 			100;
 	}
 );
+
+// watch(
+// 	() => data.value.projDueDiligenceId,
+// 	() => {
+// 		getDiligenceInfo(data.value.projDueDiligenceId);
+// 	}
+// );
 
 // --------------------以上是 ref watch  computed 等状态数据------------------------------------------------------------------------------------------
 
@@ -427,6 +427,12 @@ function getDetailData(id) {
 				dueNo: repData.dueNo, // 尽调-尽调No
 				contractType: repData.contractType, // 尽调-合同类型
 				businessType: repData.businessType // 尽调-业务产品
+			});
+
+			// ---------------------------------------------
+
+			getContract(repData.contractId).then(res => {
+				data.value.pddId = res.data.pddId;
 			});
 		})
 		.finally(() => {
